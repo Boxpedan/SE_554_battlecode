@@ -16,7 +16,7 @@ src/lectureplayer
 *.pyc
 .gradle
 /client/
-*.jar
+#*.jar temp closed.
 *.iml
 *.ipr
 *.iws
