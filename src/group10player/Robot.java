@@ -4,6 +4,11 @@ import battlecode.common.*;
 
 //Robot will receive "rc" as a variable in its constructor.
 public class Robot {
+    RobotController rc;
+
+    Team myTeam;
+
+    MapLocation HQLocation = null;
 
     static Direction[] directions = {
             Direction.NORTH,
@@ -16,12 +21,30 @@ public class Robot {
             Direction.NORTHWEST
     };
 
-    RobotController rc;
     public Robot(RobotController rcTemp) throws GameActionException{
         rc = rcTemp;
+        myTeam = rc.getTeam();
+
+        if (HQLocation == null){
+            RobotInfo[] nearbyRobots = rc.senseNearbyRobots();
+            for (RobotInfo nearbyRobot : nearbyRobots){
+                if (nearbyRobot.type == RobotType.HQ && nearbyRobot.getTeam() == rc.getTeam()){
+                    HQLocation = nearbyRobot.getLocation();
+                }
+            }
+        }
     }
 
     public void takeTurn() throws GameActionException{
 
+    }
+
+    public boolean tryBuild(RobotType type, Direction dir) throws GameActionException{
+        if (rc.canBuildRobot(type, dir) && rc.isReady()){
+            rc.buildRobot(type, dir);
+            return true;
+        }else{
+            return false;
+        }
     }
 }
