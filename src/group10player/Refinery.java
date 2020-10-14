@@ -6,4 +6,9 @@ public class Refinery extends Building{
     public Refinery(RobotController rc) throws GameActionException{
         super(rc);
     }
+
+    @Override
+    public void takeTurn() throws GameActionException{
+
+    }
 }
