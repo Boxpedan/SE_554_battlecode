@@ -35,7 +35,7 @@ public class RobotPlayer {
 
         while (true) {
             try {
-                current_robot.run();
+                current_robot.takeTurn();
                 Clock.yield();
             } catch (Exception e) {
                 System.out.println(rc.getType() + " Exception");
