@@ -9,7 +9,7 @@ public class Unit extends Robot{
     }
 
     @Override
-    public void takeTurn(){
+    public void takeTurn() throws GameActionException{
 
     }
 }

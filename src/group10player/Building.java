@@ -9,7 +9,7 @@ public class Building extends Robot{
     }
 
     @Override
-    public void takeTurn(){
+    public void takeTurn() throws GameActionException{
 
     }
 }
