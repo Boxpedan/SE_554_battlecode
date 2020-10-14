@@ -7,4 +7,9 @@ public class DesignSchool extends Building {
     {
         super(rc);
     }
+
+    @Override
+    public void takeTurn(){
+
+    }
 }
