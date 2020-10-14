@@ -9,7 +9,7 @@ public class DesignSchool extends Building {
     }
 
     @Override
-    public void takeTurn(){
+    public void takeTurn() throws GameActionException{
 
     }
 }
