@@ -7,4 +7,9 @@ public class Unit extends Robot{
     public Unit(RobotController rc) throws GameActionException {
         super(rc);
     }
+
+    @Override
+    public void takeTurn(){
+
+    }
 }

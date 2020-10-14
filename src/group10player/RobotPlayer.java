@@ -1,6 +1,10 @@
 package group10player;
 import battlecode.common.*;
 
+/** we used the framework from the battlecode lecture videos and github
+ * https://github.com/battlecode/lectureplayer/blob/master/RobotPlayer.java
+ */
+
 public class RobotPlayer {
     /**
      * run() is the method that is called when a robot is instantiated in the Battlecode world.
@@ -11,25 +15,23 @@ public class RobotPlayer {
 
         // This is the RobotController object. You use it to perform actions from this robot,
         // and to get information on its current status.
-        Robot current_robot = rc;
-
-        turnCount = 0;
+        Robot current_robot = null;
 
         switch (rc.getType()) {
             case HQ:
-                current_robot = new HQ();
+                current_robot = new HQ(rc);
                 break;
             case MINER:
-                current_robot = new Miner();
+                current_robot = new Miner(rc);
                 break;
             case REFINERY:
-                current_robot = new Refinery();
+                current_robot = new Refinery(rc);
                 break;
             case DESIGN_SCHOOL:
-                current_robot = new DesignSchool();
+                current_robot = new DesignSchool(rc);
                 break;
             case LANDSCAPER:
-                current_robot = new Landscaper();
+                current_robot = new Landscaper(rc);
                 break;
         }
 

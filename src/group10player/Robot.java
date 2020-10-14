@@ -8,4 +8,8 @@ public class Robot {
     public Robot(RobotController rcTemp) throws GameActionException{
         rc = rcTemp;
     }
+
+    public void takeTurn(){
+
+    }
 }
