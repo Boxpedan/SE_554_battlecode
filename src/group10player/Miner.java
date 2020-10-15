@@ -99,9 +99,61 @@ public class Miner extends Unit{
 
     //if carrying soup, find somewhere to deposit it. Otherwise, go find and mine soup.
     public void goMining() throws GameActionException{
+        MapLocation myLocation = rc.getLocation();
+        //miners mine 7 soup per turn, and can hold up to 100
         //if carrying soup, deposit it
-        MapLocation[] soupNearby = rc.senseNearbySoup();
-        //walk in a random direction
+        if (rc.getSoupCarrying() >= 94){
+            Direction HQDirection = myLocation.directionTo(HQLocation);
+            //move towards HQ, or deposit if already adjacent
+            if (myLocation.distanceSquaredTo(HQLocation) <= 2) { // adjacent to HQ
+                if (rc.canDepositSoup(HQDirection)) {
+                    rc.depositSoup(HQDirection, rc.getSoupCarrying());
+                }
+            } else {  // try to move in the direction of the HQ, but if you can't, just rotate movement to the right until you can move
+                for (int x = 0; x < 8; x++) {
+                    if (rc.canMove(HQDirection) && !rc.senseFlooding(rc.adjacentLocation(HQDirection))) {
+                        rc.move(HQDirection);
+                    }else{
+                        HQDirection = HQDirection.rotateRight();
+                    }
+                }
+            }
+        } else { //not carrying soup; find soup, move towards it, and mine it (in that order)
+            MapLocation[] soupNearby = rc.senseNearbySoup();
+            int closestDistance = 1000000;
+            MapLocation nearestSoup = null;
+            for (MapLocation soupSpot : soupNearby) {
+                if (myLocation.distanceSquaredTo(soupSpot) < closestDistance) {
+                    nearestSoup = soupSpot;
+                    closestDistance = myLocation.distanceSquaredTo(soupSpot);
+                }
+            }
+            if (nearestSoup == null){ //no nearby soup found, just wander
+                walkRandom();
+                return;
+            } else {
+                Direction dirToSoup = myLocation.directionTo(nearestSoup);
+                //move towards soup, or mine it if already adjacent
+                if (myLocation.distanceSquaredTo(nearestSoup) <= 2) { // adjacent to soup
+                    if (rc.canMineSoup(dirToSoup)) {
+                        rc.mineSoup(dirToSoup);
+                    }
+                } else {  // try to move in the direction of the soup, but if you can't, just rotate movement to the right until you can move
+                    for (int x = 0; x < 8; x++) {
+                        if (rc.canMove(dirToSoup) && !rc.senseFlooding(rc.adjacentLocation(dirToSoup))) {
+                            rc.move(dirToSoup);
+                        }else{
+                            dirToSoup = dirToSoup.rotateRight();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    //walk in a random direction
+    public void walkRandom() throws GameActionException{
         Direction dir = randomDirection();
         if (rc.canMove(dir)){
             if (!rc.senseFlooding(rc.adjacentLocation(dir))) {
