@@ -3,6 +3,7 @@ import battlecode.common.*;
 
 public class HQ extends Building{
     int numMiners = 0;
+    int limitMiners = 1;
 
     public HQ(RobotController rc) throws GameActionException {
         super(rc);
@@ -12,7 +13,7 @@ public class HQ extends Building{
     @Override
     public void takeTurn() throws GameActionException{
 
-        if(numMiners < 1){
+        if(numMiners < limitMiners){
             for (Direction dir: Robot.directions){
                 if(tryBuild(RobotType.MINER, dir)){
                     numMiners++;
@@ -21,7 +22,7 @@ public class HQ extends Building{
             }
         }
 
-        if(numMiners >=1 && rc.getTeamSoup() >= 300){
+        if(numMiners >= limitMiners && rc.getTeamSoup() >= 300){
             for (Direction dir: Robot.directions){
                 if(tryBuild(RobotType.MINER, dir)){
                     numMiners++;
