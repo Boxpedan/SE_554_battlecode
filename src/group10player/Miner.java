@@ -21,7 +21,7 @@ public class Miner extends Unit{
     @Override
     public void takeTurn() throws GameActionException {
         checkAndBuild_v2();
-        //goMining();
+        goMining();
     }
 
     public void checkAndBuild() throws GameActionException{
@@ -102,10 +102,10 @@ public class Miner extends Unit{
         //if carrying soup, deposit it
         MapLocation[] soupNearby = rc.senseNearbySoup();
         //walk in a random direction
-        for (Direction dir:directions){
-            if (rc.canMove(dir)){
+        Direction dir = randomDirection();
+        if (rc.canMove(dir)){
+            if (!rc.senseFlooding(rc.adjacentLocation(dir))) {
                 rc.move(dir);
-                break;
             }
         }
     }

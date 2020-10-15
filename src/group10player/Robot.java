@@ -21,6 +21,10 @@ public class Robot {
             Direction.NORTHWEST
     };
 
+    static Direction randomDirection() {
+        return directions[(int) (Math.random() * directions.length)];
+    }
+
     public Robot(RobotController rcTemp) throws GameActionException{
         rc = rcTemp;
         myTeam = rc.getTeam();
