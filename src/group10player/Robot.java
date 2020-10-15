@@ -8,7 +8,8 @@ public class Robot {
 
     Team myTeam;
 
-    MapLocation HQLocation = null;
+    MapLocation HQLocation;
+    MapLocation myLocation;
 
     static Direction[] directions = {
             Direction.NORTH,
@@ -28,15 +29,16 @@ public class Robot {
     public Robot(RobotController rcTemp) throws GameActionException{
         rc = rcTemp;
         myTeam = rc.getTeam();
+        myLocation = rc.getLocation();
 
-        if (HQLocation == null){
-            RobotInfo[] nearbyRobots = rc.senseNearbyRobots();
-            for (RobotInfo nearbyRobot : nearbyRobots){
-                if (nearbyRobot.type == RobotType.HQ && nearbyRobot.getTeam() == rc.getTeam()){
-                    HQLocation = nearbyRobot.getLocation();
-                }
+        //find HQ and save its location (eventually will use the blockchain instead)
+        RobotInfo[] nearbyRobots = rc.senseNearbyRobots();
+        for (RobotInfo nearbyRobot : nearbyRobots){
+            if (nearbyRobot.type == RobotType.HQ && nearbyRobot.getTeam() == rc.getTeam()){
+                HQLocation = nearbyRobot.getLocation();
             }
         }
+
     }
 
     public void takeTurn() throws GameActionException{
