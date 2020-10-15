@@ -78,16 +78,20 @@ public class Miner extends Unit{
             //try to build one
             if (teamSoup >= 150){
                 for (Direction dir:directions){
-                    tryBuild(RobotType.DESIGN_SCHOOL, dir);
-                    //don't need to update seenDesignSchool, because the miner should see it at the beginning of next turn
+                    if (tryBuild(RobotType.DESIGN_SCHOOL, dir)) {
+                        break;
+                        //don't need to update seenDesignSchool, because the miner should see it at the beginning of next turn
+                    }
                 }
             }
         } else if (!seenRefinery) {
             //try to build one
             if (teamSoup >= 200){
                 for (Direction dir:directions){
-                    tryBuild(RobotType.REFINERY, dir);
-                    //don't need to update seenRefinery, because the miner should see it at the beginning of next turn
+                    if (tryBuild(RobotType.REFINERY, dir)) {
+                        break;
+                        //don't need to update seenRefinery, because the miner should see it at the beginning of next turn
+                    }
                 }
             }
         }
@@ -97,6 +101,13 @@ public class Miner extends Unit{
     public void goMining() throws GameActionException{
         //if carrying soup, deposit it
         MapLocation[] soupNearby = rc.senseNearbySoup();
+        //walk in a random direction
+        for (Direction dir:directions){
+            if (rc.canMove(dir)){
+                rc.move(dir);
+                break;
+            }
+        }
     }
 
 }
