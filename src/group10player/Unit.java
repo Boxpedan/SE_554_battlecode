@@ -49,4 +49,14 @@ public class Unit extends Robot{
         }
         return false;
     }
+
+    //walk in a random direction
+    public void walkRandom() throws GameActionException{
+        Direction dir = randomDirection();
+        if (rc.canMove(dir)){
+            if (!rc.senseFlooding(rc.adjacentLocation(dir))) {
+                rc.move(dir);
+            }
+        }
+    }
 }

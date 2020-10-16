@@ -3,7 +3,7 @@ import battlecode.common.*;
 
 public class HQ extends Building{
     int numMiners = 0;
-    int limitMiners = 1;
+    int limitMiners = 4;
 
     public HQ(RobotController rc) throws GameActionException {
         super(rc);

@@ -98,7 +98,7 @@ public class Miner extends Unit{
             } else {
                 Direction dirToSoup = myLocation.directionTo(nearestSoup);
                 //move towards soup, or mine it if already adjacent
-                if (myLocation.isAdjacentTo(nearestSoup)) { // adjacent to soup
+                if (myLocation.distanceSquaredTo(nearestSoup) <= 2) { // adjacent to soup
                     if (rc.canMineSoup(dirToSoup)) {
                         rc.mineSoup(dirToSoup);
                     }
@@ -108,16 +108,4 @@ public class Miner extends Unit{
             }
         }
     }
-
-
-    //walk in a random direction
-    public void walkRandom() throws GameActionException{
-        Direction dir = randomDirection();
-        if (rc.canMove(dir)){
-            if (!rc.senseFlooding(rc.adjacentLocation(dir))) {
-                rc.move(dir);
-            }
-        }
-    }
-
 }

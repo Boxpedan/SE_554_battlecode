@@ -30,7 +30,7 @@ public class Landscaper extends Unit{
             boolean droppedDirt = this.dropDirtIfYouCan(HQDirection);
             if(!droppedDirt){
                 if(!digIfYouCan()){
-                    moveRandomly();
+                    walkRandom();
                 }
             }
         } else if(seeFlood) {
@@ -38,14 +38,14 @@ public class Landscaper extends Unit{
             boolean droppedDirt = this.dropDirtIfYouCan(directionFlooded);
             if(!droppedDirt){
                 if(!digIfYouCan()){
-                    moveRandomly();
+                    walkRandom();
                 }
             }
         }
         else{
             if(!findFlooding()){
-                if(!moveTowardHQ()){
-                    moveRandomly();
+                if(!tryMoveTowards(HQLocation)){ //!moveTowardHQ()
+                    walkRandom();
                 }
             }
         }
@@ -88,16 +88,16 @@ public class Landscaper extends Unit{
     }
 
     //Move in a random direction
-    public void moveRandomly() throws GameActionException{
+    /*public void moveRandomly() throws GameActionException{
         Direction dir = randomDirection();
         if (rc.canMove(dir)){
             System.out.println("Landscaper moving randomly");
            rc.move(dir);
         }
-    }
+    }*/
 
     //Move toward HQ, move toward HQ if possible
-    public boolean moveTowardHQ() throws GameActionException{
+    /*public boolean moveTowardHQ() throws GameActionException{
        HQDirection = myLocation.directionTo(HQLocation);
        if(rc.canMove(HQDirection)){
            rc.move(HQDirection);
@@ -106,7 +106,7 @@ public class Landscaper extends Unit{
        }
 
        return false;
-    }
+    }*/
 
     //Try to dig dirt and dig dirt if you can, give from highest elevation
     public boolean digIfYouCan() throws GameActionException{
