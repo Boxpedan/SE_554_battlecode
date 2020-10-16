@@ -16,47 +16,17 @@ public class Miner extends Unit{
         seenDesignSchool = false;
         seenRefinery = false;
         teamSoup = 0;
+        tryFindHQLocation();
     }
 
     @Override
     public void takeTurn() throws GameActionException {
-        checkAndBuild_v2();
+        checkAndBuild();
         goMining();
     }
 
-    public void checkAndBuild() throws GameActionException{
-        teamSoup = rc.getTeamSoup();
-        //check if we've seen a design school
-        //if not, try to build one if we have enough soup
-        //if we've seen a design school, check if we've seen a refinery
-        //if not, try to build one if we have enough soup
-
-        //temporarily using seenDesignSchool and seenRefinery as just "have I built this"
-        if (!seenDesignSchool) {
-            //try to build one
-            if (teamSoup >= 150){
-                for (Direction dir:directions){
-                    if (tryBuild(RobotType.DESIGN_SCHOOL, dir)){
-                        seenDesignSchool = true;
-                        break;
-                    }
-                }
-            }
-        } else if (!seenRefinery) {
-            //try to build one
-            if (teamSoup >= 200){
-                for (Direction dir:directions){
-                    if (tryBuild(RobotType.REFINERY, dir)){
-                        seenRefinery = true;
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
     //this function uses scans to check if this miner has seen specific buildings, not just built them
-    public void checkAndBuild_v2() throws GameActionException{
+    public void checkAndBuild() throws GameActionException{
         teamSoup = rc.getTeamSoup();
 
         //Check array of nearby robots, and see if any allied robots are design schools or refineries
@@ -103,20 +73,14 @@ public class Miner extends Unit{
         //miners mine 7 soup per turn, and can hold up to 100
         //if carrying soup, deposit it
         if (rc.getSoupCarrying() >= 94){
-            Direction HQDirection = myLocation.directionTo(HQLocation);
+            HQDirection = myLocation.directionTo(HQLocation);
             //move towards HQ, or deposit if already adjacent
-            if (myLocation.distanceSquaredTo(HQLocation) <= 2) { // adjacent to HQ
+            if (myLocation.isAdjacentTo(HQLocation)) { // adjacent to HQ
                 if (rc.canDepositSoup(HQDirection)) {
                     rc.depositSoup(HQDirection, rc.getSoupCarrying());
                 }
-            } else {  // try to move in the direction of the HQ, but if you can't, just rotate movement to the right until you can move
-                for (int x = 0; x < 8; x++) {
-                    if (rc.canMove(HQDirection) && !rc.senseFlooding(rc.adjacentLocation(HQDirection))) {
-                        rc.move(HQDirection);
-                    }else{
-                        HQDirection = HQDirection.rotateRight();
-                    }
-                }
+            } else {  // try to move in the direction of the HQ, but if you can't, just rotate movement until you can move
+                tryMoveDirection(HQDirection);
             }
         } else { //not carrying soup; find soup, move towards it, and mine it (in that order)
             MapLocation[] soupNearby = rc.senseNearbySoup();
@@ -128,24 +92,18 @@ public class Miner extends Unit{
                     closestDistance = myLocation.distanceSquaredTo(soupSpot);
                 }
             }
-            if (nearestSoup == null){ //no nearby soup found, just wander
-                walkRandom();
+            if (nearestSoup == null){ //no nearby soup found, wander away from HQ
+                tryMoveDirection(myLocation.directionTo(HQLocation).opposite());
                 return;
             } else {
                 Direction dirToSoup = myLocation.directionTo(nearestSoup);
                 //move towards soup, or mine it if already adjacent
-                if (myLocation.distanceSquaredTo(nearestSoup) <= 2) { // adjacent to soup
+                if (myLocation.isAdjacentTo(nearestSoup)) { // adjacent to soup
                     if (rc.canMineSoup(dirToSoup)) {
                         rc.mineSoup(dirToSoup);
                     }
-                } else {  // try to move in the direction of the soup, but if you can't, just rotate movement to the right until you can move
-                    for (int x = 0; x < 8; x++) {
-                        if (rc.canMove(dirToSoup) && !rc.senseFlooding(rc.adjacentLocation(dirToSoup))) {
-                            rc.move(dirToSoup);
-                        }else{
-                            dirToSoup = dirToSoup.rotateRight();
-                        }
-                    }
+                } else {  // try to move in the direction of the soup, but if you can't, just rotate movement until you can move
+                    tryMoveDirection(dirToSoup);
                 }
             }
         }

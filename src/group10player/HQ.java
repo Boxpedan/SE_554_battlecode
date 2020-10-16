@@ -17,7 +17,9 @@ public class HQ extends Building{
             for (Direction dir: Robot.directions){
                 if(tryBuild(RobotType.MINER, dir)){
                     numMiners++;
-
+                    if (numMiners >= limitMiners){
+                        break;
+                    }
                 }
             }
         }
@@ -26,6 +28,7 @@ public class HQ extends Building{
             for (Direction dir: Robot.directions){
                 if(tryBuild(RobotType.MINER, dir)){
                     numMiners++;
+                    break;
                 }
             }
         }

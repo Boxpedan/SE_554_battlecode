@@ -7,7 +7,6 @@ public class Landscaper extends Unit{
     int storedDirt;
     int myElevation;
     int mySensorRadius;
-    Direction directionHQ;
     Direction directionFlooded;
     boolean foundHQ;
 
@@ -19,7 +18,7 @@ public class Landscaper extends Unit{
         myElevation = rc.senseElevation(myLocation);
         storedDirt = 0;
         mySensorRadius = rc.getCurrentSensorRadiusSquared();
-        directionHQ = null;
+        HQDirection = null;
         directionFlooded = null;
     }
 
@@ -28,7 +27,7 @@ public class Landscaper extends Unit{
         myLocation = rc.getLocation();
         if(foundHQ || findHQ()){
             System.out.println("HQ Found...");
-            boolean droppedDirt = this.dropDirtIfYouCan(directionHQ);
+            boolean droppedDirt = this.dropDirtIfYouCan(HQDirection);
             if(!droppedDirt){
                 if(!digIfYouCan()){
                     moveRandomly();
@@ -78,7 +77,7 @@ public class Landscaper extends Unit{
             if(rc.canMove(dir)){
                 MapLocation verifyLocation = rc.adjacentLocation(dir);
                 if(verifyLocation.isAdjacentTo(HQLocation)){
-                    directionHQ = dir;
+                    HQDirection = dir;
                     System.out.println("HQ found!");
                     return true;
                 }
@@ -99,9 +98,9 @@ public class Landscaper extends Unit{
 
     //Move toward HQ, move toward HQ if possible
     public boolean moveTowardHQ() throws GameActionException{
-       directionHQ = myLocation.directionTo(HQLocation);
-       if(rc.canMove(directionHQ)){
-           rc.move(directionHQ);
+       HQDirection = myLocation.directionTo(HQLocation);
+       if(rc.canMove(HQDirection)){
+           rc.move(HQDirection);
            System.out.println("Landscaper moving toward HQ");
            return true;
        }
@@ -115,7 +114,7 @@ public class Landscaper extends Unit{
         int maxElevationAround = Integer.MIN_VALUE;
 
         for (Direction dir: directions){
-            if (dir != directionHQ && dir != directionFlooded) {
+            if (dir != HQDirection && dir != directionFlooded) {
                 int dirElevation = rc.senseElevation(rc.adjacentLocation(dir));
                 if (dirElevation > maxElevationAround){
                     maxElevationAround = dirElevation;
