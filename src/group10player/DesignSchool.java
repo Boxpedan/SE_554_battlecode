@@ -3,7 +3,7 @@ import battlecode.common.*;
 
 public class DesignSchool extends Building {
     int numLandscapers = 0;
-    int landscaperLimit = 1;
+    int landscaperLimit = 3;
     public DesignSchool(RobotController rc) throws GameActionException
     {
         super(rc);
