@@ -4,10 +4,10 @@ import battlecode.common.*;
 public class HQ extends Building{
     int numMiners = 0;
     int limitMiners = 4;
+    int MAX_LIMIT_MINER = 10;
 
     public HQ(RobotController rc) throws GameActionException {
         super(rc);
-
     }
     
     @Override
@@ -24,7 +24,7 @@ public class HQ extends Building{
             }
         }
 
-        if(numMiners >= limitMiners && rc.getTeamSoup() >= 300){
+        if(numMiners >= limitMiners&& numMiners <= MAX_LIMIT_MINER && rc.getTeamSoup() >= 300){
             for (Direction dir: Robot.directions){
                 if(tryBuild(RobotType.MINER, dir)){
                     numMiners++;
@@ -33,5 +33,6 @@ public class HQ extends Building{
             }
         }
         System.out.println("Total amount of soup is: "+rc.getTeamSoup());
+
     }
 }
