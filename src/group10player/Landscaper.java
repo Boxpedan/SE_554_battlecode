@@ -20,6 +20,7 @@ public class Landscaper extends Unit{
         mySensorRadius = rc.getCurrentSensorRadiusSquared();
         HQDirection = null;
         directionFlooded = null;
+        tryFindHQLocation();
     }
 
     @Override
@@ -61,6 +62,7 @@ public class Landscaper extends Unit{
                 if(seeFlood) {
                     floodedLocation = verifyLocation;
                     MapLocation opposite = myLocation.subtract(dir);
+                    directionFlooded = myLocation.directionTo(floodedLocation);
                     Direction oppositeDirection = myLocation.directionTo(opposite);
                     rc.move(oppositeDirection);
                     System.out.println("Flooding Found!");
@@ -72,7 +74,11 @@ public class Landscaper extends Unit{
     }
 
     //Look for HQ, update foundHQ if adjacent to neighbor, and update directionHQ
-    public boolean findHQ(){
+    public boolean findHQ() throws GameActionException{
+        if (HQLocation == null){
+            walkRandom();
+            tryFindHQLocation();
+        }
         for (Direction dir: directions){
             if(rc.canMove(dir)){
                 MapLocation verifyLocation = rc.adjacentLocation(dir);
