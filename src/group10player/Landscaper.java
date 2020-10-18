@@ -45,7 +45,7 @@ public class Landscaper extends Unit{
         }
         else{
             if(!findFlooding()){
-                if(!tryMoveTowards(HQLocation)){ //!moveTowardHQ()
+                if(!tryMoveTowardsFavorRight(HQLocation)){ //!moveTowardHQ()
                     walkRandom();
                 }
             }
@@ -120,7 +120,7 @@ public class Landscaper extends Unit{
         int maxElevationAround = Integer.MIN_VALUE;
 
         for (Direction dir: directions){
-            if (dir != HQDirection && dir != directionFlooded) {
+            if (!rc.adjacentLocation(dir).isAdjacentTo(HQLocation) && dir != directionFlooded) {
                 int dirElevation = rc.senseElevation(rc.adjacentLocation(dir));
                 if (dirElevation > maxElevationAround){
                     maxElevationAround = dirElevation;
