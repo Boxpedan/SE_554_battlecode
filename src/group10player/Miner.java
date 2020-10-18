@@ -27,6 +27,7 @@ public class Miner extends Unit{
 
     //this function uses scans to check if this miner has seen specific buildings, not just built them
     public void checkAndBuild() throws GameActionException{
+        myLocation = rc.getLocation();
         teamSoup = rc.getTeamSoup();
 
         //Check array of nearby robots, and see if any allied robots are design schools or refineries
@@ -48,7 +49,7 @@ public class Miner extends Unit{
             //try to build one
             if (teamSoup >= 150){
                 for (Direction dir:directions){
-                    if (tryBuild(RobotType.DESIGN_SCHOOL, dir)) {
+                    if (!myLocation.add(dir).isAdjacentTo(HQLocation) && tryBuild(RobotType.DESIGN_SCHOOL, dir)) {
                         break;
                         //don't need to update seenDesignSchool, because the miner should see it at the beginning of next turn
                     }
@@ -58,7 +59,7 @@ public class Miner extends Unit{
             //try to build one
             if (teamSoup >= 200){
                 for (Direction dir:directions){
-                    if (tryBuild(RobotType.REFINERY, dir)) {
+                    if (!myLocation.add(dir).isAdjacentTo(HQLocation) && tryBuild(RobotType.REFINERY, dir)) {
                         break;
                         //don't need to update seenRefinery, because the miner should see it at the beginning of next turn
                     }
