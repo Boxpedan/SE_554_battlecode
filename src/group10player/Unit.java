@@ -14,6 +14,9 @@ public class Unit extends Robot{
     }
 
     public boolean tryMoveTowards(MapLocation destination) throws GameActionException{
+        if (destination == null){
+            return false;
+        }
         Direction dirTowards = myLocation.directionTo(destination);
         for (int x = 0; x <= 8; x++) {
             if (rc.canMove(dirTowards) && !rc.senseFlooding(rc.adjacentLocation(dirTowards))) {
@@ -33,6 +36,9 @@ public class Unit extends Robot{
     }
 
     public boolean tryMoveTowardsFavorRight(MapLocation destination) throws GameActionException{
+        if (destination == null){
+            return false;
+        }
         Direction dirTowards = myLocation.directionTo(destination);
         for (int x = 0; x <= 8; x++) {
             if (rc.canMove(dirTowards) && !rc.senseFlooding(rc.adjacentLocation(dirTowards))) {
@@ -46,6 +52,9 @@ public class Unit extends Robot{
     }
 
     public boolean tryMoveDirection(Direction dirTowards) throws GameActionException{
+        if (dirTowards == null){
+            return false;
+        }
         for (int x = 0; x <= 8; x++) {
             if (rc.canMove(dirTowards) && !rc.senseFlooding(rc.adjacentLocation(dirTowards))) {
                 rc.move(dirTowards);

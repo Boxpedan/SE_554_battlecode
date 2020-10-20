@@ -78,6 +78,7 @@ public class Landscaper extends Unit{
         if (HQLocation == null){
             walkRandom();
             tryFindHQLocation();
+            return false;
         }
         for (Direction dir: directions){
             if(rc.canMove(dir)){
@@ -130,9 +131,13 @@ public class Landscaper extends Unit{
         }
 
         if(maxElevationDir != null){
-            rc.digDirt(maxElevationDir);
-            System.out.println("Landscaper digging");
-            return true;
+            if (rc.canDigDirt(maxElevationDir)) {
+                rc.digDirt(maxElevationDir);
+                System.out.println("Landscaper digging");
+                return true;
+            }else{
+                return false;
+            }
         }
         else{
             System.out.println("Landscaper can't dig");
