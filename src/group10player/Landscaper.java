@@ -2,24 +2,24 @@ package group10player;
 import battlecode.common.*;
 
 public class Landscaper extends Unit{
-    boolean seeFlood;
-    MapLocation floodedLocation;
+    //boolean seeFlood;
+    //MapLocation floodedLocation;
     int storedDirt;
     int myElevation;
     int mySensorRadius;
-    Direction directionFlooded;
+    //Direction directionFlooded;
     boolean foundHQ;
 
     public Landscaper(RobotController rc) throws GameActionException {
         super(rc);
-        seeFlood = rc.senseFlooding(myLocation);
+        //seeFlood = rc.senseFlooding(myLocation);
         foundHQ = false;
-        floodedLocation = null;
+        //floodedLocation = null;
         myElevation = rc.senseElevation(myLocation);
         storedDirt = 0;
         mySensorRadius = rc.getCurrentSensorRadiusSquared();
         HQDirection = null;
-        directionFlooded = null;
+        //directionFlooded = null;
         tryFindHQLocation();
     }
 
@@ -34,7 +34,7 @@ public class Landscaper extends Unit{
                     walkRandom();
                 }
             }
-        } else if(seeFlood) {
+        }/* else if(seeFlood) {
             System.out.println("Flooding Found...");
             boolean droppedDirt = this.dropDirtIfYouCan(directionFlooded);
             if(!droppedDirt){
@@ -42,19 +42,19 @@ public class Landscaper extends Unit{
                     walkRandom();
                 }
             }
-        }
+        }*/
         else{
-            if(!findFlooding()){
+            //if(!findFlooding()){
                 if(!tryMoveTowardsFavorRight(HQLocation)){ //!moveTowardHQ()
                     walkRandom();
                 }
-            }
+            //}
         }
     }
 
 
     //Look for flooding and if found update floodedLocation and move back one square
-    public boolean findFlooding() throws GameActionException{
+    /*public boolean findFlooding() throws GameActionException{
         for (Direction dir:directions){
             if(rc.canMove(dir)){
                 MapLocation verifyLocation = rc.adjacentLocation(dir);
@@ -64,14 +64,19 @@ public class Landscaper extends Unit{
                     MapLocation opposite = myLocation.subtract(dir);
                     directionFlooded = myLocation.directionTo(floodedLocation);
                     Direction oppositeDirection = myLocation.directionTo(opposite);
-                    rc.move(oppositeDirection);
-                    System.out.println("Flooding Found!");
+                    if (rc.canMove(oppositeDirection)) {
+                        rc.move(oppositeDirection);
+                        System.out.println("Flooding Found!");
+                        return true;
+                    }else{
+                        return false;
+                    }
                 }
             }
         }
         System.out.println("No Flooding Found!");
         return false;
-    }
+    }*/
 
     //Look for HQ, update foundHQ if adjacent to neighbor, and update directionHQ
     public boolean findHQ() throws GameActionException{
@@ -119,11 +124,27 @@ public class Landscaper extends Unit{
     public boolean digIfYouCan() throws GameActionException{
         Direction maxElevationDir = null;
         int maxElevationAround = Integer.MIN_VALUE;
+        boolean nearWater = false;
 
         for (Direction dir: directions){
-            if (!rc.adjacentLocation(dir).isAdjacentTo(HQLocation) && dir != directionFlooded) {
+            nearWater = false;
+            if (!rc.adjacentLocation(dir).isAdjacentTo(HQLocation)/* && dir != directionFlooded*/) {
+                for (Direction dir2: directions) {
+                    if (!rc.canSenseLocation(rc.adjacentLocation(dir).add(dir2))){
+                        System.out.println("My location is "+rc.getLocation().toString()+", I'm failing to see "+rc.adjacentLocation(dir).add(dir2).toString());
+                        continue;
+                    }
+                    if (rc.senseFlooding(rc.adjacentLocation(dir).add(dir2))) {
+                        nearWater = true;
+                        break;
+                    }
+                }
+                if (!rc.canSenseLocation(rc.adjacentLocation(dir))){
+                    System.out.println("My location is "+rc.getLocation().toString()+", I'm failing to see "+rc.adjacentLocation(dir).toString());
+                    continue;
+                }
                 int dirElevation = rc.senseElevation(rc.adjacentLocation(dir));
-                if (dirElevation > maxElevationAround){
+                if (dirElevation > maxElevationAround && !nearWater){
                     maxElevationAround = dirElevation;
                     maxElevationDir = dir;
                 }
