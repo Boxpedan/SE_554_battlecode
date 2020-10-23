@@ -1,4 +1,5 @@
 # Battlecode 2020 Scaffold
+![Java CI with Gradle](https://github.com/Boxpedan/SE_554_battlecode/workflows/Java%20CI%20with%20Gradle/badge.svg?branch=master)
 
 This is the Battlecode 2020 scaffold, containing an `examplefuncsplayer`. Read https://2020.battlecode.org/getting-started!
 
