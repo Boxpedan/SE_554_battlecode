@@ -1,7 +1,5 @@
 package group10playertest;
 import battlecode.common.*;
-import group10player.HQ;
-import group10player.Robot;
 import group10player.RobotPlayer;
 import org.junit.*;
 import org.mockito.*;
@@ -42,5 +40,10 @@ public class RobotPlayerTest {
         assertNotEquals(RobotType.HQ,RCtest.getType());
     }
 
+    @Test
+    public void UNRUNABLETESTFORRUN() throws GameActionException {
+        //When the while true function running, it actually call RobotController varible .gettype() But not working.
+        //RPtest.run(RCtest);
+    }
 
 }
