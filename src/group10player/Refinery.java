@@ -13,7 +13,7 @@ public class Refinery extends Building{
 
     @Override
     public void takeTurn() throws GameActionException{
-        if (!hasBroadcastedLocation){
+        /*if (!hasBroadcastedLocation){
             //broadcast location on Blockchain
             int [] refineryMessage = new int[7]; // formatted {159, 001, XPOS, YPOS, 000, 000, 000}
             for (int x = 0; x < 7; x++){
@@ -28,6 +28,6 @@ public class Refinery extends Building{
                 rc.submitTransaction(refineryMessage, 11);
                 hasBroadcastedLocation = true;
             }
-        }
+        }*/
     }
 }
