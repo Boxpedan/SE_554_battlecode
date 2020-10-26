@@ -4,6 +4,7 @@ import battlecode.common.*;
 public class Miner extends Unit{
     boolean seenDesignSchool;
     boolean seenRefinery;
+    boolean seenFulfillmentCenter;
 
 
     final int maxVisionSquared = 34;
@@ -15,6 +16,7 @@ public class Miner extends Unit{
         super(rc);
         seenDesignSchool = false;
         seenRefinery = false;
+        seenFulfillmentCenter = false;
         teamSoup = 0;
         tryFindHQLocation();
     }
@@ -37,11 +39,15 @@ public class Miner extends Unit{
                 seenDesignSchool = true;
             } else if (nearbyRobot.type == RobotType.REFINERY){
                 seenRefinery = true;
+            } else if (nearbyRobot.type == RobotType.FULFILLMENT_CENTER){
+                seenFulfillmentCenter = true;
             }
         }
         //check if we've seen a design school
         //if not, try to build one if we have enough soup
         //if we've seen a design school, check if we've seen a refinery
+        //if not, try to build one if we have enough soup
+        //if we've seen a refinery, check if we've seen a fulfillment center
         //if not, try to build one if we have enough soup
 
         //temporarily using seenDesignSchool and seenRefinery as just "have I built this"
@@ -62,6 +68,15 @@ public class Miner extends Unit{
                     if (!myLocation.add(dir).isAdjacentTo(HQLocation) && tryBuild(RobotType.REFINERY, dir)) {
                         break;
                         //don't need to update seenRefinery, because the miner should see it at the beginning of next turn
+                    }
+                }
+            }
+        } else if (!seenFulfillmentCenter){
+            if (teamSoup >= 150){
+                for (Direction dir:directions){
+                    if (!myLocation.add(dir).isAdjacentTo(HQLocation) && tryBuild(RobotType.FULFILLMENT_CENTER, dir)) {
+                        break;
+                        //don't need to update seenFulfillmentCenter, because the miner should see it at the beginning of next turn
                     }
                 }
             }
