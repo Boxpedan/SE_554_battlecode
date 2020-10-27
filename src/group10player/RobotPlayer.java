@@ -33,6 +33,9 @@ public class RobotPlayer {
             case LANDSCAPER:
                 current_robot = new Landscaper(rc);
                 break;
+            case FULFILLMENT_CENTER:
+                current_robot = new FulfillmentCenter(rc);
+                break;
         }
 
         while (true) {
