@@ -34,13 +34,15 @@ public class Miner extends Unit{
 
         //Check array of nearby robots, and see if any allied robots are design schools or refineries
         RobotInfo[] nearbyRobots = rc.senseNearbyRobots(maxVisionSquared, myTeam);
-        for (RobotInfo nearbyRobot : nearbyRobots){
-            if (nearbyRobot.type == RobotType.DESIGN_SCHOOL){
-                seenDesignSchool = true;
-            } else if (nearbyRobot.type == RobotType.REFINERY){
-                seenRefinery = true;
-            } else if (nearbyRobot.type == RobotType.FULFILLMENT_CENTER){
-                seenFulfillmentCenter = true;
+        if (nearbyRobots != null) {
+            for (RobotInfo nearbyRobot : nearbyRobots) {
+                if (nearbyRobot.type == RobotType.DESIGN_SCHOOL) {
+                    seenDesignSchool = true;
+                } else if (nearbyRobot.type == RobotType.REFINERY) {
+                    seenRefinery = true;
+                } else if (nearbyRobot.type == RobotType.FULFILLMENT_CENTER) {
+                    seenFulfillmentCenter = true;
+                }
             }
         }
         //check if we've seen a design school
@@ -100,6 +102,10 @@ public class Miner extends Unit{
             }
         } else { //not carrying soup; find soup, move towards it, and mine it (in that order)
             MapLocation[] soupNearby = rc.senseNearbySoup();
+            if (soupNearby == null){//no nearby soup found, wander away from HQ
+                tryMoveDirection(myLocation.directionTo(HQLocation).opposite());
+                return;
+            }
             int closestDistance = 1000000;
             MapLocation nearestSoup = null;
             for (MapLocation soupSpot : soupNearby) {
@@ -108,19 +114,18 @@ public class Miner extends Unit{
                     closestDistance = myLocation.distanceSquaredTo(soupSpot);
                 }
             }
-            if (nearestSoup == null){ //no nearby soup found, wander away from HQ
-                tryMoveDirection(myLocation.directionTo(HQLocation).opposite());
+            if (nearestSoup == null){ //some error in finding nearest soup
+                System.out.println("MINER: ERROR IN PROCESSING NEAREST SOUP!");
                 return;
-            } else {
-                Direction dirToSoup = myLocation.directionTo(nearestSoup);
-                //move towards soup, or mine it if already adjacent
-                if (myLocation.distanceSquaredTo(nearestSoup) <= 2) { // adjacent to soup
-                    if (rc.canMineSoup(dirToSoup)) {
-                        rc.mineSoup(dirToSoup);
-                    }
-                } else {  // try to move in the direction of the soup, but if you can't, just rotate movement until you can move
-                    tryMoveDirection(dirToSoup);
+            }
+            Direction dirToSoup = myLocation.directionTo(nearestSoup);
+            //move towards soup, or mine it if already adjacent
+            if (myLocation.distanceSquaredTo(nearestSoup) <= 2) { // adjacent to soup
+                if (rc.canMineSoup(dirToSoup)) {
+                    rc.mineSoup(dirToSoup);
                 }
+            } else {  // try to move in the direction of the soup, but if you can't, just rotate movement until you can move
+                tryMoveDirection(dirToSoup);
             }
         }
     }

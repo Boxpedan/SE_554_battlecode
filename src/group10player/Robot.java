@@ -67,6 +67,9 @@ public class Robot {
         System.out.println("I couldn't find our HQ using the blockchain!");
 
         RobotInfo[] nearbyRobots = rc.senseNearbyRobots();
+        if (nearbyRobots == null){
+            return false; //no robots nearby to find HQ from
+        }
         for (RobotInfo nearbyRobot : nearbyRobots){
             if (nearbyRobot.type == RobotType.HQ && nearbyRobot.getTeam() == rc.getTeam()){
                 HQLocation = nearbyRobot.getLocation();
