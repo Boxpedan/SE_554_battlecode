@@ -34,7 +34,7 @@ public class Miner extends Unit{
 
         //Check array of nearby robots, and see if any allied robots are design schools or refineries
         RobotInfo[] nearbyRobots = rc.senseNearbyRobots(maxVisionSquared, myTeam);
-        if (nearbyRobots != null) {
+        if (nearbyRobots != null && nearbyRobots.length > 0) {
             for (RobotInfo nearbyRobot : nearbyRobots) {
                 if (nearbyRobot.type == RobotType.DESIGN_SCHOOL) {
                     seenDesignSchool = true;
@@ -102,12 +102,13 @@ public class Miner extends Unit{
             }
         } else { //not carrying soup; find soup, move towards it, and mine it (in that order)
             MapLocation[] soupNearby = rc.senseNearbySoup();
-            if (soupNearby == null){//no nearby soup found, wander away from HQ
+            if (soupNearby == null || soupNearby.length < 1){//no nearby soup found, wander away from HQ
                 tryMoveDirection(myLocation.directionTo(HQLocation).opposite());
                 return;
             }
             int closestDistance = 1000000;
             MapLocation nearestSoup = null;
+            int x = 0;
             for (MapLocation soupSpot : soupNearby) {
                 if (myLocation.distanceSquaredTo(soupSpot) < closestDistance) {
                     nearestSoup = soupSpot;
