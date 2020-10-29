@@ -53,13 +53,15 @@ public class Robot {
     public boolean tryFindHQLocation() throws GameActionException{
         //find HQ and save its location (eventually will use the blockchain instead)
         Transaction [] tBlock = rc.getBlock(1);
-        for (int x = 0; x < tBlock.length; x++){
-            int[] tempMessage = tBlock[x].getMessage();
-            if (tempMessage[0] == teamMessageCode){ //run through each message, check initial int for our team's code
-                if (tempMessage[1] == 000){ //found our HQ location message
-                    HQLocation = new MapLocation(tempMessage[2], tempMessage[3]);
-                    HQDirection = myLocation.directionTo(HQLocation);
-                    return true;
+        if (tBlock != null) {
+            for (int x = 0; x < tBlock.length; x++) {
+                int[] tempMessage = tBlock[x].getMessage();
+                if (tempMessage[0] == teamMessageCode) { //run through each message, check initial int for our team's code
+                    if (tempMessage[1] == 000) { //found our HQ location message
+                        HQLocation = new MapLocation(tempMessage[2], tempMessage[3]);
+                        HQDirection = myLocation.directionTo(HQLocation);
+                        return true;
+                    }
                 }
             }
         }
@@ -67,6 +69,9 @@ public class Robot {
         System.out.println("I couldn't find our HQ using the blockchain!");
 
         RobotInfo[] nearbyRobots = rc.senseNearbyRobots();
+        if (nearbyRobots == null || nearbyRobots.length < 1){
+            return false; //no robots nearby to find HQ from
+        }
         for (RobotInfo nearbyRobot : nearbyRobots){
             if (nearbyRobot.type == RobotType.HQ && nearbyRobot.getTeam() == rc.getTeam()){
                 HQLocation = nearbyRobot.getLocation();
