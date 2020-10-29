@@ -21,11 +21,11 @@ public class MinerTest {
     public void beforeEachTest() throws GameActionException {
         RCtest = Mockito.mock(RobotController.class);
         RPtest = Mockito.mock(RobotPlayer.class);
-        //Mtest = new Miner(RCtest);
+        Mtest = new Miner(RCtest);
     }
 
     @Test
     public void taketurntest() throws GameActionException {
-        //Mtest.takeTurn();
+        Mtest.takeTurn();
     }
 }

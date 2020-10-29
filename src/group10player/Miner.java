@@ -87,6 +87,10 @@ public class Miner extends Unit{
 
     //if carrying soup, find somewhere to deposit it. Otherwise, go find and mine soup.
     public void goMining() throws GameActionException{
+        if (HQLocation == null){
+            tryFindHQLocation();
+            return;
+        }
         myLocation = rc.getLocation();
         //miners mine 7 soup per turn, and can hold up to 100
         //if carrying soup, deposit it
