@@ -21,10 +21,10 @@ public class Miner extends Unit{
         seenRefinery = false;
         seenFulfillmentCenter = false;
         teamSoup = 0;
+        depositLocations = new HashSet<MapLocation>();
         if (tryFindHQLocation()){
             depositLocations.add(HQLocation);
         }
-        depositLocations = new HashSet<MapLocation>();
     }
 
     @Override
@@ -55,25 +55,14 @@ public class Miner extends Unit{
                 }
             }
         }
-        //check if we've seen a design school
+        //check if we've seen a refinery
         //if not, try to build one if we have enough soup
-        //if we've seen a design school, check if we've seen a refinery
+        //if we've seen a refinery, check if we've seen a design school
         //if not, try to build one if we have enough soup
-        //if we've seen a refinery, check if we've seen a fulfillment center
+        //if we've seen a design school, check if we've seen a fulfillment center
         //if not, try to build one if we have enough soup
 
-        //temporarily using seenDesignSchool and seenRefinery as just "have I built this"
-        if (!seenDesignSchool) {
-            //try to build one
-            if (teamSoup >= 150){
-                for (Direction dir:directions){
-                    if (!myLocation.add(dir).isAdjacentTo(HQLocation) && tryBuild(RobotType.DESIGN_SCHOOL, dir)) {
-                        break;
-                        //don't need to update seenDesignSchool, because the miner should see it at the beginning of next turn
-                    }
-                }
-            }
-        } else if (!seenRefinery) {
+        if (!seenRefinery) {
             //try to build one
             if (teamSoup >= 200){
                 for (Direction dir:directions){
@@ -83,8 +72,18 @@ public class Miner extends Unit{
                     }
                 }
             }
+        } else if (!seenDesignSchool) {
+            //try to build one
+            if (teamSoup >= 200){
+                for (Direction dir:directions){
+                    if (!myLocation.add(dir).isAdjacentTo(HQLocation) && tryBuild(RobotType.DESIGN_SCHOOL, dir)) {
+                        break;
+                        //don't need to update seenDesignSchool, because the miner should see it at the beginning of next turn
+                    }
+                }
+            }
         } else if (!seenFulfillmentCenter){
-            if (teamSoup >= 150){
+            if (teamSoup >= 200){
                 for (Direction dir:directions){
                     if (!myLocation.add(dir).isAdjacentTo(HQLocation) && tryBuild(RobotType.FULFILLMENT_CENTER, dir)) {
                         break;
