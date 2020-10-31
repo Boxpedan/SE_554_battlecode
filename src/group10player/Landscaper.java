@@ -7,18 +7,19 @@ public class Landscaper extends Unit{
     int storedDirt;
     int myElevation;
     int mySensorRadius;
+    boolean wallFinished;
     //Direction directionFlooded;
-    boolean foundHQ;
+    final int wallHeight = 10;  //height of wall to build around HQ
 
     public Landscaper(RobotController rc) throws GameActionException {
         super(rc);
         //seeFlood = rc.senseFlooding(myLocation);
-        foundHQ = false;
         //floodedLocation = null;
         myElevation = rc.senseElevation(myLocation);
         storedDirt = 0;
         mySensorRadius = rc.getCurrentSensorRadiusSquared();
         HQDirection = null;
+        wallFinished = false;
         //directionFlooded = null;
         tryFindHQLocation();
     }
@@ -26,29 +27,66 @@ public class Landscaper extends Unit{
     @Override
     public void takeTurn() throws GameActionException{
         myLocation = rc.getLocation();
-        if(foundHQ || findHQ()){
-            System.out.println("HQ Found...");
-            boolean droppedDirt = this.dropDirtIfYouCan(HQDirection);
-            if(!droppedDirt){
-                if(!digIfYouCan()){
+        if (HQLocation == null){
+            tryFindHQLocation();
+            return;
+        }
+        if (rc.canSenseLocation(HQLocation) && rc.senseElevation(HQLocation) > initialHQElevation){
+            if (myLocation.isAdjacentTo(HQLocation)){
+                if (rc.canDigDirt(myLocation.directionTo(HQLocation))){
+                    rc.digDirt(myLocation.directionTo(HQLocation));
+                    System.out.println("Dug dirt out from HQ!");
+                }else{
+                    System.out.println("Could not dirt out from HQ!");
+                }
+            }else{
+                if(!tryMoveTowardsFavorRight(HQLocation)){
                     walkRandom();
                 }
             }
-        }/* else if(seeFlood) {
-            System.out.println("Flooding Found...");
-            boolean droppedDirt = this.dropDirtIfYouCan(directionFlooded);
-            if(!droppedDirt){
-                if(!digIfYouCan()){
-                    walkRandom();
+            return;
+        }
+        if (wallFinished || checkWallFinished()) {
+            //here, we'll have instructions for if the wall around the HQ is finished.
+            System.out.println("Wall is finished!");
+            walkRandom();
+        } else { //work on building wall
+            if (findHQ()) {
+                System.out.println("HQ Found...");
+                /*if (rc.getDirtCarrying() < 2){
+                    if (!digIfYouCan()){
+                        walkRandom();
+                    }
+                }*/
+                boolean droppedDirt = this.dropDirtIfYouCan(HQDirection);
+                if (!droppedDirt) {
+                    if (!digIfYouCan()) {
+                        walkRandom();
+                    }
                 }
+            }/* else if(seeFlood) {
+                System.out.println("Flooding Found...");
+                boolean droppedDirt = this.dropDirtIfYouCan(directionFlooded);
+                if(!droppedDirt){
+                    if(!digIfYouCan()){
+                        walkRandom();
+                    }
+                }
+            }*/ else {
+                //if(!findFlooding()){
+                if (rc.getDirtCarrying() < 2) {
+                    if (!digIfYouCan()) {
+                        if (!tryMoveTowardsFavorRight(HQLocation)) { //!moveTowardHQ()
+                            walkRandom();
+                        }
+                    }
+                } else {
+                    if (!tryMoveTowardsFavorRight(HQLocation)) { //!moveTowardHQ()
+                        walkRandom();
+                    }
+                }
+                //}
             }
-        }*/
-        else{
-            //if(!findFlooding()){
-                if(!tryMoveTowardsFavorRight(HQLocation)){ //!moveTowardHQ()
-                    walkRandom();
-                }
-            //}
         }
     }
 
@@ -78,22 +116,51 @@ public class Landscaper extends Unit{
         return false;
     }*/
 
-    //Look for HQ, update foundHQ if adjacent to neighbor, and update directionHQ
-    public boolean findHQ() throws GameActionException{
+    public boolean checkWallFinished() throws GameActionException{
         if (HQLocation == null){
-            walkRandom();
             tryFindHQLocation();
             return false;
         }
+        int sum = 0;
         for (Direction dir: directions){
-            if(rc.canMove(dir)){
-                MapLocation verifyLocation = rc.adjacentLocation(dir);
-                if(verifyLocation.isAdjacentTo(HQLocation)){
+            if (!rc.canSenseLocation(HQLocation.add(dir))){
+                return false;
+            }
+            sum += rc.senseElevation(HQLocation.add(dir));
+        }
+        if (sum >= (wallHeight * 8)){
+            wallFinished = true;
+            return true;
+        }
+        return false;
+    }
+
+    //Look for HQ, update directionHQ
+    public boolean findHQ() throws GameActionException{
+        if (HQLocation == null){
+            tryFindHQLocation();
+            walkRandom();
+            return false;
+        }
+        int minElevation = 1000;
+        MapLocation verifyLocation;
+        for (Direction dir: directions){
+            //if(rc.canMove(dir)){
+            verifyLocation = rc.adjacentLocation(dir);
+            if(verifyLocation.isAdjacentTo(HQLocation)){
+                if (rc.canSenseLocation(verifyLocation) && rc.senseElevation(verifyLocation) >= wallHeight){  //only raise wall to 10 high for now
+                    continue;
+                }
+                if (rc.canSenseLocation(verifyLocation) && rc.senseElevation(verifyLocation) < minElevation){
                     HQDirection = dir;
-                    System.out.println("HQ found!");
-                    return true;
+                    minElevation = rc.senseElevation(verifyLocation);
                 }
             }
+            //}    //end of:  if(rc.canMove(dir)){
+        }
+        if (minElevation < 1000){
+            System.out.println("HQ found!");
+            return true;
         }
         System.out.println("HQ not found...");
         return false;
@@ -124,27 +191,33 @@ public class Landscaper extends Unit{
     public boolean digIfYouCan() throws GameActionException{
         Direction maxElevationDir = null;
         int maxElevationAround = Integer.MIN_VALUE;
-        boolean nearWater = false;
+        boolean dontDig = false;
 
+        MapLocation adjLocation;
         for (Direction dir: directions){
-            nearWater = false;
-            if (!rc.adjacentLocation(dir).isAdjacentTo(HQLocation)/* && dir != directionFlooded*/) {
+            dontDig = false;
+            adjLocation = rc.adjacentLocation(dir);
+            if (!rc.canSenseLocation(adjLocation)){
+                System.out.println("My location is "+rc.getLocation().toString()+", I'm failing to see "+rc.adjacentLocation(dir).toString());
+                continue;
+            }
+            if (!adjLocation.isAdjacentTo(HQLocation)/* && dir != directionFlooded*/) {
                 for (Direction dir2: directions) {
-                    if (!rc.canSenseLocation(rc.adjacentLocation(dir).add(dir2))){
-                        System.out.println("My location is "+rc.getLocation().toString()+", I'm failing to see "+rc.adjacentLocation(dir).add(dir2).toString());
+                    if (!rc.canSenseLocation(adjLocation.add(dir2))){
+                        System.out.println("My location is "+rc.getLocation().toString()+", I'm failing to see "+adjLocation.add(dir2).toString());
                         continue;
                     }
-                    if (rc.senseFlooding(rc.adjacentLocation(dir).add(dir2))) {
-                        nearWater = true;
+                    if (rc.senseFlooding(adjLocation.add(dir2))) {
+                        dontDig = true; //don't dig if tile is adjacent to water
+                        break;
+                    }
+                    if (adjLocation.distanceSquaredTo(HQLocation) <= 8){
+                        dontDig = true; //don't dig from tiles within 2 tiles of HQ
                         break;
                     }
                 }
-                if (!rc.canSenseLocation(rc.adjacentLocation(dir))){
-                    System.out.println("My location is "+rc.getLocation().toString()+", I'm failing to see "+rc.adjacentLocation(dir).toString());
-                    continue;
-                }
-                int dirElevation = rc.senseElevation(rc.adjacentLocation(dir));
-                if (dirElevation > maxElevationAround && !nearWater){
+                int dirElevation = rc.senseElevation(adjLocation);
+                if (dirElevation > maxElevationAround && !dontDig && rc.canDigDirt(dir)){
                     maxElevationAround = dirElevation;
                     maxElevationDir = dir;
                 }
@@ -167,9 +240,9 @@ public class Landscaper extends Unit{
     }
 
     public boolean dropDirtIfYouCan(Direction toDrop) throws GameActionException {
-        if(myLocation.isAdjacentTo(HQLocation)){
+        /*if(myLocation.isAdjacentTo(HQLocation)){
             return false;
-        }
+        }*/
         if(rc.canDepositDirt(toDrop)){
             rc.depositDirt(toDrop);
             System.out.println("Landscaper dropping dirt");
