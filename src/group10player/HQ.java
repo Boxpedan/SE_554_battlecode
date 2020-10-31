@@ -29,6 +29,18 @@ public class HQ extends Building{
             }
         }
 
+        //shoot nearby delivery drones
+        RobotInfo[] nearbyRobots = rc.senseNearbyRobots();
+        if (!(nearbyRobots == null || nearbyRobots.length < 1)) {
+            for (RobotInfo nearbyRobot : nearbyRobots) {
+                if (nearbyRobot.type == RobotType.DELIVERY_DRONE && nearbyRobot.getTeam() == rc.getTeam().opponent()) {
+                    if (rc.canShootUnit(nearbyRobot.getID())){
+                        rc.shootUnit(nearbyRobot.getID());
+                    }
+                }
+            }
+        }
+
         if(numMiners < limitMiners){
             for (Direction dir: Robot.directions){
                 if(tryBuild(RobotType.MINER, dir)){
