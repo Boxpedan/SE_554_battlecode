@@ -23,7 +23,7 @@ public class Robot {
             Direction.NORTHWEST
     };
 
-    static int teamMessageCode = 159; //our team's message code for identifying block chain communication.
+    int teamMessageCode; //our team's message code for identifying block chain communication.
 
     static Direction randomDirection() {
         return directions[(int) (Math.random() * directions.length)];
@@ -33,7 +33,11 @@ public class Robot {
         rc = rcTemp;
         myTeam = rc.getTeam();
         myLocation = rc.getLocation();
-
+        if (myTeam == Team.A) { //use different team message codes so we can run our code against itself
+            teamMessageCode = 159; //code is 159 if on team A
+        }else{
+            teamMessageCode = 265; //code is 265 if on team B
+        }
 
     }
 
