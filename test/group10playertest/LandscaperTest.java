@@ -138,14 +138,14 @@ public class LandscaperTest {
         when(RCtest.canSenseLocation(hqLocation.add(Direction.EAST))).thenReturn(true);
         when(RCtest.canSenseLocation(hqLocation.add(Direction.WEST))).thenReturn(true);
 
-        when(RCtest.senseElevation(hqLocation.add(Direction.SOUTH))).thenReturn(10);
-        when(RCtest.senseElevation(hqLocation.add(Direction.SOUTHEAST))).thenReturn(10);
-        when(RCtest.senseElevation(hqLocation.add(Direction.SOUTHWEST))).thenReturn(10);
-        when(RCtest.senseElevation(hqLocation.add(Direction.NORTH))).thenReturn(10);
-        when(RCtest.senseElevation(hqLocation.add(Direction.NORTHWEST))).thenReturn(10);
-        when(RCtest.senseElevation(hqLocation.add(Direction.NORTHEAST))).thenReturn(10);
-        when(RCtest.senseElevation(hqLocation.add(Direction.EAST))).thenReturn(10);
-        when(RCtest.senseElevation(hqLocation.add(Direction.WEST))).thenReturn(10);
+        when(RCtest.senseElevation(hqLocation.add(Direction.SOUTH))).thenReturn(LStest.getWallHeight());
+        when(RCtest.senseElevation(hqLocation.add(Direction.SOUTHEAST))).thenReturn(LStest.getWallHeight());
+        when(RCtest.senseElevation(hqLocation.add(Direction.SOUTHWEST))).thenReturn(LStest.getWallHeight());
+        when(RCtest.senseElevation(hqLocation.add(Direction.NORTH))).thenReturn(LStest.getWallHeight());
+        when(RCtest.senseElevation(hqLocation.add(Direction.NORTHWEST))).thenReturn(LStest.getWallHeight());
+        when(RCtest.senseElevation(hqLocation.add(Direction.NORTHEAST))).thenReturn(LStest.getWallHeight());
+        when(RCtest.senseElevation(hqLocation.add(Direction.EAST))).thenReturn(LStest.getWallHeight());
+        when(RCtest.senseElevation(hqLocation.add(Direction.WEST))).thenReturn(LStest.getWallHeight());
 
         //test wallFinished, expect True is returned
         boolean found = LStest.checkWallFinished();
@@ -169,14 +169,14 @@ public class LandscaperTest {
         when(RCtest.canSenseLocation(hqLocation.add(Direction.EAST))).thenReturn(true);
         when(RCtest.canSenseLocation(hqLocation.add(Direction.WEST))).thenReturn(true);
 
-        when(RCtest.senseElevation(hqLocation.add(Direction.SOUTH))).thenReturn(10);
-        when(RCtest.senseElevation(hqLocation.add(Direction.SOUTHEAST))).thenReturn(7);
-        when(RCtest.senseElevation(hqLocation.add(Direction.SOUTHWEST))).thenReturn(10);
-        when(RCtest.senseElevation(hqLocation.add(Direction.NORTH))).thenReturn(10);
-        when(RCtest.senseElevation(hqLocation.add(Direction.NORTHWEST))).thenReturn(10);
-        when(RCtest.senseElevation(hqLocation.add(Direction.NORTHEAST))).thenReturn(10);
-        when(RCtest.senseElevation(hqLocation.add(Direction.EAST))).thenReturn(8);
-        when(RCtest.senseElevation(hqLocation.add(Direction.WEST))).thenReturn(10);
+        when(RCtest.senseElevation(hqLocation.add(Direction.SOUTH))).thenReturn(LStest.getWallHeight());
+        when(RCtest.senseElevation(hqLocation.add(Direction.SOUTHEAST))).thenReturn(LStest.getWallHeight()-2);
+        when(RCtest.senseElevation(hqLocation.add(Direction.SOUTHWEST))).thenReturn(LStest.getWallHeight());
+        when(RCtest.senseElevation(hqLocation.add(Direction.NORTH))).thenReturn(LStest.getWallHeight());
+        when(RCtest.senseElevation(hqLocation.add(Direction.NORTHWEST))).thenReturn(LStest.getWallHeight());
+        when(RCtest.senseElevation(hqLocation.add(Direction.NORTHEAST))).thenReturn(LStest.getWallHeight());
+        when(RCtest.senseElevation(hqLocation.add(Direction.EAST))).thenReturn(LStest.getWallHeight()-3);
+        when(RCtest.senseElevation(hqLocation.add(Direction.WEST))).thenReturn(LStest.getWallHeight());
 
         //test wallFinished, expect False is returned
         boolean found = LStest.checkWallFinished();

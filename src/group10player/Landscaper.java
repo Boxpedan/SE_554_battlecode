@@ -9,13 +9,16 @@ public class Landscaper extends Unit{
     int mySensorRadius;
     boolean wallFinished;
     //Direction directionFlooded;
-    final int wallHeight = 10;  //height of wall to build around HQ
+    final int wallHeight = 14;  //height of wall to build around HQ
 
     public Landscaper(RobotController rc) throws GameActionException {
         super(rc);
         //seeFlood = rc.senseFlooding(myLocation);
         //floodedLocation = null;
-        myElevation = rc.senseElevation(myLocation);
+        setMyLocation();
+        if (rc.canSenseLocation(myLocation)){
+            myElevation = rc.senseElevation(myLocation);
+        }
         storedDirt = 0;
         mySensorRadius = rc.getCurrentSensorRadiusSquared();
         HQDirection = null;
@@ -126,13 +129,11 @@ public class Landscaper extends Unit{
             if (!rc.canSenseLocation(HQLocation.add(dir))){
                 return false;
             }
-            sum += rc.senseElevation(HQLocation.add(dir));
+            if (rc.senseElevation(HQLocation.add(dir)) < wallHeight){
+                return false;
+            }
         }
-        if (sum >= (wallHeight * 8)){
-            wallFinished = true;
-            return true;
-        }
-        return false;
+        return true;
     }
 
     //Look for HQ, update directionHQ
@@ -240,6 +241,10 @@ public class Landscaper extends Unit{
             System.out.println("Landscaper can't dig");
             return false;
         }
+    }
+
+    public int getWallHeight(){
+        return wallHeight;
     }
 
     public boolean dropDirtIfYouCan(Direction toDrop) throws GameActionException {
