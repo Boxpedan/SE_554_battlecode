@@ -40,14 +40,16 @@ public class DeliveryDrone extends Unit {
         System.out.println("start SearchForEnemy");
 
         Direction dir = randomDirection();
-        dir = Direction.EAST;
+//        dir = Direction.EAST;
         System.out.println("trying to move");
         tryMoveDirection(dir);
         System.out.println("finish move");
 
 
-
-        RobotInfo[] enemy_robots = rc.senseNearbyRobots(24, Team.B);
+        System.out.println("myTeam.opponent(): " + myTeam.opponent());
+        System.out.println("Team.B: " + Team.B);
+//        System.out.println("comparison: " + myTeam.opponent() == Team.B);
+        RobotInfo[] enemy_robots = rc.senseNearbyRobots(24, myTeam.opponent());
 
 //        System.out.println("enemy_robots: " + enemy_robots);
 
@@ -147,5 +149,10 @@ public class DeliveryDrone extends Unit {
     public void setTarget(int t)
     {
         target = t;
+    }
+
+    public Team getTeam()
+    {
+        return myTeam;
     }
 }
