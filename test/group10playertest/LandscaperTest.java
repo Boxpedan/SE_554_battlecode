@@ -65,9 +65,65 @@ public class LandscaperTest {
         //set Landscaper sensor radius
         LStest.setMySensorRadius(sensorRadius);
 
-        //test findHQ, expect True is returned
+        //test canDig, expect True is returned
         boolean found = LStest.findHQ();
         assertTrue(found);
 
     }
+
+
+    @Test
+    public void digIfYouCanCanDig() throws GameActionException {
+        MapLocation lsLocation = new MapLocation(5,5);
+        MapLocation hqLocation = new MapLocation(17,17);
+        MapLocation adjacent = new MapLocation(7,7);
+        int elevation = 5;
+        int sensorRadius = 24;
+
+        //setHQLocation
+        LStest.setHqLocation(hqLocation);
+
+        //set Landscaper sensor radius
+        LStest.setMySensorRadius(sensorRadius);
+
+        //set Landscaper location
+        when(RCtest.getLocation()).thenReturn(lsLocation);
+        LStest.setMyLocation();
+
+        //set Landscaper can move true if northwest
+        when(RCtest.canMove(Direction.NORTHEAST)).thenReturn(true);
+        //set Landscaper isAdjacentDirection
+        when(RCtest.adjacentLocation(Direction.NORTHEAST)).thenReturn(adjacent);
+
+        //set Landscaper elevation sensed equal to 5 to allow for HQ Locating
+        when(RCtest.senseElevation(adjacent)).thenReturn(elevation);
+        when(RCtest.canSenseLocation(adjacent)).thenReturn(true);
+        when(RCtest.canSenseLocation(adjacent.add(Direction.SOUTH))).thenReturn(true);
+        LStest.setMyElevation(elevation);
+
+        //Landscaper can dig to south
+        when(RCtest.canDigDirt(Direction.SOUTH)).thenReturn(true);
+        when(RCtest.canDigDirt(Direction.NORTHEAST)).thenReturn(true);
+
+        //test digIfYouCan, expect True is returned
+        boolean found = LStest.digIfYouCan();
+        assertTrue(found);
+
+    }
+
+    @Test
+    public void dropDirtIfYouCan() throws GameActionException {
+        Direction toDrop = Direction.NORTHEAST;
+
+        when(RCtest.canDepositDirt(toDrop)).thenReturn(true);
+
+        //test dropIfYouCan, expect True is returned
+        boolean found = LStest.dropDirtIfYouCan(toDrop);
+        assertTrue(found);
+
+    }
+
+
+
+
 }

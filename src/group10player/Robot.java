@@ -93,6 +93,10 @@ public class Robot {
     public void setMyLocation(){
         myLocation = rc.getLocation();
     }
+    //allows robot to update HqLocation
+    public void setHqLocation(MapLocation hq){
+        HQLocation = hq;
+    }
     //allows robot to update their team after being constructed
     public void setMyTeam(){
         myTeam = rc.getTeam();
