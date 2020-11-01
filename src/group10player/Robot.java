@@ -2,6 +2,8 @@ package group10player;
 
 import battlecode.common.*;
 
+import java.awt.*;
+
 //Robot will receive "rc" as a variable in its constructor.
 public class Robot {
     RobotController rc;
@@ -31,7 +33,8 @@ public class Robot {
     }
 
     public Robot(RobotController rcTemp) throws GameActionException{
-        rc = rcTemp;
+        this.rc = rcTemp;
+        /*
         myTeam = rc.getTeam();
         myLocation = rc.getLocation();
         if (myTeam == Team.A) { //use different team message codes so we can run our code against itself
@@ -40,7 +43,7 @@ public class Robot {
             teamMessageCode = 265; //code is 265 if on team B
         }
         initialHQElevation = -1000;
-
+*/
     }
 
     public void takeTurn() throws GameActionException{
@@ -65,7 +68,7 @@ public class Robot {
                 if (tempMessage[0] == teamMessageCode) { //run through each message, check initial int for our team's code
                     if (tempMessage[1] == 000) { //found our HQ location message
                         HQLocation = new MapLocation(tempMessage[2], tempMessage[3]);
-                        HQDirection = myLocation.directionTo(HQLocation);
+                        HQDirection = rc.getLocation().directionTo(HQLocation);
                         initialHQElevation = tempMessage[4];
                         return true;
                     }
@@ -79,10 +82,11 @@ public class Robot {
         if (nearbyRobots == null || nearbyRobots.length < 1){
             return false; //no robots nearby to find HQ from
         }
+
         for (RobotInfo nearbyRobot : nearbyRobots){
             if (nearbyRobot.type == RobotType.HQ && nearbyRobot.getTeam() == rc.getTeam()){
                 HQLocation = nearbyRobot.getLocation();
-                HQDirection = myLocation.directionTo(HQLocation);
+                HQDirection = rc.getLocation().directionTo(HQLocation);
                 return true;
             }
         }
