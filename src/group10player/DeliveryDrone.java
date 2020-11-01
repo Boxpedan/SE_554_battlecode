@@ -14,6 +14,7 @@ public class DeliveryDrone extends Unit {
     }
 
 
+
     //drone will move around randomly until it finds an enemy
     //when it finds an enemy it will attempt to go pick them up, preventing them from doing anything
     @Override
@@ -36,12 +37,19 @@ public class DeliveryDrone extends Unit {
 
     public void searchForEnemy() throws GameActionException
     {
+//        System.out.println("start SearchForEnemy");
 
         Direction dir = randomDirection();
 //        dir = Direction.EAST;
+//        System.out.println("trying to move");
         tryMoveDirection(dir);
+//        System.out.println("finish move");
+
+
 
         RobotInfo[] enemy_robots = rc.senseNearbyRobots(24, myTeam.opponent());
+
+//        System.out.println("enemy_robots: " + enemy_robots);
 
         for(int i = 0; i < enemy_robots.length; i++)
         {
@@ -56,6 +64,7 @@ public class DeliveryDrone extends Unit {
 
     public void grabEnemy() throws GameActionException
     {
+//        System.out.println("start grabEnemy");
 
         RobotInfo target_info = null;
         try{
@@ -66,8 +75,13 @@ public class DeliveryDrone extends Unit {
             return;
         }
 
+//        System.out.println("after sensing target");
+
+//        System.out.println("myLocation: " + myLocation);
 
         int distance = myLocation.distanceSquaredTo(target_info.getLocation());
+
+//        System.out.println("after distance calc");
 
         //System.out.println("team: " + myTeam + " distance: " + distance);
 
@@ -78,10 +92,16 @@ public class DeliveryDrone extends Unit {
             tryMoveDirection(enemy_dir);
         }
 
+//        System.out.println("after distance check");
+
+//        System.out.println("canPickUpUnit: " + rc.canPickUpUnit(target));
+
         if(rc.canPickUpUnit(target))
         {
             rc.pickUpUnit(target);
         }
+
+//        System.out.println("after pickup");
 
     }
 
@@ -115,5 +135,15 @@ public class DeliveryDrone extends Unit {
      */
     static Direction randomDirection() {
         return directions[(int) (Math.random() * directions.length)];
+    }
+
+    public int getTarget()
+    {
+        return target;
+    }
+
+    public void setTarget(int t)
+    {
+        target = t;
     }
 }
