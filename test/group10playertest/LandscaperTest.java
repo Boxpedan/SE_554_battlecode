@@ -125,9 +125,6 @@ public class LandscaperTest {
     @Test
     public void checkWallFinished() throws GameActionException {
         MapLocation hqLocation = new MapLocation(17,17);
-        int elevation = 5;
-        int sensorRadius = 24;
-
         //setHQLocation
         LStest.setHqLocation(hqLocation);
 
@@ -155,8 +152,36 @@ public class LandscaperTest {
         assertTrue(found);
     }
 
+    @Test
+    public void checkWallNotFinished() throws GameActionException {
+        MapLocation hqLocation = new MapLocation(17,17);
 
+        //setHQLocation
+        LStest.setHqLocation(hqLocation);
 
+        //set up HQ wall test
+        when(RCtest.canSenseLocation(hqLocation.add(Direction.SOUTH))).thenReturn(true);
+        when(RCtest.canSenseLocation(hqLocation.add(Direction.SOUTHEAST))).thenReturn(true);
+        when(RCtest.canSenseLocation(hqLocation.add(Direction.SOUTHWEST))).thenReturn(true);
+        when(RCtest.canSenseLocation(hqLocation.add(Direction.NORTH))).thenReturn(true);
+        when(RCtest.canSenseLocation(hqLocation.add(Direction.NORTHWEST))).thenReturn(true);
+        when(RCtest.canSenseLocation(hqLocation.add(Direction.NORTHEAST))).thenReturn(true);
+        when(RCtest.canSenseLocation(hqLocation.add(Direction.EAST))).thenReturn(true);
+        when(RCtest.canSenseLocation(hqLocation.add(Direction.WEST))).thenReturn(true);
+
+        when(RCtest.senseElevation(hqLocation.add(Direction.SOUTH))).thenReturn(10);
+        when(RCtest.senseElevation(hqLocation.add(Direction.SOUTHEAST))).thenReturn(7);
+        when(RCtest.senseElevation(hqLocation.add(Direction.SOUTHWEST))).thenReturn(10);
+        when(RCtest.senseElevation(hqLocation.add(Direction.NORTH))).thenReturn(10);
+        when(RCtest.senseElevation(hqLocation.add(Direction.NORTHWEST))).thenReturn(10);
+        when(RCtest.senseElevation(hqLocation.add(Direction.NORTHEAST))).thenReturn(10);
+        when(RCtest.senseElevation(hqLocation.add(Direction.EAST))).thenReturn(8);
+        when(RCtest.senseElevation(hqLocation.add(Direction.WEST))).thenReturn(10);
+
+        //test wallFinished, expect False is returned
+        boolean found = LStest.checkWallFinished();
+        assertFalse(found);
+    }
 
 
 }
