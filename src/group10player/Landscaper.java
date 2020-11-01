@@ -138,16 +138,17 @@ public class Landscaper extends Unit{
     //Look for HQ, update directionHQ
     public boolean findHQ() throws GameActionException{
         if (HQLocation == null){
-            tryFindHQLocation();
-            walkRandom();
-            return false;
+            if(!tryFindHQLocation()) {
+                walkRandom();
+                return false;
+            }
         }
         int minElevation = 1000;
         MapLocation verifyLocation;
         for (Direction dir: directions){
             //if(rc.canMove(dir)){
             verifyLocation = rc.adjacentLocation(dir);
-            if(verifyLocation.isAdjacentTo(HQLocation)){
+            if(verifyLocation != null && verifyLocation.isAdjacentTo(HQLocation)){
                 if (rc.canSenseLocation(verifyLocation) && rc.senseElevation(verifyLocation) >= wallHeight){  //only raise wall to 10 high for now
                     continue;
                 }
@@ -197,29 +198,31 @@ public class Landscaper extends Unit{
         for (Direction dir: directions){
             dontDig = false;
             adjLocation = rc.adjacentLocation(dir);
-            if (!rc.canSenseLocation(adjLocation)){
-                System.out.println("My location is "+rc.getLocation().toString()+", I'm failing to see "+rc.adjacentLocation(dir).toString());
-                continue;
-            }
-            if (!adjLocation.isAdjacentTo(HQLocation)/* && dir != directionFlooded*/) {
-                for (Direction dir2: directions) {
-                    if (!rc.canSenseLocation(adjLocation.add(dir2))){
-                        System.out.println("My location is "+rc.getLocation().toString()+", I'm failing to see "+adjLocation.add(dir2).toString());
-                        continue;
-                    }
-                    if (rc.senseFlooding(adjLocation.add(dir2))) {
-                        dontDig = true; //don't dig if tile is adjacent to water
-                        break;
-                    }
-                    if (adjLocation.distanceSquaredTo(HQLocation) <= 8){
-                        dontDig = true; //don't dig from tiles within 2 tiles of HQ
-                        break;
-                    }
+            if(adjLocation != null) {
+                if (!rc.canSenseLocation(adjLocation)) {
+                    System.out.println("My location is " + rc.getLocation().toString() + ", I'm failing to see " + rc.adjacentLocation(dir).toString());
+                    continue;
                 }
-                int dirElevation = rc.senseElevation(adjLocation);
-                if (dirElevation > maxElevationAround && !dontDig && rc.canDigDirt(dir)){
-                    maxElevationAround = dirElevation;
-                    maxElevationDir = dir;
+                if (!adjLocation.isAdjacentTo(HQLocation)/* && dir != directionFlooded*/) {
+                    for (Direction dir2 : directions) {
+                        if (!rc.canSenseLocation(adjLocation.add(dir2))) {
+                            System.out.println("My location is " + rc.getLocation().toString() + ", I'm failing to see " + adjLocation.add(dir2).toString());
+                            continue;
+                        }
+                        if (rc.senseFlooding(adjLocation.add(dir2))) {
+                            dontDig = true; //don't dig if tile is adjacent to water
+                            break;
+                        }
+                        if (adjLocation.distanceSquaredTo(HQLocation) <= 8) {
+                            dontDig = true; //don't dig from tiles within 2 tiles of HQ
+                            break;
+                        }
+                    }
+                    int dirElevation = rc.senseElevation(adjLocation);
+                    if (dirElevation >= maxElevationAround && !dontDig && rc.canDigDirt(dir)) {
+                        maxElevationAround = dirElevation;
+                        maxElevationDir = dir;
+                    }
                 }
             }
         }
@@ -250,6 +253,15 @@ public class Landscaper extends Unit{
         }
         System.out.println("Landscaper unable to drop dirt");
         return false;
+    }
+
+    //helper function to allow setting myElevationToInt
+    public void setMyElevation(int num){
+        myElevation = num;
+    }
+    //helper function to allow setting mySensorRadius
+    public void setMySensorRadius(int num){
+        mySensorRadius = num;
     }
 
 }

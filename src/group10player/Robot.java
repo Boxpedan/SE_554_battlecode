@@ -6,7 +6,7 @@ import java.awt.*;
 
 //Robot will receive "rc" as a variable in its constructor.
 public class Robot {
-    RobotController rc;
+    public RobotController rc;
 
     Team myTeam;
 
@@ -91,6 +91,23 @@ public class Robot {
             }
         }
         return false;
+    }
+
+    //allows robot to update their location after being constructed
+    public void setMyLocation(){
+        myLocation = rc.getLocation();
+    }
+    //allows robot to update HqLocation
+    public void setHqLocation(MapLocation hq){
+        HQLocation = hq;
+    }
+    //allows robot to update their team after being constructed
+    public void setMyTeam(){
+        myTeam = rc.getTeam();
+    }
+    //allows robot to update their HQ elevation used for testing
+    public void setHQElevation(int num){
+        initialHQElevation = 2;
     }
 
 
