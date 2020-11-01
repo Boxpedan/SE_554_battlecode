@@ -51,12 +51,13 @@ public class DeliveryDrone extends Unit {
 
 //        System.out.println("enemy_robots: " + enemy_robots);
 
-        for(int i = 0; i < enemy_robots.length; i++)
-        {
-            RobotInfo enemy_robot = enemy_robots[i];
-            if(enemy_robot.getType() == RobotType.LANDSCAPER || enemy_robot.getType() == RobotType.MINER)
-            {
-                target = enemy_robot.getID();
+        if(enemy_robots != null) {
+
+            for (int i = 0; i < enemy_robots.length; i++) {
+                RobotInfo enemy_robot = enemy_robots[i];
+                if (enemy_robot.getType() == RobotType.LANDSCAPER || enemy_robot.getType() == RobotType.MINER) {
+                    target = enemy_robot.getID();
+                }
             }
         }
 
