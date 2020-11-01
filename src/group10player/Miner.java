@@ -1,5 +1,6 @@
 package group10player;
 import battlecode.common.*;
+import java.util.*;
 
 public class Miner extends Unit{
     boolean seenDesignSchool;
@@ -11,6 +12,8 @@ public class Miner extends Unit{
 
     int teamSoup;
 
+    Set<MapLocation> depositLocations;
+
 
     public Miner(RobotController rc) throws GameActionException {
         super(rc);
@@ -18,7 +21,10 @@ public class Miner extends Unit{
         seenRefinery = false;
         seenFulfillmentCenter = false;
         teamSoup = 0;
-        tryFindHQLocation();
+        depositLocations = new HashSet<MapLocation>();
+        if (tryFindHQLocation()){
+            depositLocations.add(HQLocation);
+        }
     }
 
     @Override
@@ -40,30 +46,23 @@ public class Miner extends Unit{
                     seenDesignSchool = true;
                 } else if (nearbyRobot.type == RobotType.REFINERY) {
                     seenRefinery = true;
+                    depositLocations.add(nearbyRobot.getLocation()); //sets don't duplicate when adding
+                    if (HQLocation != null) {
+                        depositLocations.remove(HQLocation); //we want to deposit at refineries whenever we can
+                    }
                 } else if (nearbyRobot.type == RobotType.FULFILLMENT_CENTER) {
                     seenFulfillmentCenter = true;
                 }
             }
         }
-        //check if we've seen a design school
+        //check if we've seen a refinery
         //if not, try to build one if we have enough soup
-        //if we've seen a design school, check if we've seen a refinery
+        //if we've seen a refinery, check if we've seen a design school
         //if not, try to build one if we have enough soup
-        //if we've seen a refinery, check if we've seen a fulfillment center
+        //if we've seen a design school, check if we've seen a fulfillment center
         //if not, try to build one if we have enough soup
 
-        //temporarily using seenDesignSchool and seenRefinery as just "have I built this"
-        if (!seenDesignSchool) {
-            //try to build one
-            if (teamSoup >= 150){
-                for (Direction dir:directions){
-                    if (!myLocation.add(dir).isAdjacentTo(HQLocation) && tryBuild(RobotType.DESIGN_SCHOOL, dir)) {
-                        break;
-                        //don't need to update seenDesignSchool, because the miner should see it at the beginning of next turn
-                    }
-                }
-            }
-        } else if (!seenRefinery) {
+        if (!seenRefinery) {
             //try to build one
             if (teamSoup >= 200){
                 for (Direction dir:directions){
@@ -73,8 +72,18 @@ public class Miner extends Unit{
                     }
                 }
             }
+        } else if (!seenDesignSchool) {
+            //try to build one
+            if (teamSoup >= 200){
+                for (Direction dir:directions){
+                    if (!myLocation.add(dir).isAdjacentTo(HQLocation) && tryBuild(RobotType.DESIGN_SCHOOL, dir)) {
+                        break;
+                        //don't need to update seenDesignSchool, because the miner should see it at the beginning of next turn
+                    }
+                }
+            }
         } else if (!seenFulfillmentCenter){
-            if (teamSoup >= 150){
+            if (teamSoup >= 200){
                 for (Direction dir:directions){
                     if (!myLocation.add(dir).isAdjacentTo(HQLocation) && tryBuild(RobotType.FULFILLMENT_CENTER, dir)) {
                         break;
@@ -88,21 +97,39 @@ public class Miner extends Unit{
     //if carrying soup, find somewhere to deposit it. Otherwise, go find and mine soup.
     public void goMining() throws GameActionException{
         if (HQLocation == null){
-            tryFindHQLocation();
+            if (tryFindHQLocation()){
+                depositLocations.add(HQLocation);
+            }
             return;
         }
         myLocation = rc.getLocation();
         //miners mine 7 soup per turn, and can hold up to 100
         //if carrying soup, deposit it
         if (rc.getSoupCarrying() >= 94){
-            HQDirection = myLocation.directionTo(HQLocation);
-            //move towards HQ, or deposit if already adjacent
-            if (myLocation.isAdjacentTo(HQLocation)) { // adjacent to HQ
-                if (rc.canDepositSoup(HQDirection)) {
-                    rc.depositSoup(HQDirection, rc.getSoupCarrying());
+            MapLocation targetLocation = null;
+            int minDistance = 10000000;
+            if (depositLocations == null || depositLocations.size() < 1){
+                System.out.println("I don't have any deposit locations!");
+                return;
+            }
+            for (MapLocation testLocation : depositLocations){
+                if (myLocation.distanceSquaredTo(testLocation) < minDistance){
+                    targetLocation = testLocation;
+                    minDistance = myLocation.distanceSquaredTo(testLocation);
                 }
-            } else {  // try to move in the direction of the HQ, but if you can't, just rotate movement until you can move
-                tryMoveDirection(HQDirection);
+            }
+            if (targetLocation == null){
+                System.out.println("I didn't find any deposit locations!");
+                return;
+            }
+            Direction targetDirection = myLocation.directionTo(targetLocation);
+            //move towards location, or deposit if already adjacent
+            if (myLocation.isAdjacentTo(targetLocation)) { // adjacent to target location
+                if (rc.canDepositSoup(targetDirection)) {
+                    rc.depositSoup(targetDirection, rc.getSoupCarrying());
+                }
+            } else {  // try to move in the direction of the target, but if you can't, just rotate movement until you can move
+                tryMoveDirection(targetDirection);
             }
         } else { //not carrying soup; find soup, move towards it, and mine it (in that order)
             MapLocation[] soupNearby = rc.senseNearbySoup();
