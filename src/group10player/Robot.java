@@ -93,9 +93,13 @@ public class Robot {
     public void setMyLocation(){
         myLocation = rc.getLocation();
     }
-    //allws robot to update their team after being constructed
+    //allows robot to update their team after being constructed
     public void setMyTeam(){
         myTeam = rc.getTeam();
+    }
+    //allows robot to update their HQ elevation used for testing
+    public void setHQElevation(int num){
+        initialHQElevation = 2;
     }
 
 

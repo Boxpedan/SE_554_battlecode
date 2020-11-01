@@ -253,6 +253,15 @@ public class Landscaper extends Unit{
         return false;
     }
 
+    //helper function to allow setting myElevationToInt
+    public void setMyElevation(int num){
+        myElevation = num;
+    }
+    //helper function to allow setting mySensorRadius
+    public void setMySensorRadius(int num){
+        mySensorRadius = num;
+    }
+
 }
 
 
