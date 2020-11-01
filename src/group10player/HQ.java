@@ -15,13 +15,14 @@ public class HQ extends Building{
     @Override
     public void takeTurn() throws GameActionException{
         if (!hasSentLocation){
-            int [] HQLocationMessage = new int[7]; // formatted {159, 000, XPOS, YPOS, 000, 000, 000}
+            int [] HQLocationMessage = new int[7]; // formatted {159, 000, XPOS, YPOS, ELE, 000, 000}
             for (int x = 0; x < 7; x++){
                 HQLocationMessage[x] = 0;
             }
             HQLocationMessage[0] = teamMessageCode;
             HQLocationMessage[2] = rc.getLocation().x;
             HQLocationMessage[3] = rc.getLocation().y;
+            HQLocationMessage[4] = rc.senseElevation(rc.getLocation()); //send initial elevation
 
             if (rc.canSubmitTransaction(HQLocationMessage, 29)){ //we're willing to pay 29, in order to make sure
                 rc.submitTransaction(HQLocationMessage, 29); //that no strategies for flooding the blockchain on turn 1

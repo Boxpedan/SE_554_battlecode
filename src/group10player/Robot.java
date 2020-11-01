@@ -11,6 +11,7 @@ public class Robot {
     MapLocation HQLocation;
     MapLocation myLocation;
     Direction HQDirection;
+    int initialHQElevation;
 
     static Direction[] directions = {
             Direction.NORTH,
@@ -38,6 +39,7 @@ public class Robot {
         }else{
             teamMessageCode = 265; //code is 265 if on team B
         }
+        initialHQElevation = -1000;
 
     }
 
@@ -64,6 +66,7 @@ public class Robot {
                     if (tempMessage[1] == 000) { //found our HQ location message
                         HQLocation = new MapLocation(tempMessage[2], tempMessage[3]);
                         HQDirection = myLocation.directionTo(HQLocation);
+                        initialHQElevation = tempMessage[4];
                         return true;
                     }
                 }
