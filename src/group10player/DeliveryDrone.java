@@ -37,29 +37,29 @@ public class DeliveryDrone extends Unit {
 
     public void searchForEnemy() throws GameActionException
     {
-        System.out.println("start SearchForEnemy");
+//        System.out.println("start SearchForEnemy");
 
         //Direction dir = randomDirection();
 //        dir = Direction.EAST;
-        System.out.println("trying to move");
+//        System.out.println("trying to move");
         //tryMoveDirection(dir);
-        System.out.println("finish move");
+//        System.out.println("finish move");
 
 
 
-        RobotInfo[] enemy_robots = rc.senseNearbyRobots(24, myTeam.opponent());
-
-        System.out.println("enemy_robots: " + enemy_robots);
-
-        if(enemy_robots != null) {
-
-            for (int i = 0; i < enemy_robots.length; i++) {
-                RobotInfo enemy_robot = enemy_robots[i];
-                if (enemy_robot.getType() == RobotType.LANDSCAPER || enemy_robot.getType() == RobotType.MINER) {
-                    target = enemy_robot.getID();
-                }
-            }
-        }
+//        RobotInfo[] enemy_robots = rc.senseNearbyRobots(24, myTeam.opponent());
+//
+//        System.out.println("enemy_robots: " + enemy_robots);
+//
+//        if(enemy_robots != null) {
+//
+//            for (int i = 0; i < enemy_robots.length; i++) {
+//                RobotInfo enemy_robot = enemy_robots[i];
+//                if (enemy_robot.getType() == RobotType.LANDSCAPER || enemy_robot.getType() == RobotType.MINER) {
+//                    target = enemy_robot.getID();
+//                }
+//            }
+//        }
 
     }
 
