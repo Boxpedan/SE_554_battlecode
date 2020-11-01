@@ -4,7 +4,7 @@ import battlecode.common.*;
 
 //Robot will receive "rc" as a variable in its constructor.
 public class Robot {
-    RobotController rc;
+    public RobotController rc;
 
     Team myTeam;
 
@@ -87,6 +87,15 @@ public class Robot {
             }
         }
         return false;
+    }
+
+    //allows robot to update their location after being constructed
+    public void setMyLocation(){
+        myLocation = rc.getLocation();
+    }
+    //allws robot to update their team after being constructed
+    public void setMyTeam(){
+        myTeam = rc.getTeam();
     }
 
 
