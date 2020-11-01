@@ -1,5 +1,5 @@
-//package group10playertest;
-package group10player;
+package group10playertest;
+//package group10player;
 
 import battlecode.common.*;
 import group10player.DeliveryDrone;
