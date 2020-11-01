@@ -39,10 +39,10 @@ public class DeliveryDrone extends Unit {
     {
         System.out.println("start SearchForEnemy");
 
-        Direction dir = randomDirection();
+        //Direction dir = randomDirection();
 //        dir = Direction.EAST;
         System.out.println("trying to move");
-        tryMoveDirection(dir);
+        //tryMoveDirection(dir);
         System.out.println("finish move");
 
 
@@ -113,6 +113,7 @@ public class DeliveryDrone extends Unit {
             return false;
         }
         for (int x = 0; x <= 8; x++) {
+            System.out.println("rc.canMove(dirtowards): " + rc.canMove(dirTowards));
             if (rc.canMove(dirTowards)) {
                 rc.move(dirTowards);
                 return true;

@@ -1,4 +1,5 @@
-package group10playertest;
+//package group10playertest;
+package group10player;
 
 import battlecode.common.*;
 import group10player.DeliveryDrone;
@@ -45,7 +46,7 @@ public class DeliveryDroneTest {
     }
 
     @Test
-    public void tryMoveDirectionTest() throws GameActionException
+    public void grabEnemyTest() throws GameActionException
     {
         MapLocation enemy_loc = new MapLocation(1, 1);
 
