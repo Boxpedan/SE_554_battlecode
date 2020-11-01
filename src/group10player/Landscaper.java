@@ -138,16 +138,17 @@ public class Landscaper extends Unit{
     //Look for HQ, update directionHQ
     public boolean findHQ() throws GameActionException{
         if (HQLocation == null){
-            tryFindHQLocation();
-            walkRandom();
-            return false;
+            if(!tryFindHQLocation()) {
+                walkRandom();
+                return false;
+            }
         }
         int minElevation = 1000;
         MapLocation verifyLocation;
         for (Direction dir: directions){
             //if(rc.canMove(dir)){
             verifyLocation = rc.adjacentLocation(dir);
-            if(verifyLocation.isAdjacentTo(HQLocation)){
+            if(verifyLocation != null && verifyLocation.isAdjacentTo(HQLocation)){
                 if (rc.canSenseLocation(verifyLocation) && rc.senseElevation(verifyLocation) >= wallHeight){  //only raise wall to 10 high for now
                     continue;
                 }
