@@ -46,7 +46,7 @@ public class DeliveryDroneTest {
 
         when(RCtest.senseNearbyRobots(24, RCtest.getTeam().opponent())).thenReturn(enemies);
 
-//        DDtest.searchForEnemy();
+        DDtest.searchForEnemy();
 
 //        assertEquals(DDtest.getTarget(), 123);
     }
