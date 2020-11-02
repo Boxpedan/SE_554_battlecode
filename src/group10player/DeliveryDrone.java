@@ -152,6 +152,6 @@ public class DeliveryDrone extends Unit {
 
     public Team getTeamOpponent()
     {
-        return myTeam.opponent();
+        return myTeam;
     }
 }
