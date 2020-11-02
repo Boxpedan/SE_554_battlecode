@@ -60,10 +60,10 @@ public class DeliveryDroneTest {
         int target_id = 123;
         RobotInfo enemy = new RobotInfo(target_id, Team.B, RobotType.MINER,  0, false, 0, 0, 1f, enemy_loc);
 
-        when(RCtest.senseRobot(target_id)).thenReturn(enemy);
-        DDtest.setTarget(target_id);
-
-        DDtest.grabEnemy();
+//        when(RCtest.senseRobot(target_id)).thenReturn(enemy);
+//        DDtest.setTarget(target_id);
+//
+//        DDtest.grabEnemy();
 
         //assertEquals(true, RCtest.isCurrentlyHoldingUnit());
     }
