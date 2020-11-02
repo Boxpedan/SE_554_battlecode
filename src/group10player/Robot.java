@@ -32,7 +32,7 @@ public class Robot {
 
     public Robot(RobotController rcTemp) throws GameActionException{
         System.out.println("initialize robot");
-        rc = rcTemp;
+        this.rc = rcTemp;
         myTeam = rc.getTeam();
         System.out.println("init myTeam: " + myTeam);
         myLocation = rc.getLocation();
