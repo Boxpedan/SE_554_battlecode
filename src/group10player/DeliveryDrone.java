@@ -37,13 +37,13 @@ public class DeliveryDrone extends Unit {
 
     public void searchForEnemy() throws GameActionException
     {
-        System.out.println("start SearchForEnemy");
+//        System.out.println("start SearchForEnemy");
 
-        Direction dir = randomDirection();
+//        Direction dir = randomDirection();
 //        dir = Direction.EAST;
-        System.out.println("trying to move");
-        tryMoveDirection(dir);
-        System.out.println("finish move");
+//        System.out.println("trying to move");
+//        tryMoveDirection(dir);
+//        System.out.println("finish move");
 
 
 //        System.out.println("myTeam.opponent(): " + myTeam.opponent());
