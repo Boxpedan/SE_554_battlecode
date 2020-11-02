@@ -38,9 +38,9 @@ public class DeliveryDroneTest {
         RobotInfo enemy = new RobotInfo(123, Team.B, RobotType.MINER,  0, false, 0, 0, 1f, enemy_loc);
         RobotInfo[] enemies = new RobotInfo[]{enemy};
 //
-        System.out.println("enemies: " + enemies[0].getType());
+//        System.out.println("enemies: " + enemies[0].getType());
 
-        System.out.println("getting opponent: " + DDtest.getTeamOpponent());
+//        System.out.println("getting opponent: " + DDtest.getTeamOpponent());
 //        DDtest.getTeamOpponent();
 //        RCtest.getTeam().opponent()
 //        DDtest.getTeamOpponent().opponent();
@@ -55,7 +55,7 @@ public class DeliveryDroneTest {
     @Test
     public void grabEnemyTest() throws GameActionException
     {
-        System.out.println("start grab test");
+//        System.out.println("start grab test");
         MapLocation enemy_loc = new MapLocation(1, 1);
 
         int target_id = 123;
@@ -63,10 +63,10 @@ public class DeliveryDroneTest {
 
         when(RCtest.senseRobot(target_id)).thenReturn(enemy);
 
-        System.out.println("after when senseRobot");
+//        System.out.println("after when senseRobot");
         DDtest.setTarget(target_id);
 
-        System.out.println("drone location: " + RCtest.getLocation());
+//        System.out.println("drone location: " + RCtest.getLocation());
 //
         DDtest.grabEnemy();
 
@@ -85,7 +85,7 @@ public class DeliveryDroneTest {
 
         RobotInfo[] enemies = new RobotInfo[]{enemy};
 
-        System.out.println("enemies: " + enemies[0].getType());
+//        System.out.println("enemies: " + enemies[0].getType());
 
         when(RCtest.senseNearbyRobots(24, Team.B)).thenReturn(enemies);
 

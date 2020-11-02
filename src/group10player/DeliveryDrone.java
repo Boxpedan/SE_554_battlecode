@@ -10,9 +10,9 @@ public class DeliveryDrone extends Unit {
 
     public DeliveryDrone(RobotController rc) throws GameActionException {
         super(rc);
-        System.out.println("initialize delivery drone");
-        System.out.println("constructor myLocation: " + myLocation);
-        System.out.println("constructor myLocation: " + rc.getLocation());
+//        System.out.println("initialize delivery drone");
+//        System.out.println("constructor myLocation: " + myLocation);
+//        System.out.println("constructor myLocation: " + rc.getLocation());
     }
 
 
@@ -39,22 +39,22 @@ public class DeliveryDrone extends Unit {
 
     public void searchForEnemy() throws GameActionException
     {
-        System.out.println("start SearchForEnemy");
+//        System.out.println("start SearchForEnemy");
 
         Direction dir = randomDirection();
-        dir = Direction.EAST;
-        System.out.println("trying to move");
+//        dir = Direction.EAST;
+//        System.out.println("trying to move");
         tryMoveDirection(dir);
-        System.out.println("finish move");
+//        System.out.println("finish move");
 
 //
-        System.out.println("myTeam.opponent(): " + rc.getTeam().opponent());
+//        System.out.println("myTeam.opponent(): " + rc.getTeam().opponent());
 //        System.out.println("Team.B: " + Team.B);
 //        System.out.println(myTeam.opponent() == getTeamOpponent());
 //        RobotInfo[] enemy_robots = rc.senseNearbyRobots(24, myTeam.opponent());
         RobotInfo[] enemy_robots = rc.senseNearbyRobots(24, rc.getTeam().opponent());
 //
-        System.out.println("enemy_robots: " + enemy_robots);
+//        System.out.println("enemy_robots: " + enemy_robots);
 
         if(enemy_robots != null) {
 
@@ -70,7 +70,7 @@ public class DeliveryDrone extends Unit {
 
     public void grabEnemy() throws GameActionException
     {
-        System.out.println("start grabEnemy");
+//        System.out.println("start grabEnemy");
 
         RobotInfo target_info = null;
         try{
@@ -81,15 +81,15 @@ public class DeliveryDrone extends Unit {
             return;
         }
 
-        System.out.println("after sensing target");
+//        System.out.println("after sensing target");
 
-        System.out.println("myLocation: " + rc.getLocation());
+//        System.out.println("myLocation: " + rc.getLocation());
 
         int distance = rc.getLocation().distanceSquaredTo(target_info.getLocation());
 
-        System.out.println("after distance calc");
+//        System.out.println("after distance calc");
 
-        System.out.println("team: " + myTeam + " distance: " + distance);
+//        System.out.println("team: " + myTeam + " distance: " + distance);
 
         if(distance > 2)
         {
@@ -98,16 +98,16 @@ public class DeliveryDrone extends Unit {
             tryMoveDirection(enemy_dir);
         }
 
-        System.out.println("after distance check");
+//        System.out.println("after distance check");
 
-        System.out.println("canPickUpUnit: " + rc.canPickUpUnit(target));
+//        System.out.println("canPickUpUnit: " + rc.canPickUpUnit(target));
 
         if(rc.canPickUpUnit(target))
         {
             rc.pickUpUnit(target);
         }
 
-        System.out.println("after pickup");
+//        System.out.println("after pickup");
 
     }
 
