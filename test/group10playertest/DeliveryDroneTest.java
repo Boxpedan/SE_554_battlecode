@@ -38,11 +38,11 @@ public class DeliveryDroneTest {
         RobotInfo enemy = new RobotInfo(123, Team.B, RobotType.MINER,  0, false, 0, 0, 1f, enemy_loc);
         RobotInfo[] enemies = new RobotInfo[]{enemy};
 //
-//        System.out.println("enemies: " + enemies[0].getType());
-//
-//        when(RCtest.senseNearbyRobots(24, DDtest.getTeamOpponent())).thenReturn(enemies);
-//
-//        DDtest.searchForEnemy();
+        System.out.println("enemies: " + enemies[0].getType());
+
+        when(RCtest.senseNearbyRobots(24, DDtest.getTeamOpponent())).thenReturn(enemies);
+
+        DDtest.searchForEnemy();
 
 //        assertEquals(DDtest.getTarget(), 123);
     }
