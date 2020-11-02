@@ -1,4 +1,4 @@
-package group10playertest;
+package group10player;
 import battlecode.common.*;
 import group10player.RobotPlayer;
 import org.junit.*;

@@ -55,7 +55,6 @@ public class HQ extends Building{
                 }
             }
         }
-        System.out.println(numMiners+ " "+limitMiners+" "+rc.getTeamSoup());
         if(numMiners >= limitMiners&& numMiners <= MAX_LIMIT_MINER && rc.getTeamSoup() >= 300){
             for (Direction dir: Robot.directions){
                 if(tryBuild(RobotType.MINER, dir)){

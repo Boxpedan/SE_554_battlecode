@@ -1,25 +1,19 @@
-package group10playertest;
+package group10player;
 
 import battlecode.common.*;
-import group10player.HQ;
-import group10player.RobotPlayer;
 import org.junit.*;
 import org.mockito.*;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertEquals;
 
 public class HQTest {
 
     private RobotController RCtest = null;
-    private RobotPlayer RPtest = null;
     private HQ HQtest = null;
 
     @Before
     public void beforeEachTest() throws GameActionException {
         RCtest = Mockito.mock(RobotController.class);
-        RPtest = Mockito.mock(RobotPlayer.class);
         HQtest = new HQ(RCtest);
     }
 
@@ -34,16 +28,30 @@ public class HQTest {
         when(RCtest.getLocation()).thenReturn(temp);
         when(RCtest.canBuildRobot(RobotType.MINER,Direction.NORTH)).thenReturn(true);
 
-        for( int i = 0; i < 15; i++)
+        for( int i = 0; i < 15; i++) {
             HQtest.takeTurn();
+        }
+    }
+
+    @Test
+    public void taketurntest2() throws GameActionException{
+        HQtest.numMiners = 4;
+        MapLocation temp = new MapLocation(1,1);
+        when(RCtest.getLocation()).thenReturn(temp);
+        when(RCtest.getTeamSoup()).thenReturn(301);
+        when(RCtest.canBuildRobot(RobotType.MINER,Direction.NORTH)).thenReturn(true);
+        for( int i = 0; i < 15; i++) {
+            HQtest.takeTurn();
+        }
     }
 
 
     @Test
     public void SendHQlocBlockchainTest() throws GameActionException{
-        when(RCtest.canSubmitTransaction(new int[7],29)).thenReturn(true);
         when(RCtest.getLocation()).thenReturn(new MapLocation(1,2));
+        when(RCtest.canSubmitTransaction(new int[7],29)).thenReturn(true);
         HQtest.SendHQlocBlockchain();
+        assertEquals(HQtest.hasSentLocation,false);
 
     }
 

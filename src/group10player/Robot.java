@@ -6,7 +6,7 @@ import java.awt.*;
 
 //Robot will receive "rc" as a variable in its constructor.
 public class Robot {
-    public RobotController rc;
+    RobotController rc;
 
     Team myTeam;
 
