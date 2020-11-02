@@ -40,7 +40,7 @@ public class DeliveryDroneTest {
 //
         System.out.println("enemies: " + enemies[0].getType());
 
-//        System.out.println(DDtest.getTeamOpponent());
+        System.out.println("getting opponent: " + DDtest.getTeamOpponent().opponent());
 //        DDtest.getTeamOpponent();
 //        RCtest.getTeam().opponent()
 //        DDtest.getTeamOpponent().opponent();
@@ -65,6 +65,8 @@ public class DeliveryDroneTest {
 
         System.out.println("after when senseRobot");
         DDtest.setTarget(target_id);
+
+        System.out.println("drone location: " + RCtest.getLocation());
 //
         DDtest.grabEnemy();
 
