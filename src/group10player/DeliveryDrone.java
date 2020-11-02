@@ -83,9 +83,9 @@ public class DeliveryDrone extends Unit {
 
         System.out.println("after sensing target");
 
-        System.out.println("myLocation: " + myLocation);
+        System.out.println("myLocation: " + rc.getLocation());
 
-        int distance = myLocation.distanceSquaredTo(target_info.getLocation());
+        int distance = rc.getLocation().distanceSquaredTo(target_info.getLocation());
 
         System.out.println("after distance calc");
 
@@ -93,7 +93,7 @@ public class DeliveryDrone extends Unit {
 
         if(distance > 2)
         {
-            Direction enemy_dir = myLocation.directionTo(target_info.location);
+            Direction enemy_dir = rc.getLocation().directionTo(target_info.location);
 
             tryMoveDirection(enemy_dir);
         }
