@@ -10,7 +10,7 @@ public class DeliveryDrone extends Unit {
 
     public DeliveryDrone(RobotController rc) throws GameActionException {
         super(rc);
-
+        System.out.println("initialize delivery drone");
     }
 
 

@@ -40,7 +40,7 @@ public class DeliveryDroneTest {
 //
         System.out.println("enemies: " + enemies[0].getType());
 
-        System.out.println("getting opponent: " + DDtest.getTeamOpponent().opponent());
+        System.out.println("getting opponent: " + DDtest.getTeamOpponent());
 //        DDtest.getTeamOpponent();
 //        RCtest.getTeam().opponent()
 //        DDtest.getTeamOpponent().opponent();
