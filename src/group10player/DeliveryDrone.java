@@ -12,6 +12,7 @@ public class DeliveryDrone extends Unit {
         super(rc);
         System.out.println("initialize delivery drone");
         System.out.println("constructor myLocation: " + myLocation);
+        System.out.println("constructor myLocation: " + rc.getLocation());
     }
 
 
