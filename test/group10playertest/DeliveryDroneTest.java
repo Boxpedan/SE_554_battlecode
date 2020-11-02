@@ -52,22 +52,21 @@ public class DeliveryDroneTest {
 //        assertEquals(DDtest.getTarget(), 123);
     }
 
-//    @Test
-//    public void grabEnemyTest() throws GameActionException
-//    {
-//        MapLocation enemy_loc = new MapLocation(1, 1);
-//
-//        int target_id = 123;
-//        RobotInfo enemy = new RobotInfo(target_id, Team.B, RobotType.MINER,  0, false, 0, 0, 1f, enemy_loc);
-//
-//        when(RCtest.senseRobot(target_id)).thenReturn(enemy);
-//        DDtest.setTarget(target_id);
-//
-//        DDtest.grabEnemy();
-//
-//        //assertEquals(true, RCtest.isCurrentlyHoldingUnit());
-//
-//    }
+    @Test
+    public void grabEnemyTest() throws GameActionException
+    {
+        MapLocation enemy_loc = new MapLocation(1, 1);
+
+        int target_id = 123;
+        RobotInfo enemy = new RobotInfo(target_id, Team.B, RobotType.MINER,  0, false, 0, 0, 1f, enemy_loc);
+
+        when(RCtest.senseRobot(target_id)).thenReturn(enemy);
+        DDtest.setTarget(target_id);
+
+        DDtest.grabEnemy();
+
+        //assertEquals(true, RCtest.isCurrentlyHoldingUnit());
+    }
 //
 //    @Test
 //    public void takeTurnTest() throws GameActionException
