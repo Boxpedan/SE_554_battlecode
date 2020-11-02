@@ -49,7 +49,7 @@ public class DeliveryDrone extends Unit {
         System.out.println("myTeam.opponent(): " + myTeam.opponent());
         System.out.println("Team.B: " + Team.B);
         System.out.println(myTeam.opponent() == getTeamOpponent());
-        RobotInfo[] enemy_robots = rc.senseNearbyRobots(24, myTeam.opponent());
+//        RobotInfo[] enemy_robots = rc.senseNearbyRobots(24, myTeam.opponent());
 
 //        System.out.println("enemy_robots: " + enemy_robots);
 
