@@ -31,9 +31,12 @@ public class Robot {
     }
 
     public Robot(RobotController rcTemp) throws GameActionException{
+        System.out.println("initialize robot");
         rc = rcTemp;
         myTeam = rc.getTeam();
+        System.out.println("init myTeam: " + myTeam);
         myLocation = rc.getLocation();
+        System.out.println("init myLocation: " + myLocation);
         if (myTeam == Team.A) { //use different team message codes so we can run our code against itself
             teamMessageCode = 159; //code is 159 if on team A
         }else{
