@@ -29,10 +29,10 @@ public class DeliveryDroneTest {
     public void searchForEnemyTest() throws GameActionException {
         RCtest = Mockito.mock(RobotController.class);
         RPtest = Mockito.mock(RobotPlayer.class);
-//        when(RCtest.getTeam()).thenReturn(Team.A);
-//        MapLocation drone_loc = new MapLocation(1,2);
-//        when(RCtest.getLocation()).thenReturn(drone_loc);
-//        DDtest = new DeliveryDrone(RCtest);
+        when(RCtest.getTeam()).thenReturn(Team.A);
+        MapLocation drone_loc = new MapLocation(1,2);
+        when(RCtest.getLocation()).thenReturn(drone_loc);
+        DDtest = new DeliveryDrone(RCtest);
 //
 //        MapLocation enemy_loc = new MapLocation(1, 1);
 //        RobotInfo enemy = new RobotInfo(123, Team.B, RobotType.MINER,  0, false, 0, 0, 1f, enemy_loc);
