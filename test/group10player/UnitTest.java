@@ -39,16 +39,14 @@ public class UnitTest {
     @Test
     public void tryMoveTowardsFavorRightTest2() throws GameActionException{
         MapLocation temp = new MapLocation(1,1);
-        MapLocation dirTow = new MapLocation(2,2);
-        when(RCtest.getLocation()).thenReturn(dirTow);
+        Utest.myLocation = new MapLocation(1,1);
         assertEquals( Utest.tryMoveTowardsFavorRight(temp), false);
     }
 
     @Test
     public void tryMoveTowardsFavorRightTest3() throws GameActionException{
         MapLocation temp = new MapLocation(1,1);
-        MapLocation dirTow = new MapLocation(2,2);
-        when(RCtest.getLocation()).thenReturn(dirTow);
+        Utest.myLocation = new MapLocation(3,3);
         when(RCtest.canMove(Direction.NORTH)).thenReturn(true);
         when(RCtest.adjacentLocation(Direction.NORTH)).thenReturn(temp);
         when(RCtest.senseFlooding(temp)).thenReturn(false);

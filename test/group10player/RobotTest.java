@@ -17,7 +17,6 @@ public class RobotTest {
     private RobotController RCtest = null;
     private RobotPlayer RPtest = null;
     private Robot Robottest = null;
-    Miner Mmock = mock(Miner.class);
 
     @Before
     public void beforeEachTest() throws GameActionException {
@@ -58,12 +57,11 @@ public class RobotTest {
         array[0] = 0;
         array[1] = 000;
         array[2] = 1;
-        array[3] = 2;
-        array[4] = 10;
+        array[3] = 1;
+        array[4] = 0;
         Transaction [] t = new Transaction[1];
         t[0] = new Transaction(1,array,2);
-        MapLocation test = new MapLocation(1,1);
-        when(RCtest.getLocation()).thenReturn(test);
+        Robottest.myLocation = new MapLocation(1,1);
         when(RCtest.getBlock(1)).thenReturn(t);
         when(temp.getMessage()).thenReturn(array);
         assertEquals(Robottest.tryFindHQLocation(), true);
@@ -75,8 +73,7 @@ public class RobotTest {
         RobotInfo [] array = new RobotInfo[1];
         MapLocation HQloc = new MapLocation(2,2);
         array[0] = new RobotInfo(1, null, RobotType.HQ, 0, false, 10, 0, 0f, HQloc );
-        MapLocation test = new MapLocation(1,1);
-        when(RCtest.getLocation()).thenReturn(test);
+        Robottest.myLocation = new MapLocation(1,1);
         when(RCtest.senseNearbyRobots()).thenReturn(array);
         assertEquals(Robottest.tryFindHQLocation(), true);
     }
