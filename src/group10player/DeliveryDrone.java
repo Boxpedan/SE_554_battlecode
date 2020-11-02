@@ -45,23 +45,23 @@ public class DeliveryDrone extends Unit {
         tryMoveDirection(dir);
         System.out.println("finish move");
 
-
-        System.out.println("myTeam.opponent(): " + myTeam.opponent());
-        System.out.println("Team.B: " + Team.B);
-        System.out.println(myTeam.opponent() == getTeamOpponent());
-        RobotInfo[] enemy_robots = rc.senseNearbyRobots(24, myTeam.opponent());
-
-        System.out.println("enemy_robots: " + enemy_robots);
-
-        if(enemy_robots != null) {
-
-            for (int i = 0; i < enemy_robots.length; i++) {
-                RobotInfo enemy_robot = enemy_robots[i];
-                if (enemy_robot.getType() == RobotType.LANDSCAPER || enemy_robot.getType() == RobotType.MINER) {
-                    target = enemy_robot.getID();
-                }
-            }
-        }
+//
+//        System.out.println("myTeam.opponent(): " + myTeam.opponent());
+//        System.out.println("Team.B: " + Team.B);
+//        System.out.println(myTeam.opponent() == getTeamOpponent());
+//        RobotInfo[] enemy_robots = rc.senseNearbyRobots(24, myTeam.opponent());
+//
+//        System.out.println("enemy_robots: " + enemy_robots);
+//
+//        if(enemy_robots != null) {
+//
+//            for (int i = 0; i < enemy_robots.length; i++) {
+//                RobotInfo enemy_robot = enemy_robots[i];
+//                if (enemy_robot.getType() == RobotType.LANDSCAPER || enemy_robot.getType() == RobotType.MINER) {
+//                    target = enemy_robot.getID();
+//                }
+//            }
+//        }
 
     }
 
