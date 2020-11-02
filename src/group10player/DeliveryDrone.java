@@ -115,7 +115,6 @@ public class DeliveryDrone extends Unit {
             return false;
         }
         for (int x = 0; x <= 8; x++) {
-            System.out.println("rc.canMove(dirtowards): " + rc.canMove(dirTowards));
             if (rc.canMove(dirTowards)) {
                 rc.move(dirTowards);
                 return true;
