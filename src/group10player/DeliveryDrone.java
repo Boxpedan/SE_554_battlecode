@@ -68,44 +68,44 @@ public class DeliveryDrone extends Unit {
 
     public void grabEnemy() throws GameActionException
     {
-//        System.out.println("start grabEnemy");
-//
-//        RobotInfo target_info = null;
-//        try{
-//            target_info = rc.senseRobot(target);
-//        }catch(GameActionException e)
-//        {
-//            target = -1;
-//            return;
-//        }
-//
-//        System.out.println("after sensing target");
-//
-//        System.out.println("myLocation: " + myLocation);
-//
-//        int distance = myLocation.distanceSquaredTo(target_info.getLocation());
-//
-//        System.out.println("after distance calc");
-//
-//        System.out.println("team: " + myTeam + " distance: " + distance);
-//
-//        if(distance > 2)
-//        {
-//            Direction enemy_dir = myLocation.directionTo(target_info.location);
-//
-//            tryMoveDirection(enemy_dir);
-//        }
-//
-//        System.out.println("after distance check");
-//
-//        System.out.println("canPickUpUnit: " + rc.canPickUpUnit(target));
-//
-//        if(rc.canPickUpUnit(target))
-//        {
-//            rc.pickUpUnit(target);
-//        }
-//
-//        System.out.println("after pickup");
+        System.out.println("start grabEnemy");
+
+        RobotInfo target_info = null;
+        try{
+            target_info = rc.senseRobot(target);
+        }catch(GameActionException e)
+        {
+            target = -1;
+            return;
+        }
+
+        System.out.println("after sensing target");
+
+        System.out.println("myLocation: " + myLocation);
+
+        int distance = myLocation.distanceSquaredTo(target_info.getLocation());
+
+        System.out.println("after distance calc");
+
+        System.out.println("team: " + myTeam + " distance: " + distance);
+
+        if(distance > 2)
+        {
+            Direction enemy_dir = myLocation.directionTo(target_info.location);
+
+            tryMoveDirection(enemy_dir);
+        }
+
+        System.out.println("after distance check");
+
+        System.out.println("canPickUpUnit: " + rc.canPickUpUnit(target));
+
+        if(rc.canPickUpUnit(target))
+        {
+            rc.pickUpUnit(target);
+        }
+
+        System.out.println("after pickup");
 
     }
 
