@@ -38,7 +38,7 @@ public class DeliveryDroneTest {
 
         System.out.println("enemies: " + enemies[0].getType());
 
-        when(RCtest.senseNearbyRobots(24, DDtest.getTeam().opponent())).thenReturn(enemies);
+        when(RCtest.senseNearbyRobots(24, DDtest.getTeamOpponent())).thenReturn(enemies);
 
         DDtest.searchForEnemy();
 
