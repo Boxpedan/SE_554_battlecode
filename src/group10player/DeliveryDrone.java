@@ -22,16 +22,16 @@ public class DeliveryDrone extends Unit {
     @Override
     public void takeTurn() throws GameActionException {
 
-//        myLocation = rc.getLocation();
-//
-//        //if no target move random and look for enemy
-//        if(target == -1) {
-//            searchForEnemy();
-//        }
-//        else //if have target move towards and try to pick up
-//        {
-//            grabEnemy();
-//        }
+        myLocation = rc.getLocation();
+
+        //if no target move random and look for enemy
+        if(target == -1) {
+            searchForEnemy();
+        }
+        else //if have target move towards and try to pick up
+        {
+            grabEnemy();
+        }
 
 
     }
