@@ -42,9 +42,8 @@ public class DeliveryDroneTest {
 
 //        System.out.println(DDtest.getTeamOpponent());
 //        DDtest.getTeamOpponent();
-//        RCtest.getTeam().opponent();
-
-        DDtest.getTeamOpponent().opponent();
+//        RCtest.getTeam().opponent()
+//        DDtest.getTeamOpponent().opponent();
 
         when(RCtest.senseNearbyRobots(24, RCtest.getTeam().opponent())).thenReturn(enemies);
 
