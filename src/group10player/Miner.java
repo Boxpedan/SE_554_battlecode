@@ -39,7 +39,8 @@ public class Miner extends Unit{
         teamSoup = rc.getTeamSoup();
 
         //Check array of nearby robots, and see if any allied robots are design schools or refineries
-        RobotInfo[] nearbyRobots = rc.senseNearbyRobots(maxVisionSquared, myTeam);
+        RobotInfo[] nearbyRobots = rc.senseNearbyRobots(maxVisionSquared, rc.getTeam());
+        //System.out.println("am i here" + nearbyRobots.length);
         if (nearbyRobots != null && nearbyRobots.length > 0) {
             for (RobotInfo nearbyRobot : nearbyRobots) {
                 if (nearbyRobot.type == RobotType.DESIGN_SCHOOL) {

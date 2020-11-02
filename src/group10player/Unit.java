@@ -39,7 +39,7 @@ public class Unit extends Robot{
         if (destination == null){
             return false;
         }
-        Direction dirTowards = myLocation.directionTo(destination);
+        Direction dirTowards = rc.getLocation().directionTo(destination);
         for (int x = 0; x <= 8; x++) {
             if (rc.canMove(dirTowards) && !rc.senseFlooding(rc.adjacentLocation(dirTowards))) {
                 rc.move(dirTowards);
@@ -76,6 +76,7 @@ public class Unit extends Robot{
     public void walkRandom() throws GameActionException{
         Direction dir = randomDirection();
         if (rc.canMove(dir)){
+            System.out.println("am i here");
             if (!rc.senseFlooding(rc.adjacentLocation(dir))) {
                 rc.move(dir);
             }

@@ -26,7 +26,9 @@ public class DesignSchoolTest {
 
     @Test
     public void taketurntest() throws GameActionException {
-        DStest.takeTurn();
+        when(RCtest.canBuildRobot(RobotType.LANDSCAPER,Direction.NORTH)).thenReturn(true);
+        for( int i = 0; i <= 15; i++)
+            DStest.takeTurn();
     }
 
 }

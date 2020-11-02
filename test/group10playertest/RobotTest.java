@@ -27,6 +27,70 @@ public class RobotTest {
     public void taketurntest() throws GameActionException {
         Robottest.takeTurn();
     }
+
+    @Test
+    public void tryBuildTest1() throws GameActionException{
+        when(RCtest.isReady()).thenReturn(true);
+        when(RCtest.canBuildRobot(RobotType.MINER,Direction.NORTH)).thenReturn(true);
+        assertEquals(true, Robottest.tryBuild(RobotType.MINER,Direction.NORTH));
+    }
+
+    @Test
+    public void tryBuildTest2() throws GameActionException{
+        when(RCtest.isReady()).thenReturn(false);
+        when(RCtest.canBuildRobot(RobotType.MINER,Direction.NORTH)).thenReturn(true);
+        assertEquals(false, Robottest.tryBuild(RobotType.MINER,Direction.NORTH));
+    }
+
+    @Test
+    public void tryFindHQLocationtest1() throws GameActionException{
+        assertEquals(Robottest.tryFindHQLocation(), false);
+    }
+
+    @Test
+    public void tryFindHQLocationtest2() throws GameActionException{
+        //Transaction(int cost, int[] message, int id)
+        Transaction temp = Mockito.mock(Transaction.class);
+        int [] array = new int[5];
+        array[0] = 265;
+        array[1] = 000;
+        array[2] = 1;
+        array[3] = 2;
+        array[4] = 10;
+        Transaction [] t = new Transaction[2];
+        t[0] = new Transaction(1,array,2);
+        t[1] = new Transaction(1,array,2);
+        MapLocation test = new MapLocation(1,1);
+        when(RCtest.getLocation()).thenReturn(test);
+        when(RCtest.getBlock(1)).thenReturn(t);
+        assertEquals(Robottest.tryFindHQLocation(), false);
+    }
+
+    @Test
+    public void tryFindHQLocationtest3() throws GameActionException{
+        //RobotInfo(int ID, Team team, RobotType type, int dirtCarrying, boolean currentlyHoldingUnit, int heldUnitID, int soupCarrying, float cooldownTurns, MapLocation location)
+        RobotInfo [] array = new RobotInfo[1];
+        MapLocation HQloc = new MapLocation(2,2);
+        array[0] = new RobotInfo(1, null, RobotType.HQ, 0, false, 10, 0, 0f, HQloc );
+        MapLocation test = new MapLocation(1,1);
+        when(RCtest.getLocation()).thenReturn(test);
+        when(RCtest.senseNearbyRobots()).thenReturn(array);
+        assertEquals(Robottest.tryFindHQLocation(), true);
+    }
+
+    @Test
+    public void tryFindHQLocationtest4() throws GameActionException{
+        //RobotInfo(int ID, Team team, RobotType type, int dirtCarrying, boolean currentlyHoldingUnit, int heldUnitID, int soupCarrying, float cooldownTurns, MapLocation location)
+        RobotInfo [] array = new RobotInfo[1];
+        MapLocation HQloc = new MapLocation(2,2);
+        array[0] = new RobotInfo(1, null, RobotType.MINER, 0, false, 10, 0, 0f, HQloc );
+        MapLocation test = new MapLocation(1,1);
+        when(RCtest.getLocation()).thenReturn(test);
+        when(RCtest.senseNearbyRobots()).thenReturn(array);
+        assertEquals(Robottest.tryFindHQLocation(), false);
+    }
+
 }
+
 
 
