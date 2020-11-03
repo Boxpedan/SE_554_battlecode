@@ -1,18 +1,10 @@
-package group10playertest;
+package group10player;
 
 import battlecode.common.*;
-import group10player.Miner;
-import group10player.Robot;
-import group10player.RobotPlayer;
-import group10player.Unit;
+
 import org.junit.*;
 import org.mockito.*;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
-import org.scalactic.Or;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -22,11 +14,13 @@ public class MinerTest {
     private RobotPlayer RPtest = null;
     private Miner Mtest = null;
 
+    @Mock
+    Robot rmock = mock(Robot.class);
 
     @Before
     public void beforeEachTest() throws GameActionException {
-        RCtest = Mockito.mock(RobotController.class);
-        RPtest = Mockito.mock(RobotPlayer.class);
+        RCtest = mock(RobotController.class);
+        RPtest = mock(RobotPlayer.class);
         Mtest = new Miner(RCtest);
     }
 
@@ -50,6 +44,7 @@ public class MinerTest {
 
     @Test
     public void goMiningTest() throws GameActionException{
+        rmock.HQLocation = null;
         when(RCtest.getLocation()).thenReturn(new MapLocation(1,1));
         Mtest.goMining();
     }

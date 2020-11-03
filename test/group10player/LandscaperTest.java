@@ -1,26 +1,25 @@
-package group10playertest;
+package group10player;
 
 import battlecode.common.*;
-import group10player.Landscaper;
-import group10player.RobotPlayer;
 import battlecode.common.RobotController;
 import org.junit.*;
 import org.mockito.*;
 
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class LandscaperTest {
 
     private RobotController RCtest = null;
-    private RobotPlayer RPtest = null;
     private Landscaper LStest = null;
+    private Robot rhelper = null;
 
     @Before
     public void beforeEachTest() throws GameActionException {
-        RCtest = Mockito.mock(RobotController.class);
-        RPtest = Mockito.mock(RobotPlayer.class);
+        RCtest = mock(RobotController.class);
+        rhelper = mock(Robot.class);
         LStest = new Landscaper(RCtest);
     }
 
@@ -28,6 +27,118 @@ public class LandscaperTest {
     public void taketurntest() throws GameActionException {
         LStest.takeTurn();
     }
+
+    @Test
+    public void taketurntest2() throws GameActionException {
+        Transaction temp = Mockito.mock(Transaction.class);
+        int [] array = new int[5];
+        array[0] = 0;
+        array[1] = 000;
+        array[2] = 1;
+        array[3] = 1;
+        array[4] = 0;
+        Transaction [] t = new Transaction[1];
+        t[0] = new Transaction(1,array,2);
+        LStest.myLocation = new MapLocation(1,1);
+        when(RCtest.getBlock(1)).thenReturn(t);
+        when(temp.getMessage()).thenReturn(array);
+        assertEquals(LStest.tryFindHQLocation(), true);
+        when(RCtest.getLocation()).thenReturn(new MapLocation(1,1));
+        when(RCtest.canSenseLocation(new MapLocation(1,1))).thenReturn(true);
+        when(RCtest.senseElevation(new MapLocation(1,1))).thenReturn(10);
+        LStest.takeTurn();
+    }
+
+    @Test
+    public void taketurntest3() throws GameActionException {
+        Transaction temp = Mockito.mock(Transaction.class);
+        int [] array = new int[5];
+        array[0] = 0;
+        array[1] = 000;
+        array[2] = 1;
+        array[3] = 1;
+        array[4] = 0;
+        Transaction [] t = new Transaction[1];
+        t[0] = new Transaction(1,array,2);
+        LStest.myLocation = new MapLocation(3,3);
+        when(RCtest.getBlock(1)).thenReturn(t);
+        when(temp.getMessage()).thenReturn(array);
+        assertEquals(LStest.tryFindHQLocation(), true);
+        when(RCtest.getLocation()).thenReturn(new MapLocation(3,3));
+        when(RCtest.canSenseLocation(new MapLocation(1,1))).thenReturn(true);
+        when(RCtest.senseElevation(new MapLocation(1,1))).thenReturn(10);
+        when(LStest.tryMoveTowardsFavorRight(LStest.HQLocation)).thenReturn(false);
+        LStest.takeTurn();
+    }
+
+    @Test
+    public void taketurntest4() throws GameActionException {
+        Transaction temp = Mockito.mock(Transaction.class);
+        int [] array = new int[5];
+        array[0] = 0;
+        array[1] = 000;
+        array[2] = 1;
+        array[3] = 1;
+        array[4] = 0;
+        Transaction [] t = new Transaction[1];
+        t[0] = new Transaction(1,array,2);
+        LStest.myLocation = new MapLocation(1,1);
+        when(RCtest.getBlock(1)).thenReturn(t);
+        when(temp.getMessage()).thenReturn(array);
+        assertEquals(LStest.tryFindHQLocation(), true);
+        when(RCtest.getLocation()).thenReturn(new MapLocation(1,1));
+        when(RCtest.canSenseLocation(new MapLocation(1,1))).thenReturn(true);
+        when(RCtest.senseElevation(new MapLocation(1,1))).thenReturn(10);
+        when(RCtest.canDigDirt(Direction.CENTER)).thenReturn(true);
+        LStest.takeTurn();
+    }
+
+    @Test
+    public void taketurntest5() throws GameActionException {
+        Transaction temp = Mockito.mock(Transaction.class);
+        int [] array = new int[5];
+        array[0] = 0;
+        array[1] = 000;
+        array[2] = 1;
+        array[3] = 1;
+        array[4] = 0;
+        Transaction [] t = new Transaction[1];
+        t[0] = new Transaction(1,array,2);
+        LStest.myLocation = new MapLocation(1,1);
+        when(RCtest.getBlock(1)).thenReturn(t);
+        when(temp.getMessage()).thenReturn(array);
+        assertEquals(LStest.tryFindHQLocation(), true);
+        when(RCtest.getLocation()).thenReturn(new MapLocation(1,1));
+        when(RCtest.canSenseLocation(new MapLocation(1,1))).thenReturn(false);
+        when(RCtest.senseElevation(new MapLocation(1,1))).thenReturn(10);
+        when(RCtest.canDigDirt(Direction.CENTER)).thenReturn(true);
+        LStest.wallFinished = true;
+        LStest.takeTurn();
+    }
+
+    @Test
+    public void taketurntest6() throws GameActionException {
+        Transaction temp = Mockito.mock(Transaction.class);
+        int [] array = new int[5];
+        array[0] = 0;
+        array[1] = 000;
+        array[2] = 1;
+        array[3] = 1;
+        array[4] = 0;
+        Transaction [] t = new Transaction[1];
+        t[0] = new Transaction(1,array,2);
+        LStest.myLocation = new MapLocation(1,1);
+        when(RCtest.getBlock(1)).thenReturn(t);
+        when(temp.getMessage()).thenReturn(array);
+        assertEquals(LStest.tryFindHQLocation(), true);
+        when(RCtest.getLocation()).thenReturn(new MapLocation(1,1));
+        when(RCtest.canSenseLocation(new MapLocation(1,1))).thenReturn(false);
+        when(RCtest.senseElevation(new MapLocation(1,1))).thenReturn(10);
+        when(RCtest.canDigDirt(Direction.CENTER)).thenReturn(true);
+        LStest.wallFinished = false;
+        LStest.takeTurn();
+    }
+
 
     @Test
     public void findHQTest() throws GameActionException {

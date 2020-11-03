@@ -36,6 +36,7 @@ public class Landscaper extends Unit{
         }
         if (rc.canSenseLocation(HQLocation) && rc.senseElevation(HQLocation) > initialHQElevation){
             if (myLocation.isAdjacentTo(HQLocation)){
+                //System.out.println(myLocation + " "+ HQLocation + " "+rc.canDigDirt(myLocation.directionTo(HQLocation)));
                 if (rc.canDigDirt(myLocation.directionTo(HQLocation))){
                     rc.digDirt(myLocation.directionTo(HQLocation));
                     System.out.println("Dug dirt out from HQ!");

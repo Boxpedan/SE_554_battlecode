@@ -6,7 +6,7 @@ import java.awt.*;
 
 //Robot will receive "rc" as a variable in its constructor.
 public class Robot {
-    public RobotController rc;
+    RobotController rc;
 
     Team myTeam;
 
@@ -33,7 +33,7 @@ public class Robot {
     }
 
     public Robot(RobotController rcTemp) throws GameActionException{
-        this.rc = rcTemp;
+        rc = rcTemp;
         /*
         myTeam = rc.getTeam();
         myLocation = rc.getLocation();
@@ -68,7 +68,7 @@ public class Robot {
                 if (tempMessage[0] == teamMessageCode) { //run through each message, check initial int for our team's code
                     if (tempMessage[1] == 000) { //found our HQ location message
                         HQLocation = new MapLocation(tempMessage[2], tempMessage[3]);
-                        HQDirection = rc.getLocation().directionTo(HQLocation);
+                        HQDirection = myLocation.directionTo(HQLocation);
                         initialHQElevation = tempMessage[4];
                         return true;
                     }
@@ -86,7 +86,7 @@ public class Robot {
         for (RobotInfo nearbyRobot : nearbyRobots){
             if (nearbyRobot.type == RobotType.HQ && nearbyRobot.getTeam() == rc.getTeam()){
                 HQLocation = nearbyRobot.getLocation();
-                HQDirection = rc.getLocation().directionTo(HQLocation);
+                HQDirection = myLocation.directionTo(HQLocation);
                 return true;
             }
         }

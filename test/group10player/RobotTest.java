@@ -1,6 +1,7 @@
-package group10playertest;
+package group10player;
 
 import battlecode.common.*;
+import group10player.Miner;
 import group10player.Robot;
 import group10player.RobotPlayer;
 import org.junit.*;
@@ -8,6 +9,7 @@ import org.mockito.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class RobotTest {
@@ -52,18 +54,17 @@ public class RobotTest {
         //Transaction(int cost, int[] message, int id)
         Transaction temp = Mockito.mock(Transaction.class);
         int [] array = new int[5];
-        array[0] = 265;
+        array[0] = 0;
         array[1] = 000;
         array[2] = 1;
-        array[3] = 2;
-        array[4] = 10;
-        Transaction [] t = new Transaction[2];
+        array[3] = 1;
+        array[4] = 0;
+        Transaction [] t = new Transaction[1];
         t[0] = new Transaction(1,array,2);
-        t[1] = new Transaction(1,array,2);
-        MapLocation test = new MapLocation(1,1);
-        when(RCtest.getLocation()).thenReturn(test);
+        Robottest.myLocation = new MapLocation(1,1);
         when(RCtest.getBlock(1)).thenReturn(t);
-        assertEquals(Robottest.tryFindHQLocation(), false);
+        when(temp.getMessage()).thenReturn(array);
+        assertEquals(Robottest.tryFindHQLocation(), true);
     }
 
     @Test
@@ -72,8 +73,7 @@ public class RobotTest {
         RobotInfo [] array = new RobotInfo[1];
         MapLocation HQloc = new MapLocation(2,2);
         array[0] = new RobotInfo(1, null, RobotType.HQ, 0, false, 10, 0, 0f, HQloc );
-        MapLocation test = new MapLocation(1,1);
-        when(RCtest.getLocation()).thenReturn(test);
+        Robottest.myLocation = new MapLocation(1,1);
         when(RCtest.senseNearbyRobots()).thenReturn(array);
         assertEquals(Robottest.tryFindHQLocation(), true);
     }

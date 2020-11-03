@@ -1,34 +1,33 @@
-package group10playertest;
+package group10player;
 
 import battlecode.common.*;
-import group10player.DesignSchool;
-import group10player.RobotPlayer;
 import org.junit.*;
 import org.mockito.*;
-import org.scalactic.Or;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class DesignSchoolTest {
 
     private RobotController RCtest = null;
-    private RobotPlayer RPtest = null;
     private DesignSchool DStest = null;
+    private Robot rhelper = null;
 
     @Before
     public void beforeEachTest() throws GameActionException {
         RCtest = Mockito.mock(RobotController.class);
-        RPtest = Mockito.mock(RobotPlayer.class);
+        rhelper = mock(Robot.class);
         DStest = new DesignSchool(RCtest);
     }
 
     @Test
     public void taketurntest() throws GameActionException {
-        when(RCtest.canBuildRobot(RobotType.LANDSCAPER,Direction.NORTH)).thenReturn(true);
-        for( int i = 0; i <= 15; i++)
+        when(RCtest.getTeamSoup()).thenReturn(160);
+        for( int i = 0; i <= 15; i++) {
             DStest.takeTurn();
+            DStest.numLandscapers++;
+        }
+        assertEquals(DStest.numLandscapers,16);
     }
 
 }
