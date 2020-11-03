@@ -67,7 +67,7 @@ public class Miner extends Unit{
             //try to build one
             if (teamSoup >= 200){
                 for (Direction dir:directions){
-                    if (!myLocation.add(dir).isAdjacentTo(HQLocation) && tryBuild(RobotType.REFINERY, dir)) {
+                    if (!myLocation.add(dir).isAdjacentTo(HQLocation) && !(myLocation.add(dir).distanceSquaredTo(HQLocation) < 8) && tryBuild(RobotType.REFINERY, dir)) {
                         break;
                         //don't need to update seenRefinery, because the miner should see it at the beginning of next turn
                     }
@@ -77,7 +77,7 @@ public class Miner extends Unit{
             //try to build one
             if (teamSoup >= 200){
                 for (Direction dir:directions){
-                    if (!myLocation.add(dir).isAdjacentTo(HQLocation) && tryBuild(RobotType.DESIGN_SCHOOL, dir)) {
+                    if (!myLocation.add(dir).isAdjacentTo(HQLocation) && !(myLocation.add(dir).distanceSquaredTo(HQLocation) < 8) && tryBuild(RobotType.DESIGN_SCHOOL, dir)) {
                         break;
                         //don't need to update seenDesignSchool, because the miner should see it at the beginning of next turn
                     }
@@ -86,7 +86,7 @@ public class Miner extends Unit{
         } else if (!seenFulfillmentCenter){
             if (teamSoup >= 200){
                 for (Direction dir:directions){
-                    if (!myLocation.add(dir).isAdjacentTo(HQLocation) && tryBuild(RobotType.FULFILLMENT_CENTER, dir)) {
+                    if (!myLocation.add(dir).isAdjacentTo(HQLocation) && !(myLocation.add(dir).distanceSquaredTo(HQLocation) < 8) && tryBuild(RobotType.FULFILLMENT_CENTER, dir)) {
                         break;
                         //don't need to update seenFulfillmentCenter, because the miner should see it at the beginning of next turn
                     }
