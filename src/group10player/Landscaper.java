@@ -9,13 +9,16 @@ public class Landscaper extends Unit{
     int mySensorRadius;
     boolean wallFinished;
     //Direction directionFlooded;
-    final int wallHeight = 10;  //height of wall to build around HQ
+    final int wallHeight = 14;  //height of wall to build around HQ
 
     public Landscaper(RobotController rc) throws GameActionException {
         super(rc);
         //seeFlood = rc.senseFlooding(myLocation);
         //floodedLocation = null;
-        myElevation = rc.senseElevation(myLocation);
+        setMyLocation();
+        if (rc.canSenseLocation(myLocation)){
+            myElevation = rc.senseElevation(myLocation);
+        }
         storedDirt = 0;
         mySensorRadius = rc.getCurrentSensorRadiusSquared();
         HQDirection = null;
@@ -127,13 +130,11 @@ public class Landscaper extends Unit{
             if (!rc.canSenseLocation(HQLocation.add(dir))){
                 return false;
             }
-            sum += rc.senseElevation(HQLocation.add(dir));
+            if (rc.senseElevation(HQLocation.add(dir)) < wallHeight){
+                return false;
+            }
         }
-        if (sum >= (wallHeight * 8)){
-            wallFinished = true;
-            return true;
-        }
-        return false;
+        return true;
     }
 
     //Look for HQ, update directionHQ
@@ -191,8 +192,8 @@ public class Landscaper extends Unit{
 
     //Try to dig dirt and dig dirt if you can, give from highest elevation
     public boolean digIfYouCan() throws GameActionException{
-        Direction maxElevationDir = null;
-        int maxElevationAround = Integer.MIN_VALUE;
+        Direction minElevationDir = null;
+        int minElevationAround = Integer.MAX_VALUE;
         boolean dontDig = false;
 
         MapLocation adjLocation;
@@ -220,17 +221,17 @@ public class Landscaper extends Unit{
                         }
                     }
                     int dirElevation = rc.senseElevation(adjLocation);
-                    if (dirElevation >= maxElevationAround && !dontDig && rc.canDigDirt(dir)) {
-                        maxElevationAround = dirElevation;
-                        maxElevationDir = dir;
+                    if (dirElevation <= minElevationAround && !dontDig && rc.canDigDirt(dir)) {
+                        minElevationAround = dirElevation;
+                        minElevationDir = dir;
                     }
                 }
             }
         }
 
-        if(maxElevationDir != null){
-            if (rc.canDigDirt(maxElevationDir)) {
-                rc.digDirt(maxElevationDir);
+        if(minElevationDir != null){
+            if (rc.canDigDirt(minElevationDir)) {
+                rc.digDirt(minElevationDir);
                 System.out.println("Landscaper digging");
                 return true;
             }else{
@@ -241,6 +242,10 @@ public class Landscaper extends Unit{
             System.out.println("Landscaper can't dig");
             return false;
         }
+    }
+
+    public int getWallHeight(){
+        return wallHeight;
     }
 
     public boolean dropDirtIfYouCan(Direction toDrop) throws GameActionException {

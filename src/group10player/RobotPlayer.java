@@ -36,6 +36,9 @@ public class RobotPlayer {
             case FULFILLMENT_CENTER:
                 current_robot = new FulfillmentCenter(rc);
                 break;
+            case DELIVERY_DRONE:
+                current_robot = new DeliveryDrone(rc);
+                break;
         }
 
         while (true) {
