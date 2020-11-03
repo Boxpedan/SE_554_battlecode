@@ -42,7 +42,7 @@ public class LandscaperTest {
         LStest.myLocation = new MapLocation(1,1);
         when(RCtest.getBlock(1)).thenReturn(t);
         when(temp.getMessage()).thenReturn(array);
-        assertEquals(LStest.tryFindHQLocation(), true);
+        assertEquals(LStest.tryFindHQLocation(), false);
         when(RCtest.getLocation()).thenReturn(new MapLocation(1,1));
         when(RCtest.canSenseLocation(new MapLocation(1,1))).thenReturn(true);
         when(RCtest.senseElevation(new MapLocation(1,1))).thenReturn(10);
@@ -63,11 +63,11 @@ public class LandscaperTest {
         LStest.myLocation = new MapLocation(3,3);
         when(RCtest.getBlock(1)).thenReturn(t);
         when(temp.getMessage()).thenReturn(array);
-        assertEquals(LStest.tryFindHQLocation(), true);
+        assertEquals(LStest.tryFindHQLocation(), false);
         when(RCtest.getLocation()).thenReturn(new MapLocation(3,3));
         when(RCtest.canSenseLocation(new MapLocation(1,1))).thenReturn(true);
         when(RCtest.senseElevation(new MapLocation(1,1))).thenReturn(10);
-        when(LStest.tryMoveTowardsFavorRight(LStest.HQLocation)).thenReturn(false);
+        //when(LStest.tryMoveTowardsFavorRight(LStest.HQLocation)).thenReturn(false);
         LStest.takeTurn();
     }
 
@@ -85,7 +85,7 @@ public class LandscaperTest {
         LStest.myLocation = new MapLocation(1,1);
         when(RCtest.getBlock(1)).thenReturn(t);
         when(temp.getMessage()).thenReturn(array);
-        assertEquals(LStest.tryFindHQLocation(), true);
+        assertEquals(LStest.tryFindHQLocation(), false);
         when(RCtest.getLocation()).thenReturn(new MapLocation(1,1));
         when(RCtest.canSenseLocation(new MapLocation(1,1))).thenReturn(true);
         when(RCtest.senseElevation(new MapLocation(1,1))).thenReturn(10);
@@ -107,7 +107,7 @@ public class LandscaperTest {
         LStest.myLocation = new MapLocation(1,1);
         when(RCtest.getBlock(1)).thenReturn(t);
         when(temp.getMessage()).thenReturn(array);
-        assertEquals(LStest.tryFindHQLocation(), true);
+        assertEquals(LStest.tryFindHQLocation(), false);
         when(RCtest.getLocation()).thenReturn(new MapLocation(1,1));
         when(RCtest.canSenseLocation(new MapLocation(1,1))).thenReturn(false);
         when(RCtest.senseElevation(new MapLocation(1,1))).thenReturn(10);
@@ -130,7 +130,7 @@ public class LandscaperTest {
         LStest.myLocation = new MapLocation(1,1);
         when(RCtest.getBlock(1)).thenReturn(t);
         when(temp.getMessage()).thenReturn(array);
-        assertEquals(LStest.tryFindHQLocation(), true);
+        assertEquals(LStest.tryFindHQLocation(), false);
         when(RCtest.getLocation()).thenReturn(new MapLocation(1,1));
         when(RCtest.canSenseLocation(new MapLocation(1,1))).thenReturn(false);
         when(RCtest.senseElevation(new MapLocation(1,1))).thenReturn(10);

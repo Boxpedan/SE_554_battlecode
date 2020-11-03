@@ -64,7 +64,7 @@ public class RobotTest {
         Robottest.myLocation = new MapLocation(1,1);
         when(RCtest.getBlock(1)).thenReturn(t);
         when(temp.getMessage()).thenReturn(array);
-        assertEquals(Robottest.tryFindHQLocation(), true);
+        assertEquals(Robottest.tryFindHQLocation(), false);
     }
 
     @Test

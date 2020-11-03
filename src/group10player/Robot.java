@@ -34,7 +34,7 @@ public class Robot {
 
     public Robot(RobotController rcTemp) throws GameActionException{
         rc = rcTemp;
-        /*
+
         myTeam = rc.getTeam();
         myLocation = rc.getLocation();
         if (myTeam == Team.A) { //use different team message codes so we can run our code against itself
@@ -43,7 +43,7 @@ public class Robot {
             teamMessageCode = 265; //code is 265 if on team B
         }
         initialHQElevation = -1000;
-*/
+
     }
 
     public void takeTurn() throws GameActionException{
