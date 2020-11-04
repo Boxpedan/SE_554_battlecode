@@ -1,5 +1,5 @@
 # Battlecode 2020 Scaffold
-[![Java CI with Gradle](https://github.com/Boxpedan/SE_554_battlecode/workflows/Java%20CI%20with%20Gradle/badge.svg?branch=master)](https://travis-ci.org/github/Boxpedan/SE_554_battlecode/builds/738506537)
+[![Java CI with Gradle](https://github.com/Boxpedan/SE_554_battlecode/workflows/Java%20CI%20with%20Gradle/badge.svg?branch=master)](https://travis-ci.org/github/Boxpedan/SE_554_battlecode/builds/741247759)
 [![License: AGPL 3.0](https://img.shields.io/badge/License-AGPL--3.0-yellow.svg)](https://github.com/Boxpedan/SE_554_battlecode/blob/master/LICENSE)
 
 This is the Battlecode 2020 scaffold, containing an `examplefuncsplayer`. Read https://2020.battlecode.org/getting-started!
@@ -12,7 +12,7 @@ This is the Battlecode 2020 scaffold, containing an `examplefuncsplayer`. Read h
 
 ### Sprint Schedule
 - Oct. 8: Kick off
-- Oct. 22: Sprint 1 demo (Oct 8th - Oct 21st)
+- Oct. 22: Sprint 1 demo (Oct 8th - Oct 21st) 
 - Nov. 5 Sprint 2 demo   (Oct 22nd - Nov 4th)
 - Nov. 19: Sprint 3 demo (Nov 5th - Nov 18th)
 - Dec. 1: Sprint 4 demo  (Nov 19th - Dec 1st)
