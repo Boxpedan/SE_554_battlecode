@@ -64,7 +64,8 @@ public class DeliveryDroneTest {
         when(RCtest.senseRobot(target_id)).thenReturn(enemy);
 
 //        System.out.println("after when senseRobot");
-        DDtest.setTarget(target_id);
+        //DDtest.setTarget(target_id);
+        DDtest.target = target_id;
 
 //        System.out.println("drone location: " + RCtest.getLocation());
 //
