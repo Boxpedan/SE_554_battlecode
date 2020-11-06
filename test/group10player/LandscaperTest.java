@@ -53,7 +53,7 @@ public class LandscaperTest {
     public void taketurntest3() throws GameActionException {
         Transaction temp = Mockito.mock(Transaction.class);
         int [] array = new int[5];
-        array[0] = 0;
+        array[0] = 265;
         array[1] = 000;
         array[2] = 1;
         array[3] = 1;
@@ -63,7 +63,7 @@ public class LandscaperTest {
         LStest.myLocation = new MapLocation(3,3);
         when(RCtest.getBlock(1)).thenReturn(t);
         when(temp.getMessage()).thenReturn(array);
-        assertEquals(LStest.tryFindHQLocation(), false);
+        assertEquals(LStest.tryFindHQLocation(), true);
         when(RCtest.getLocation()).thenReturn(new MapLocation(3,3));
         when(RCtest.canSenseLocation(new MapLocation(1,1))).thenReturn(true);
         when(RCtest.senseElevation(new MapLocation(1,1))).thenReturn(10);
