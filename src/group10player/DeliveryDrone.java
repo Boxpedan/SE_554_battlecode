@@ -143,6 +143,8 @@ public class DeliveryDrone extends Unit {
         return directions[(int) (Math.random() * directions.length)];
     }
 
+    /*
+    * Comment for unused helper functions.
     public int getTarget()
     {
         return target;
@@ -157,4 +159,6 @@ public class DeliveryDrone extends Unit {
     {
         return myTeam;
     }
+    */
+
 }

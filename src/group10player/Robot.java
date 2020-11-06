@@ -97,6 +97,7 @@ public class Robot {
     public void setMyLocation(){
         myLocation = rc.getLocation();
     }
+    /* comment for helper functions.
     //allows robot to update HqLocation
     public void setHqLocation(MapLocation hq){
         HQLocation = hq;
@@ -110,5 +111,6 @@ public class Robot {
         initialHQElevation = 2;
     }
 
+ */
 
 }
