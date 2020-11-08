@@ -3,6 +3,7 @@ package group10player;
 import battlecode.common.*;
 
 import java.awt.*;
+import java.util.Map;
 
 //Robot will receive "rc" as a variable in its constructor.
 public class Robot {
@@ -19,7 +20,12 @@ public class Robot {
     boolean HQLocationSent;
     int numRefineries;
     int numVaporators;
+    int numDesignSchools;
+    int numFulfillmentCenters;
     MapLocation enemyHQLocation;
+
+    boolean newUnitUpdated;
+    boolean HQUpdateRequested;
 
     static Direction[] directions = {
             Direction.NORTH,
@@ -53,12 +59,26 @@ public class Robot {
         HQLocationSent = false;
         numRefineries = 0;
         numVaporators = 0;
+        numDesignSchools = 0;
+        numFulfillmentCenters = 0;
         enemyHQLocation = null;
+
+        if (rc.getRoundNum() < 7){
+            newUnitUpdated = true;
+        }else{
+            newUnitUpdated = false;
+        }
+        HQUpdateRequested = false;
 
     }
 
     public void takeTurn() throws GameActionException{
         readBlockchainMessages(rc.getRoundNum() - 1); //read last round's messages, if any, and save info.
+        if (!newUnitUpdated){
+            if (rc.getTeamSoup() >= 1) {
+                trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode, 10, 0, 0, 0, 0, 0), 1);
+            }
+        }
     }
 
     public boolean tryBuild(RobotType type, Direction dir) throws GameActionException{
@@ -77,7 +97,7 @@ public class Robot {
             for (int x = 0; x < tBlock.length; x++) {
                 int[] tempMessage = tBlock[x].getMessage();
                 if (tempMessage[0] == teamMessageCode) { //run through each message, check initial int for our team's code
-                    if (tempMessage[1] == 000) { //found our HQ location message
+                    if (tempMessage[1] == 0) { //found our HQ location message
                         HQLocation = new MapLocation(tempMessage[2], tempMessage[3]);
                         HQDirection = myLocation.directionTo(HQLocation);
                         initialHQElevation = tempMessage[4];
@@ -140,11 +160,60 @@ public class Robot {
         return false;
     }
 
-    public void readBlockchainMessages(int roundNum){
-        if (roundNum < 0){
+    public void readBlockchainMessages(int roundNum) throws GameActionException{
+        if (roundNum < 1){
             return;
         }
-
+        Transaction [] tBlock = rc.getBlock(roundNum);
+        if (tBlock != null) {
+            int[] tempMessage;
+            for (int x = 0; x < tBlock.length; x++) {
+                tempMessage = tBlock[x].getMessage();
+                if (tempMessage[0] == teamMessageCode) { //run through each message, check initial int for our team's code
+                    switch (tempMessage[1]) {
+                        case 0:
+                            HQLocation = new MapLocation(tempMessage[2], tempMessage[3]);
+                            HQDirection = myLocation.directionTo(HQLocation);
+                            initialHQElevation = tempMessage[4];
+                            break;
+                        case 1:
+                            enemyHQLocation = new MapLocation(tempMessage[2], tempMessage[3]);
+                            break;
+                        case 2:
+                            numRefineries++;
+                            break;
+                        case 3:
+                            numVaporators++;
+                            break;
+                        case 4:
+                            numDesignSchools++;
+                            break;
+                        case 5:
+                            numFulfillmentCenters++;
+                            break;
+                        case 10:
+                            HQUpdateRequested = true;
+                        default:
+                            if (tempMessage[1] >= 199){ //this is an update message from HQ for a new unit
+                                if (tempMessage[1] == 199){ //don't know where enemy HQ is
+                                    numRefineries = tempMessage[3];
+                                    numVaporators = tempMessage[4];
+                                    numDesignSchools = tempMessage[5];
+                                    numFulfillmentCenters = tempMessage[6];
+                                }else{
+                                    enemyHQLocation = new MapLocation(tempMessage[1]-200, tempMessage[2]);
+                                    numRefineries = tempMessage[3];
+                                    numVaporators = tempMessage[4];
+                                    numDesignSchools = tempMessage[5];
+                                    numFulfillmentCenters = tempMessage[6];
+                                }
+                                newUnitUpdated = true;
+                            }
+                            break;
+                    }
+                }
+            }
+        }
     }
 
     /* comment for helper functions.

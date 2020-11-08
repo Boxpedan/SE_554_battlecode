@@ -11,12 +11,15 @@ Fourth int: Generally y-coordinate
 Fifth, Sixth, Seventh ints: context-dependant
 
 Message codes (second int):
-000 - HQ Location
-001 - Enemy HQ Location
-002 - Refinery built
-003 - Vaporator built
+0 - HQ Location
+1 - Enemy HQ Location
+2 - Refinery built
+3 - Vaporator built
+4 - Design school
+5 - Fulfillment center
 
-
+10 - New unit update request
+2xx - HQ response to new unit update request (position 0 is team, 1 is xpos of enemy HQ + 200, 2 is ypos of enemy HQ)
 
 
 
@@ -36,12 +39,15 @@ public class HQ extends Building{
     @Override
     public void takeTurn() throws GameActionException{
         super.takeTurn();
+        System.out.println("Round: "+ rc.getRoundNum());
 
         SendHQlocBlockchain();
 
         Shooter();
 
-        UpdateEnemyHQ();
+        UpdateBlockchain();
+
+
 
         if(numMiners < limitMiners){
             for (Direction dir: Robot.directions){
@@ -68,7 +74,7 @@ public class HQ extends Building{
     //Function to send the HQloc
     public void SendHQlocBlockchain() throws GameActionException {
         if (!HQLocationSent){                   // we're willing to pay 29, in order to make sure
-            if (trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode, 000, rc.getLocation().x, rc.getLocation().y, rc.senseElevation(rc.getLocation()), 0, 0), 29)){
+            if (trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode, 0, rc.getLocation().x, rc.getLocation().y, rc.senseElevation(rc.getLocation()), 0, 0), 29)){
                 HQLocationSent = true;          // that no strategies for flooding the blockchain on turn 1
             }                                   // make it so our message isn't sent.
         }
@@ -88,15 +94,28 @@ public class HQ extends Building{
         }
     }
 
-    public void UpdateEnemyHQ() throws GameActionException { //every 50 rounds, resend enemy HQ location to blockchain to make sure all units are up to date
+    public void UpdateBlockchain() throws GameActionException { //every 50 rounds, resend enemy HQ location to blockchain to make sure all units are up to date
+        if (HQUpdateRequested){
+            if (enemyHQLocation != null){
+                if (rc.getTeamSoup() >= 1){
+                    trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode, enemyHQLocation.x+200, enemyHQLocation.y, numRefineries, numVaporators, numDesignSchools, numFulfillmentCenters), 1);
+                }
+            }else {
+                if (rc.getTeamSoup() >= 1) {
+                    trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode, 199, 0, numRefineries, numVaporators, numDesignSchools, numFulfillmentCenters), 1);
+                }
+            }
+            HQUpdateRequested = false;
+        }
+
         if (enemyHQLocation == null){
             return;
         }
         if (rc.getRoundNum() % 50 == 0){
             if (rc.getTeamSoup() >= 5){
-                trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode, 001, enemyHQLocation.x, enemyHQLocation.y, 0, 0, 0), 5);
+                trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode, 1, enemyHQLocation.x, enemyHQLocation.y, 0, 0, 0), 5);
             }else{
-                trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode, 001, enemyHQLocation.x, enemyHQLocation.y, 0, 0, 0), rc.getTeamSoup());
+                trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode, 1, enemyHQLocation.x, enemyHQLocation.y, 0, 0, 0), rc.getTeamSoup());
             }
         }
     }

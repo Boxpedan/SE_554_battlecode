@@ -17,11 +17,12 @@ public class Unit extends Robot{
             if (nearbyRobots != null && nearbyRobots.length >= 1){
                 for (RobotInfo nearbyRobot : nearbyRobots){
                     if (nearbyRobot.type == RobotType.HQ && nearbyRobot.getTeam() == rc.getTeam().opponent()){
+                        System.out.println("Found enemy HQ!");
                         enemyHQLocation = nearbyRobot.getLocation();
                         if (rc.getTeamSoup() >= 10){
-                            trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode, 001, nearbyRobot.getLocation().x, nearbyRobot.getLocation().y, 0, 0, 0), 10);
+                            trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode, 1, nearbyRobot.getLocation().x, nearbyRobot.getLocation().y, 0, 0, 0), 10);
                         }else{
-                            trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode, 001, nearbyRobot.getLocation().x, nearbyRobot.getLocation().y, 0, 0, 0), rc.getTeamSoup());
+                            trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode, 1, nearbyRobot.getLocation().x, nearbyRobot.getLocation().y, 0, 0, 0), rc.getTeamSoup());
                         }
                         break;
                     }
