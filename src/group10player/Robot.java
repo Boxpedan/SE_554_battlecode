@@ -14,6 +14,12 @@ public class Robot {
     MapLocation myLocation;
     Direction HQDirection;
     int initialHQElevation;
+    int teamMessageCode; //our team's message code for identifying block chain communication.
+
+    boolean HQLocationSent;
+    int numRefineries;
+    int numVaporators;
+    MapLocation enemyHQLocation;
 
     static Direction[] directions = {
             Direction.NORTH,
@@ -26,7 +32,7 @@ public class Robot {
             Direction.NORTHWEST
     };
 
-    int teamMessageCode; //our team's message code for identifying block chain communication.
+
 
     static Direction randomDirection() {
         return directions[(int) (Math.random() * directions.length)];
@@ -44,10 +50,15 @@ public class Robot {
         }
         initialHQElevation = -1000;
 
+        HQLocationSent = false;
+        numRefineries = 0;
+        numVaporators = 0;
+        enemyHQLocation = null;
+
     }
 
     public void takeTurn() throws GameActionException{
-
+        readBlockchainMessages(rc.getRoundNum() - 1); //read last round's messages, if any, and save info.
     }
 
     public boolean tryBuild(RobotType type, Direction dir) throws GameActionException{
@@ -97,6 +108,45 @@ public class Robot {
     public void setMyLocation(){
         myLocation = rc.getLocation();
     }
+
+    public int [] buildBlockchainMessage(int int1, int int2, int int3, int int4, int int5, int int6, int int7){
+        int [] message = new int[7]; // formatted {teamcode, messagecode, XPOS, YPOS, var, var, var}
+        for (int x = 0; x < 7; x++){
+            message[x] = 0;
+        }
+        message[0] = int1;
+        message[1] = int2;
+        message[2] = int3;
+        message[3] = int4;
+        message[4] = int5;
+        message[5] = int6;
+        message[6] = int7;
+        return message;
+    }
+
+    public boolean trySendBlockchainMessage(int [] message, int cost) throws GameActionException{
+        if (message.length != 7){
+            System.out.println("Can only send messages with 7 ints!");
+            return false;
+        }
+        if (cost < 1){
+            System.out.println("Must bid at least 1 soup!");
+            return false;
+        }
+        if (rc.canSubmitTransaction(message, cost)){
+            rc.submitTransaction(message, cost);
+            return true;
+        }
+        return false;
+    }
+
+    public void readBlockchainMessages(int roundNum){
+        if (roundNum < 0){
+            return;
+        }
+
+    }
+
     /* comment for helper functions.
     //allows robot to update HqLocation
     public void setHqLocation(MapLocation hq){
