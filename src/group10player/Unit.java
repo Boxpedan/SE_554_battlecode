@@ -13,6 +13,7 @@ public class Unit extends Robot{
 
     }
 
+    /* comment unused function.
     public boolean tryMoveTowards(MapLocation destination) throws GameActionException{
         if (destination == null){
             return false;
@@ -34,6 +35,8 @@ public class Unit extends Robot{
         }
         return false;
     }
+
+     */
 
     public boolean tryMoveTowardsFavorRight(MapLocation destination) throws GameActionException{
         if (destination == null){

@@ -53,7 +53,7 @@ public class LandscaperTest {
     public void taketurntest3() throws GameActionException {
         Transaction temp = Mockito.mock(Transaction.class);
         int [] array = new int[5];
-        array[0] = 0;
+        array[0] = 265;
         array[1] = 000;
         array[2] = 1;
         array[3] = 1;
@@ -63,7 +63,7 @@ public class LandscaperTest {
         LStest.myLocation = new MapLocation(3,3);
         when(RCtest.getBlock(1)).thenReturn(t);
         when(temp.getMessage()).thenReturn(array);
-        assertEquals(LStest.tryFindHQLocation(), false);
+        assertEquals(LStest.tryFindHQLocation(), true);
         when(RCtest.getLocation()).thenReturn(new MapLocation(3,3));
         when(RCtest.canSenseLocation(new MapLocation(1,1))).thenReturn(true);
         when(RCtest.senseElevation(new MapLocation(1,1))).thenReturn(10);
@@ -155,7 +155,8 @@ public class LandscaperTest {
 
         //set Landscaper team to match HQ
         when(RCtest.getTeam()).thenReturn(Team.B);
-        LStest.setMyTeam();
+        //LStest.setMyTeam();
+        LStest.myTeam = Team.B;
 
         //set Landscaper location
         when(RCtest.getLocation()).thenReturn(lsLocation);
@@ -169,10 +170,12 @@ public class LandscaperTest {
         //set Landscaper elevation sensed equal to 5 to allow for HQ Locating
         when(RCtest.senseElevation(adjacent)).thenReturn(elevation);
         when(RCtest.canSenseLocation(adjacent)).thenReturn(true);
-        LStest.setMyElevation(elevation);
+        //LStest.setMyElevation(elevation);
+        LStest.myElevation = 2;
 
         //set Landscaper sensor radius
-        LStest.setMySensorRadius(sensorRadius);
+        //LStest.setMySensorRadius(sensorRadius);
+        LStest.mySensorRadius = sensorRadius;
 
         //test canDig, expect True is returned
         boolean found = LStest.findHQ();
@@ -190,10 +193,12 @@ public class LandscaperTest {
         int sensorRadius = 24;
 
         //setHQLocation
-        LStest.setHqLocation(hqLocation);
+        //LStest.setHqLocation(hqLocation);
+        LStest.HQLocation = hqLocation;
 
         //set Landscaper sensor radius
-        LStest.setMySensorRadius(sensorRadius);
+        //LStest.setMySensorRadius(sensorRadius);
+        LStest.mySensorRadius = sensorRadius;
 
         //set Landscaper location
         when(RCtest.getLocation()).thenReturn(lsLocation);
@@ -208,7 +213,8 @@ public class LandscaperTest {
         when(RCtest.senseElevation(adjacent)).thenReturn(elevation);
         when(RCtest.canSenseLocation(adjacent)).thenReturn(true);
         when(RCtest.canSenseLocation(adjacent.add(Direction.SOUTH))).thenReturn(true);
-        LStest.setMyElevation(elevation);
+        //LStest.setMyElevation(elevation);
+        LStest.myElevation = 2;
 
         //Landscaper can dig to south
         when(RCtest.canDigDirt(Direction.SOUTH)).thenReturn(true);
@@ -237,7 +243,8 @@ public class LandscaperTest {
     public void checkWallFinished() throws GameActionException {
         MapLocation hqLocation = new MapLocation(17,17);
         //setHQLocation
-        LStest.setHqLocation(hqLocation);
+        //LStest.setHqLocation(hqLocation);
+        LStest.HQLocation = hqLocation;
 
         //set up HQ wall test
         when(RCtest.canSenseLocation(hqLocation.add(Direction.SOUTH))).thenReturn(true);
@@ -268,7 +275,8 @@ public class LandscaperTest {
         MapLocation hqLocation = new MapLocation(17,17);
 
         //setHQLocation
-        LStest.setHqLocation(hqLocation);
+        //LStest.setHqLocation(hqLocation);
+        LStest.HQLocation = hqLocation;
 
         //set up HQ wall test
         when(RCtest.canSenseLocation(hqLocation.add(Direction.SOUTH))).thenReturn(true);

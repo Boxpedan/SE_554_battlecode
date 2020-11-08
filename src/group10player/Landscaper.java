@@ -244,9 +244,7 @@ public class Landscaper extends Unit{
         }
     }
 
-    public int getWallHeight(){
-        return wallHeight;
-    }
+
 
     public boolean dropDirtIfYouCan(Direction toDrop) throws GameActionException {
         /*if(myLocation.isAdjacentTo(HQLocation)){
@@ -261,6 +259,11 @@ public class Landscaper extends Unit{
         return false;
     }
 
+    public int getWallHeight(){
+        return wallHeight;
+    }
+    /*
+    * Comment for helper functions.
     //helper function to allow setting myElevationToInt
     public void setMyElevation(int num){
         myElevation = num;
@@ -269,6 +272,7 @@ public class Landscaper extends Unit{
     public void setMySensorRadius(int num){
         mySensorRadius = num;
     }
+     */
 
 }
 
