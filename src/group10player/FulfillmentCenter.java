@@ -3,7 +3,7 @@ import battlecode.common.*;
 
 public class FulfillmentCenter extends Building{
     int numDrones = 0;
-    int droneLimit = 1;
+    int droneLimit = 3;
     public FulfillmentCenter(RobotController rc) throws GameActionException
     {
         super(rc);

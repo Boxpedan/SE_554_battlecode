@@ -54,15 +54,17 @@ public class DeliveryDrone extends Unit {
 
         }
 
+//        System.out.println("holding_target: " + holding_target);
 
     }
 
     private void moveRandom() throws GameActionException{
         Direction dir = randomDirection();
+//        dir = Direction.SOUTH;
         tryMoveDirection(dir);
     }
 
-    private void searchForWater() throws GameActionException{
+    private void searchForWater() {
         MapLocation loc = null;
         MapLocation drone_loc = rc.getLocation();
         boolean sense_return = false;
@@ -79,11 +81,19 @@ public class DeliveryDrone extends Unit {
                 test_x = drone_loc.x + j;
                 test_y = drone_loc.y + i;
                 loc = new MapLocation(test_x, test_y);
-                sense_return = rc.senseFlooding(loc);
+                try {
+                    sense_return = rc.senseFlooding(loc);
+                } catch (GameActionException e)
+                {
+
+                }
+
                 if(sense_return) //if the tile is flooded
                 {
                     water_loc = loc;
                     know_water = true;
+                    System.out.println("water found");
+
                 }
             }
         }
@@ -106,6 +116,8 @@ public class DeliveryDrone extends Unit {
             if(rc.canDropUnit(water_dir))
             {
                 rc.dropUnit(water_dir);
+                holding_target = false;
+                target = -1;
             }
         }
     }
@@ -127,15 +139,27 @@ public class DeliveryDrone extends Unit {
 //        System.out.println(myTeam.opponent() == getTeamOpponent());
 //        RobotInfo[] enemy_robots = rc.senseNearbyRobots(24, myTeam.opponent());
         RobotInfo[] enemy_robots = rc.senseNearbyRobots(24, rc.getTeam().opponent());
+        RobotInfo[] cows = rc.senseNearbyRobots(24, Team.NEUTRAL);
 //
 //        System.out.println("enemy_robots: " + enemy_robots);
 
         if(enemy_robots != null) {
 
-            for (int i = 0; i < enemy_robots.length; i++) {
-                RobotInfo enemy_robot = enemy_robots[i];
-                if (enemy_robot.getType() == RobotType.LANDSCAPER || enemy_robot.getType() == RobotType.MINER || enemy_robot.getType() == RobotType.COW) {
+            for (RobotInfo enemy_robot : enemy_robots) {
+                System.out.println("enemy_robot: " + enemy_robot.getType());
+                if (enemy_robot.getType() == RobotType.LANDSCAPER || enemy_robot.getType() == RobotType.MINER) {
                     target = enemy_robot.getID();
+                }
+            }
+        }
+
+        if(cows != null) {
+
+            for (RobotInfo cow : cows) {
+                System.out.println("enemy_robot: " + cow.getType());
+                if (cow.getType() == RobotType.COW) {
+                    target = cow.getID();
+
                 }
             }
         }
@@ -179,6 +203,7 @@ public class DeliveryDrone extends Unit {
         if(rc.canPickUpUnit(target))
         {
             rc.pickUpUnit(target);
+            holding_target = true;
         }
 
 //        System.out.println("after pickup");
