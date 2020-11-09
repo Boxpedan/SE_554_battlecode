@@ -22,6 +22,7 @@ public class Robot {
     int numVaporators;
     int numDesignSchools;
     int numFulfillmentCenters;
+    int numNetgun;
     MapLocation enemyHQLocation;
 
     boolean newUnitUpdated;
@@ -61,6 +62,7 @@ public class Robot {
         numVaporators = 0;
         numDesignSchools = 0;
         numFulfillmentCenters = 0;
+        numNetgun = 0;
         enemyHQLocation = null;
 
         if (rc.getRoundNum() < 7){
@@ -191,6 +193,12 @@ public class Robot {
                         case 5:
                             numFulfillmentCenters++;
                             break;
+                        case 6:
+                            numNetgun++;
+                            break;
+                        case 7:
+                            numVaporators++;
+                            break;
                         case 10:
                             HQUpdateRequested = true;
                         default:
@@ -200,6 +208,7 @@ public class Robot {
                                     numVaporators = tempMessage[4];
                                     numDesignSchools = tempMessage[5];
                                     numFulfillmentCenters = tempMessage[6];
+                                    numNetgun=tempMessage[7];
                                 }else{
                                     enemyHQLocation = new MapLocation(tempMessage[1]-200, tempMessage[2]);
                                     numRefineries = tempMessage[3];

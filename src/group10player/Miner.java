@@ -6,6 +6,8 @@ public class Miner extends Unit{
     boolean seenDesignSchool;
     boolean seenRefinery;
     boolean seenFulfillmentCenter;
+    boolean seenNetgun;
+    boolean seenVaporators;
 
 
     final int maxVisionSquared = 34;
@@ -18,6 +20,7 @@ public class Miner extends Unit{
     final int maxVaporators = 1;
     final int maxDesignSchools = 1;
     final int maxFulfillmentCenters = 1;
+    final int maxNetgun = 2;
 
 
     public Miner(RobotController rc) throws GameActionException {
@@ -59,6 +62,11 @@ public class Miner extends Unit{
                     }
                 } else if (nearbyRobot.type == RobotType.FULFILLMENT_CENTER) {
                     seenFulfillmentCenter = true;
+                }else if(nearbyRobot.type == RobotType.NET_GUN){
+                    seenNetgun = true;
+                }
+                else if(nearbyRobot.type == RobotType.VAPORATOR){
+                    seenVaporators = true;
                 }
             }
         }
@@ -104,6 +112,28 @@ public class Miner extends Unit{
                         }
                         break;
                         //don't need to update seenFulfillmentCenter, because the miner should see it at the beginning of next turn
+                    }
+                }
+            }
+        } else if(!seenNetgun || numNetgun < maxNetgun){
+            if(teamSoup >= 255){
+                for(Direction dir:directions){
+                    if(!myLocation.add(dir).isAdjacentTo(HQLocation) && !(myLocation.add(dir).distanceSquaredTo(HQLocation) < 8) && tryBuild(RobotType.NET_GUN, dir)) {
+                        if(rc.getTeamSoup()>= 1){
+                            trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode,6,myLocation.add(dir).x, myLocation.add(dir).y,0,0,0),1);
+                        }
+                        break;
+                    }
+                }
+            }
+        } else if(!seenVaporators && numVaporators < maxVaporators){
+            if(teamSoup >= 505){
+                for(Direction dir:directions){
+                    if(!myLocation.add(dir).isAdjacentTo(HQLocation) && !(myLocation.add(dir).distanceSquaredTo(HQLocation) < 8) && tryBuild(RobotType.VAPORATOR,dir)){
+                        if(rc.getTeamSoup() >= 1){
+                            trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode,7,myLocation.add(dir).x,myLocation.add(dir).y,0,0,0),1);
+                        }
+                        break;
                     }
                 }
             }
