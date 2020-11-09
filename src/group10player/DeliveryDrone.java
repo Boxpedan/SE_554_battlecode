@@ -9,8 +9,7 @@ public class DeliveryDrone extends Unit {
 
     int target = -1;
     boolean holding_target = false;
-    int water_x = 0;
-    int water_y = 0;
+    MapLocation water_loc = null;
     boolean know_water = false;
 
     public DeliveryDrone(RobotController rc) throws GameActionException {
@@ -83,16 +82,32 @@ public class DeliveryDrone extends Unit {
                 sense_return = rc.senseFlooding(loc);
                 if(sense_return) //if the tile is flooded
                 {
-                    water_x = test_x;
-                    water_y = test_y;
+                    water_loc = loc;
                     know_water = true;
                 }
             }
         }
     }
 
-    private void dropInWater() {
-
+    private void dropInWater() throws GameActionException {
+        MapLocation drone_loc = rc.getLocation();
+        Direction water_dir = drone_loc.directionTo(water_loc);
+        int distance = drone_loc.distanceSquaredTo(water_loc);
+        if(distance <= 0)
+        {
+            tryMoveDirection(randomDirection());
+        }
+        if(distance > 2)
+        {
+            tryMoveDirection(water_dir);
+        }
+        if(distance <= 2 && distance > 0) //not sure if they can drop on their own square
+        {
+            if(rc.canDropUnit(water_dir))
+            {
+                rc.dropUnit(water_dir);
+            }
+        }
     }
 
 
