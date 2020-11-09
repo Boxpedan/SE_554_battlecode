@@ -9,6 +9,8 @@ apply plugin: 'scala'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 
+apply plugin: 'pmd'
+
 
 ext.versions = [
     battlecode: new File(projectDir, "version.txt").text.trim()
@@ -114,6 +116,12 @@ idea {
         downloadSources = true
         downloadJavadoc = true
     }
+}
+
+// Pmd settings
+pmd {
+    ruleSets = ["category/java/design.xml"]
+    ignoreFailures = true
 }
 
 task version {
