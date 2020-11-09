@@ -4,20 +4,18 @@ import battlecode.common.*;
 import org.junit.*;
 import org.mockito.*;
 
-
-public class BuildingTest {
-
+public class VaporatorTest {
     private RobotController RCtest = null;
-    private Building Btest = null;
+    private Vaporator Vtest = null;
 
     @Before
     public void beforeEachTest() throws GameActionException {
         RCtest = Mockito.mock(RobotController.class);
-        Btest = new Building(RCtest);
+        Vtest = new Vaporator(RCtest);
     }
 
     @Test
     public void taketurntest() throws GameActionException {
-        Btest.takeTurn();
+        Vtest.takeTurn();
     }
 }
