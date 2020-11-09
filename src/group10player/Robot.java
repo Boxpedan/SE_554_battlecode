@@ -208,7 +208,6 @@ public class Robot {
                                     numVaporators = tempMessage[4];
                                     numDesignSchools = tempMessage[5];
                                     numFulfillmentCenters = tempMessage[6];
-                                    numNetgun=tempMessage[7];
                                 }else{
                                     enemyHQLocation = new MapLocation(tempMessage[1]-200, tempMessage[2]);
                                     numRefineries = tempMessage[3];

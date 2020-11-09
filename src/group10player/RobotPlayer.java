@@ -1,5 +1,6 @@
 package group10player;
 import battlecode.common.*;
+import sun.nio.ch.Net;
 
 /** we used the framework from the battlecode lecture videos and github
  * https://github.com/battlecode/lectureplayer/blob/master/RobotPlayer.java
@@ -38,6 +39,12 @@ public class RobotPlayer {
                 break;
             case DELIVERY_DRONE:
                 current_robot = new DeliveryDrone(rc);
+                break;
+            case NET_GUN:
+                current_robot = new Netgun(rc);
+                break;
+            case VAPORATOR:
+                current_robot = new Vaporator(rc);
                 break;
         }
 
