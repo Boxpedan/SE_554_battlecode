@@ -1,12 +1,17 @@
 package group10player;
 
 import battlecode.common.*;
+import scala.collection.Map;
 
 import java.awt.Robot;
 
 public class DeliveryDrone extends Unit {
 
     int target = -1;
+    boolean holding_target = false;
+    int water_x = 0;
+    int water_y = 0;
+    boolean know_water = false;
 
     public DeliveryDrone(RobotController rc) throws GameActionException {
         super(rc);
@@ -22,29 +27,83 @@ public class DeliveryDrone extends Unit {
     @Override
     public void takeTurn() throws GameActionException {
         super.takeTurn();
-        myLocation = rc.getLocation();
 
         //if no target move random and look for enemy
         if(target == -1) {
+            moveRandom();
             searchForEnemy();
+
+            if(!know_water) {
+                searchForWater();
+            }
         }
-        else //if have target move towards and try to pick up
+        else if(!holding_target) //if have target move towards and try to pick up
         {
             grabEnemy();
+        }
+        else
+        {
+            if(know_water)
+            {
+                dropInWater();
+            }
+            else
+            {
+                moveRandom();
+                searchForWater();
+            }
+
         }
 
 
     }
 
+    private void moveRandom() throws GameActionException{
+        Direction dir = randomDirection();
+        tryMoveDirection(dir);
+    }
 
-    public void searchForEnemy() throws GameActionException
+    private void searchForWater() throws GameActionException{
+        MapLocation loc = null;
+        MapLocation drone_loc = rc.getLocation();
+        boolean sense_return = false;
+        int test_x = 0;
+        int test_y = 0;
+
+        // to make things simpler, the drone will search only the 7 by 7 box around themselves
+        //i represents the row/y, j represents the column/x
+        //
+        for(int i = 3; i >= -3; i--)
+        {
+            for(int j = -3; j <= 3; j++)
+            {
+                test_x = drone_loc.x + j;
+                test_y = drone_loc.y + i;
+                loc = new MapLocation(test_x, test_y);
+                sense_return = rc.senseFlooding(loc);
+                if(sense_return) //if the tile is flooded
+                {
+                    water_x = test_x;
+                    water_y = test_y;
+                    know_water = true;
+                }
+            }
+        }
+    }
+
+    private void dropInWater() {
+
+    }
+
+
+    public void searchForEnemy()
     {
 //        System.out.println("start SearchForEnemy");
 
-        Direction dir = randomDirection();
+//        Direction dir = randomDirection();
 //        dir = Direction.EAST;
 //        System.out.println("trying to move");
-        tryMoveDirection(dir);
+//        tryMoveDirection(dir);
 //        System.out.println("finish move");
 
 //
@@ -60,7 +119,7 @@ public class DeliveryDrone extends Unit {
 
             for (int i = 0; i < enemy_robots.length; i++) {
                 RobotInfo enemy_robot = enemy_robots[i];
-                if (enemy_robot.getType() == RobotType.LANDSCAPER || enemy_robot.getType() == RobotType.MINER) {
+                if (enemy_robot.getType() == RobotType.LANDSCAPER || enemy_robot.getType() == RobotType.MINER || enemy_robot.getType() == RobotType.COW) {
                     target = enemy_robot.getID();
                 }
             }
@@ -134,14 +193,14 @@ public class DeliveryDrone extends Unit {
         return false;
     }
 
-    /**
-     * Returns a random Direction.
-     *
-     * @return a random Direction
-     */
-    static Direction randomDirection() {
-        return directions[(int) (Math.random() * directions.length)];
-    }
+//    /**
+//     * Returns a random Direction.
+//     *
+//     * @return a random Direction
+//     */
+//    static Direction randomDirection() {
+//        return directions[(int) (Math.random() * directions.length)];
+//    }
 
     /*
     * Comment for unused helper functions.
