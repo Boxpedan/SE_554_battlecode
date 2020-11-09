@@ -13,7 +13,7 @@ public class FulfillmentCenter extends Building{
     public void takeTurn() throws GameActionException{
         if(numDrones < droneLimit)
         {
-            if(rc.getTeamSoup() >= 150)
+            if(rc.getTeamSoup() >= 155)
             {
                 for(Direction dir : directions)
                 {
