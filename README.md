@@ -43,3 +43,12 @@ This is the Battlecode 2020 scaffold, containing an `examplefuncsplayer`. Read h
 ### Project Reference
 - Game Specifications: https://sebattlecode.com/specs.html
 - Battlecode20 javadoc: http://2020.battlecode.org/javadoc/index.html
+
+### Cyclomatic 
+
+- Integrated into gradle build script build.gradle
+- Tool we are using is pmd
+- We only look for violations of pmd's design rules since those target cyclomatic complexity: https://pmd.github.io/latest/pmd_rules_java_design.html
+- Reports produced from the design rules are found in build/reports/pmd
+- pmd produces an html page with violations outlined
+- pmd's explanation of how they evaluate and when they signal complexity violations: https://pmd.github.io/latest/pmd_rules_java_design.html#cyclomaticcomplexity
