@@ -94,7 +94,7 @@ public class DeliveryDrone extends Unit {
                     sense_return = rc.senseFlooding(loc);
                 } catch (GameActionException e)
                 {
-
+                    System.out.println("Trying to sense outside map");
                 }
 
                 if(sense_return) //if the tile is flooded
