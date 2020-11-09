@@ -27,6 +27,9 @@ public class DeliveryDrone extends Unit {
     public void takeTurn() throws GameActionException {
         super.takeTurn();
 
+//        System.out.println("target: " + target);
+//        System.out.println("holding_target: " + holding_target);
+
         //if no target move random and look for enemy
         if(target == -1) {
             moveRandom();
@@ -38,18 +41,24 @@ public class DeliveryDrone extends Unit {
         }
         else if(!holding_target) //if have target move towards and try to pick up
         {
+//            System.out.println("not holding");
             grabEnemy();
         }
         else
         {
+//            System.out.println("else statement");
             if(know_water)
             {
+//                System.out.println("in else know_water");
                 dropInWater();
             }
             else
             {
+//                System.out.println("else else");
                 moveRandom();
+//                System.out.println("after moveRandom");
                 searchForWater();
+//                System.out.println("end of else else");
             }
 
         }
@@ -58,13 +67,13 @@ public class DeliveryDrone extends Unit {
 
     }
 
-    private void moveRandom() throws GameActionException{
+    public void moveRandom() throws GameActionException{
         Direction dir = randomDirection();
 //        dir = Direction.SOUTH;
         tryMoveDirection(dir);
     }
 
-    private void searchForWater() {
+    public void searchForWater() {
         MapLocation loc = null;
         MapLocation drone_loc = rc.getLocation();
         boolean sense_return = false;
@@ -92,27 +101,35 @@ public class DeliveryDrone extends Unit {
                 {
                     water_loc = loc;
                     know_water = true;
-                    System.out.println("water found");
+//                    System.out.println("water found");
 
                 }
             }
         }
     }
 
-    private void dropInWater() throws GameActionException {
+    public void dropInWater() throws GameActionException {
+//        System.out.println("start dropInWater");
         MapLocation drone_loc = rc.getLocation();
         Direction water_dir = drone_loc.directionTo(water_loc);
         int distance = drone_loc.distanceSquaredTo(water_loc);
+
+//        System.out.println("before if 0");
+//        System.out.println("distance: " + distance);
         if(distance <= 0)
         {
             tryMoveDirection(randomDirection());
         }
+//        System.out.println("before if 2");
         if(distance > 2)
         {
+
             tryMoveDirection(water_dir);
         }
+//        System.out.println("before if 2 and 0");
         if(distance <= 2 && distance > 0) //not sure if they can drop on their own square
         {
+//            System.out.println("before water_dire: " + water_dir);
             if(rc.canDropUnit(water_dir))
             {
                 rc.dropUnit(water_dir);
@@ -120,24 +137,13 @@ public class DeliveryDrone extends Unit {
                 target = -1;
             }
         }
+//        System.out.println("end dropInWater");
     }
 
 
     public void searchForEnemy()
     {
-//        System.out.println("start SearchForEnemy");
 
-//        Direction dir = randomDirection();
-//        dir = Direction.EAST;
-//        System.out.println("trying to move");
-//        tryMoveDirection(dir);
-//        System.out.println("finish move");
-
-//
-//        System.out.println("myTeam.opponent(): " + rc.getTeam().opponent());
-//        System.out.println("Team.B: " + Team.B);
-//        System.out.println(myTeam.opponent() == getTeamOpponent());
-//        RobotInfo[] enemy_robots = rc.senseNearbyRobots(24, myTeam.opponent());
         RobotInfo[] enemy_robots = rc.senseNearbyRobots(24, rc.getTeam().opponent());
         RobotInfo[] cows = rc.senseNearbyRobots(24, Team.NEUTRAL);
 //
@@ -146,7 +152,7 @@ public class DeliveryDrone extends Unit {
         if(enemy_robots != null) {
 
             for (RobotInfo enemy_robot : enemy_robots) {
-                System.out.println("enemy_robot: " + enemy_robot.getType());
+
                 if (enemy_robot.getType() == RobotType.LANDSCAPER || enemy_robot.getType() == RobotType.MINER) {
                     target = enemy_robot.getID();
                 }
