@@ -1,6 +1,5 @@
 package group10player;
 import battlecode.common.*;
-import sun.nio.ch.Net;
 
 /** we used the framework from the battlecode lecture videos and github
  * https://github.com/battlecode/lectureplayer/blob/master/RobotPlayer.java
