@@ -7,5 +7,6 @@ public class Vaporator extends Building {
     }
 
     public void takeTurn() throws GameActionException {
+        super.takeTurn();
     }
 }

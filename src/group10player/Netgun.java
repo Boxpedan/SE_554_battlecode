@@ -11,6 +11,7 @@ public class Netgun extends Building{
     }
 
     public void shootDrone() throws GameActionException{
+        super.takeTurn();
         RobotInfo[] enemies = rc.senseNearbyRobots(GameConstants.NET_GUN_SHOOT_RADIUS_SQUARED, rc.getTeam().opponent());
         if(enemies == null) return;
         for (RobotInfo x : enemies){

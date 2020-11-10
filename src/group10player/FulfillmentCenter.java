@@ -11,6 +11,7 @@ public class FulfillmentCenter extends Building{
 
     @Override
     public void takeTurn() throws GameActionException{
+        super.takeTurn();
         if(numDrones < droneLimit)
         {
             if(rc.getTeamSoup() >= 155)

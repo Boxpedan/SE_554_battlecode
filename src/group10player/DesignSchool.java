@@ -11,6 +11,7 @@ public class DesignSchool extends Building {
 
     @Override
     public void takeTurn() throws GameActionException{
+        super.takeTurn();
         if(numLandscapers < landscaperLimit)
         {
             if(rc.getTeamSoup() >= 155)
