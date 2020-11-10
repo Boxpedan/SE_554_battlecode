@@ -1,6 +1,30 @@
 package group10player;
 import battlecode.common.*;
 
+/* Blockchain Message Guide:
+
+7 ints
+First int: Team code (159 or 265, depending on which team we're on)
+Second int: Type of message
+Third int: Generally x-coordinate
+Fourth int: Generally y-coordinate
+Fifth, Sixth, Seventh ints: context-dependant
+
+Message codes (second int):
+0 - HQ Location
+1 - Enemy HQ Location
+2 - Refinery built
+3 - Vaporator built
+4 - Design school
+5 - Fulfillment center
+
+10 - New unit update request
+2xx - HQ response to new unit update request (position 0 is team, 1 is xpos of enemy HQ + 200, 2 is ypos of enemy HQ)
+
+
+
+*/
+
 public class HQ extends Building{
     int numMiners = 0;
     int limitMiners = 4;
@@ -14,37 +38,17 @@ public class HQ extends Building{
     
     @Override
     public void takeTurn() throws GameActionException{
-        /*
-        if (!hasSentLocation){
-            int [] HQLocationMessage = new int[7]; // formatted {159, 000, XPOS, YPOS, ELE, 000, 000}
-            for (int x = 0; x < 7; x++){
-                HQLocationMessage[x] = 0;
-            }
-            HQLocationMessage[0] = teamMessageCode;
-            HQLocationMessage[2] = rc.getLocation().x;
-            HQLocationMessage[3] = rc.getLocation().y;
-            HQLocationMessage[4] = rc.senseElevation(rc.getLocation()); //send initial elevation
+        super.takeTurn();
+        System.out.println("Round: "+ rc.getRoundNum());
 
-            if (rc.canSubmitTransaction(HQLocationMessage, 29)){ //we're willing to pay 29, in order to make sure
-                rc.submitTransaction(HQLocationMessage, 29); //that no strategies for flooding the blockchain on turn 1
-                hasSentLocation = true;                         //make it so our message isn't sent.
-            }
-        }
-
-        //shoot nearby delivery drones
-        RobotInfo[] nearbyRobots = rc.senseNearbyRobots();
-        if (!(nearbyRobots == null || nearbyRobots.length < 1)) {
-            for (RobotInfo nearbyRobot : nearbyRobots) {
-                if (nearbyRobot.type == RobotType.DELIVERY_DRONE && nearbyRobot.getTeam() == rc.getTeam().opponent()) {
-                    if (rc.canShootUnit(nearbyRobot.getID())){
-                        rc.shootUnit(nearbyRobot.getID());
-                    }
-                }
-            }
-        }
-        */
         SendHQlocBlockchain();
+
         Shooter();
+
+        UpdateBlockchain();
+
+
+
         if(numMiners < limitMiners){
             for (Direction dir: Robot.directions){
                 if(tryBuild(RobotType.MINER, dir)){
@@ -63,26 +67,16 @@ public class HQ extends Building{
                 }
             }
         }
-        System.out.println("Total amount of soup is: "+rc.getTeamSoup());
+        //System.out.println("Total amount of soup is: "+rc.getTeamSoup());
 
     }
 
     //Function to send the HQloc
     public void SendHQlocBlockchain() throws GameActionException {
-        if (!hasSentLocation){
-            int [] HQLocationMessage = new int[7]; // formatted {159, 000, XPOS, YPOS, ELE, 000, 000}
-            for (int x = 0; x < 7; x++){
-                HQLocationMessage[x] = 0;
-            }
-            HQLocationMessage[0] = teamMessageCode;
-            HQLocationMessage[2] = rc.getLocation().x;
-            HQLocationMessage[3] = rc.getLocation().y;
-            HQLocationMessage[4] = rc.senseElevation(rc.getLocation()); //send initial elevation
-
-            if (rc.canSubmitTransaction(HQLocationMessage, 29)){ //we're willing to pay 29, in order to make sure
-                rc.submitTransaction(HQLocationMessage, 29); //that no strategies for flooding the blockchain on turn 1
-                hasSentLocation = true;                         //make it so our message isn't sent.
-            }
+        if (!HQLocationSent){                   // we're willing to pay 29, in order to make sure
+            if (trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode, 0, rc.getLocation().x, rc.getLocation().y, rc.senseElevation(rc.getLocation()), 0, 0), 29)){
+                HQLocationSent = true;          // that no strategies for flooding the blockchain on turn 1
+            }                                   // make it so our message isn't sent.
         }
     }
 
@@ -99,4 +93,34 @@ public class HQ extends Building{
             }
         }
     }
+
+    public void UpdateBlockchain() throws GameActionException { //every 50 rounds, resend enemy HQ location to blockchain to make sure all units are up to date
+        if (HQUpdateRequested){
+            if (enemyHQLocation != null){
+                if (rc.getTeamSoup() >= 1){
+                    trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode, enemyHQLocation.x+200, enemyHQLocation.y, numRefineries, numVaporators, numDesignSchools, numFulfillmentCenters), 1);
+                }
+            }else {
+                if (rc.getTeamSoup() >= 1) {
+                    trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode, 199, 0, numRefineries, numVaporators, numDesignSchools, numFulfillmentCenters), 1);
+                }
+            }
+            HQUpdateRequested = false;
+        }
+
+        if (enemyHQLocation == null){
+            return;
+        }
+        if (rc.getRoundNum() % 50 == 0){
+            if (rc.getTeamSoup() >= 5){
+                trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode, 1, enemyHQLocation.x, enemyHQLocation.y, 0, 0, 0), 5);
+            }else{
+                trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode, 1, enemyHQLocation.x, enemyHQLocation.y, 0, 0, 0), rc.getTeamSoup());
+            }
+        }
+    }
 }
+
+
+
+

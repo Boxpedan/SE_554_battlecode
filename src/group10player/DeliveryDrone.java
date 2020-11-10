@@ -21,7 +21,7 @@ public class DeliveryDrone extends Unit {
     //when it finds an enemy it will attempt to go pick them up, preventing them from doing anything
     @Override
     public void takeTurn() throws GameActionException {
-
+        super.takeTurn();
         myLocation = rc.getLocation();
 
         //if no target move random and look for enemy

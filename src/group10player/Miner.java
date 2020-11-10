@@ -14,6 +14,11 @@ public class Miner extends Unit{
 
     Set<MapLocation> depositLocations;
 
+    final int maxRefineries = 1;
+    final int maxVaporators = 1;
+    final int maxDesignSchools = 1;
+    final int maxFulfillmentCenters = 1;
+
 
     public Miner(RobotController rc) throws GameActionException {
         super(rc);
@@ -29,6 +34,7 @@ public class Miner extends Unit{
 
     @Override
     public void takeTurn() throws GameActionException {
+        super.takeTurn();
         checkAndBuild();
         goMining();
     }
@@ -63,30 +69,39 @@ public class Miner extends Unit{
         //if we've seen a design school, check if we've seen a fulfillment center
         //if not, try to build one if we have enough soup
 
-        if (!seenRefinery) {
+        if (!seenRefinery && numRefineries < maxRefineries) {
             //try to build one
-            if (teamSoup >= 200){
+            if (teamSoup >= 201){
                 for (Direction dir:directions){
-                    if (!myLocation.add(dir).isAdjacentTo(HQLocation) && !(myLocation.add(dir).distanceSquaredTo(HQLocation) <= 8) && tryBuild(RobotType.REFINERY, dir)) {
+                    if (!myLocation.add(dir).isAdjacentTo(HQLocation) && !(myLocation.add(dir).distanceSquaredTo(HQLocation) < 8) && tryBuild(RobotType.REFINERY, dir)) {
+                        if (rc.getTeamSoup() >= 1){
+                            trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode, 2, myLocation.add(dir).x, myLocation.add(dir).y, 0, 0, 0), 1);
+                        }
                         break;
                         //don't need to update seenRefinery, because the miner should see it at the beginning of next turn
                     }
                 }
             }
-        } else if (!seenDesignSchool) {
+        } else if (!seenDesignSchool && numDesignSchools < maxDesignSchools) {
             //try to build one
-            if (teamSoup >= 200){
+            if (teamSoup >= 205){
                 for (Direction dir:directions){
-                    if (!myLocation.add(dir).isAdjacentTo(HQLocation) && !(myLocation.add(dir).distanceSquaredTo(HQLocation) <= 8) && tryBuild(RobotType.DESIGN_SCHOOL, dir)) {
+                    if (!myLocation.add(dir).isAdjacentTo(HQLocation) && !(myLocation.add(dir).distanceSquaredTo(HQLocation) < 8) && tryBuild(RobotType.DESIGN_SCHOOL, dir)) {
+                        if (rc.getTeamSoup() >= 1){
+                            trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode, 4, myLocation.add(dir).x, myLocation.add(dir).y, 0, 0, 0), 1);
+                        }
                         break;
                         //don't need to update seenDesignSchool, because the miner should see it at the beginning of next turn
                     }
                 }
             }
-        } else if (!seenFulfillmentCenter){
-            if (teamSoup >= 200){
+        } else if (!seenFulfillmentCenter && numFulfillmentCenters < maxFulfillmentCenters){
+            if (teamSoup >= 205){
                 for (Direction dir:directions){
-                    if (!myLocation.add(dir).isAdjacentTo(HQLocation) && !(myLocation.add(dir).distanceSquaredTo(HQLocation) <= 8) && tryBuild(RobotType.FULFILLMENT_CENTER, dir)) {
+                    if (!myLocation.add(dir).isAdjacentTo(HQLocation) && !(myLocation.add(dir).distanceSquaredTo(HQLocation) < 8) && tryBuild(RobotType.FULFILLMENT_CENTER, dir)) {
+                        if (rc.getTeamSoup() >= 1){
+                            trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode, 5, myLocation.add(dir).x, myLocation.add(dir).y, 0, 0, 0), 1);
+                        }
                         break;
                         //don't need to update seenFulfillmentCenter, because the miner should see it at the beginning of next turn
                     }

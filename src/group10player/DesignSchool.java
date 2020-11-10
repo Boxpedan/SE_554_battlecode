@@ -13,7 +13,7 @@ public class DesignSchool extends Building {
     public void takeTurn() throws GameActionException{
         if(numLandscapers < landscaperLimit)
         {
-            if(rc.getTeamSoup() >= 150)
+            if(rc.getTeamSoup() >= 155)
             {
                 for(Direction dir : directions)
                 {
