@@ -73,7 +73,7 @@ public class Miner extends Unit{
             //try to build one
             if (teamSoup >= 201){
                 for (Direction dir:directions){
-                    if (!myLocation.add(dir).isAdjacentTo(HQLocation) && !(myLocation.add(dir).distanceSquaredTo(HQLocation) < 8) && tryBuild(RobotType.REFINERY, dir)) {
+                    if (!myLocation.add(dir).isAdjacentTo(HQLocation) && !(myLocation.add(dir).distanceSquaredTo(HQLocation) <= 8) && tryBuild(RobotType.REFINERY, dir)) {
                         if (rc.getTeamSoup() >= 1){
                             trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode, 2, myLocation.add(dir).x, myLocation.add(dir).y, 0, 0, 0), 1);
                         }
@@ -86,7 +86,7 @@ public class Miner extends Unit{
             //try to build one
             if (teamSoup >= 205){
                 for (Direction dir:directions){
-                    if (!myLocation.add(dir).isAdjacentTo(HQLocation) && !(myLocation.add(dir).distanceSquaredTo(HQLocation) < 8) && tryBuild(RobotType.DESIGN_SCHOOL, dir)) {
+                    if (!myLocation.add(dir).isAdjacentTo(HQLocation) && !(myLocation.add(dir).distanceSquaredTo(HQLocation) <= 8) && tryBuild(RobotType.DESIGN_SCHOOL, dir)) {
                         if (rc.getTeamSoup() >= 1){
                             trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode, 4, myLocation.add(dir).x, myLocation.add(dir).y, 0, 0, 0), 1);
                         }
@@ -98,7 +98,7 @@ public class Miner extends Unit{
         } else if (!seenFulfillmentCenter && numFulfillmentCenters < maxFulfillmentCenters){
             if (teamSoup >= 205){
                 for (Direction dir:directions){
-                    if (!myLocation.add(dir).isAdjacentTo(HQLocation) && !(myLocation.add(dir).distanceSquaredTo(HQLocation) < 8) && tryBuild(RobotType.FULFILLMENT_CENTER, dir)) {
+                    if (!myLocation.add(dir).isAdjacentTo(HQLocation) && !(myLocation.add(dir).distanceSquaredTo(HQLocation) <= 8) && tryBuild(RobotType.FULFILLMENT_CENTER, dir)) {
                         if (rc.getTeamSoup() >= 1){
                             trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode, 5, myLocation.add(dir).x, myLocation.add(dir).y, 0, 0, 0), 1);
                         }
