@@ -59,7 +59,7 @@ public class HQ extends Building{
                 }
             }
         }
-        if(numMiners >= limitMiners&& numMiners <= MAX_LIMIT_MINER && rc.getTeamSoup() >= 300){
+        if(numMiners >= limitMiners&& numMiners <= MAX_LIMIT_MINER && rc.getTeamSoup() >= 510){
             for (Direction dir: Robot.directions){
                 if(tryBuild(RobotType.MINER, dir)){
                     numMiners++;

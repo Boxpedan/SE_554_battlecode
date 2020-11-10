@@ -39,6 +39,12 @@ public class RobotPlayer {
             case DELIVERY_DRONE:
                 current_robot = new DeliveryDrone(rc);
                 break;
+            case NET_GUN:
+                current_robot = new Netgun(rc);
+                break;
+            case VAPORATOR:
+                current_robot = new Vaporator(rc);
+                break;
         }
 
         while (true) {
