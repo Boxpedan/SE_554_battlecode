@@ -10,6 +10,7 @@ apply plugin: 'idea'
 apply plugin: 'eclipse'
 
 apply plugin: 'pmd'
+apply plugin: 'jacoco'
 
 
 ext.versions = [
@@ -333,3 +334,30 @@ task buildMap(type: JavaExec, dependsOn: 'build') {
 
 unpackClient32.onlyIf { arch32 }
 build.dependsOn('unpackClient32')
+
+
+
+test {
+    finalizedBy jacocoTestReport // report is always generated after tests run
+}
+jacocoTestReport {
+    dependsOn test // tests are required to run before generating the report
+}
+
+jacoco {
+    toolVersion = "0.8.5"
+    reportsDir = file("$buildDir/reports/jacoco")
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled = true // coveralls plugin depends on xml format report
+        html.enabled = true
+        xml.destination file("${buildDir}/reports/jacocoHtml")
+    }
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [ '**/examplefuncsplayer/**', '**/scalaplayer/**'])
+        }))
+    }
+}
