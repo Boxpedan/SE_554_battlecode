@@ -142,9 +142,8 @@ public class LandscaperTest {
 
     @Test
     public void findHQTest() throws GameActionException {
-        MapLocation lsLocation = new MapLocation(5,5);
         MapLocation hqLocation = new MapLocation(7,7);
-        MapLocation adjacent = new MapLocation(6,6);
+        MapLocation lsLocation = new MapLocation(6,6);
         RobotInfo hqInfo = new RobotInfo(1, Team.B,RobotType.HQ,-1,false,-1, -1, -1, hqLocation);
         RobotInfo[] nearByRobots = {hqInfo};
         int elevation = 5;
@@ -155,26 +154,18 @@ public class LandscaperTest {
 
         //set Landscaper team to match HQ
         when(RCtest.getTeam()).thenReturn(Team.B);
-        //LStest.setMyTeam();
         LStest.myTeam = Team.B;
 
         //set Landscaper location
         when(RCtest.getLocation()).thenReturn(lsLocation);
         LStest.setMyLocation();
 
-        //set Landscaper can move true if northwest
-        when(RCtest.canMove(Direction.NORTHEAST)).thenReturn(true);
-        //set Landscaper isAdjacentDirection
-        when(RCtest.adjacentLocation(Direction.NORTHEAST)).thenReturn(adjacent);
-
         //set Landscaper elevation sensed equal to 5 to allow for HQ Locating
-        when(RCtest.senseElevation(adjacent)).thenReturn(elevation);
-        when(RCtest.canSenseLocation(adjacent)).thenReturn(true);
-        //LStest.setMyElevation(elevation);
-        LStest.myElevation = 2;
+        when(RCtest.senseElevation(lsLocation)).thenReturn(elevation);
+        when(RCtest.canSenseLocation(lsLocation)).thenReturn(true);
+        LStest.myElevation = elevation;
 
         //set Landscaper sensor radius
-        //LStest.setMySensorRadius(sensorRadius);
         LStest.mySensorRadius = sensorRadius;
 
         //test canDig, expect True is returned
