@@ -13,6 +13,7 @@ public class Landscaper extends Unit{
     boolean onWall;
     int waitTime;
     int maxWaitTime;
+    boolean needToMove;
 
 
 
@@ -28,6 +29,7 @@ public class Landscaper extends Unit{
         onWall = false;
         maxWaitTime = 3;
         waitTime = maxWaitTime;
+        needToMove = false;
         tryFindHQLocation();
     }
 
@@ -62,11 +64,10 @@ public class Landscaper extends Unit{
         } else { //work on building wall
             if (findHQ()) {
                 System.out.println("HQ Found...");
+
                 boolean droppedDirt = this.dropDirtIfYouCan();
-                if (!droppedDirt) {
-                    if (!digIfYouCan()) {
+                if (!droppedDirt && !digIfYouCan() && !tryWalkOnWall()) {
                         walkRandom();
-                    }
                 }
             } else {
                 if (rc.getDirtCarrying() < 1) {
@@ -217,12 +218,14 @@ public class Landscaper extends Unit{
         if(rc.canDepositDirt(bestDropZones[0])){
             rc.depositDirt(bestDropZones[0]);
             System.out.println("Landscaper dropping dirt clockwise");
+            needToMove = true;
             return true;
         }
         else if (waitTime <= 0 && rc.canDepositDirt(bestDropZones[1])) {
             rc.depositDirt(bestDropZones[1]);
             System.out.println("Landscaper dropping dirt counter-clockwise");
             waitTime = maxWaitTime;
+            needToMove = true;
             return true;
         }
         else {
@@ -235,6 +238,26 @@ public class Landscaper extends Unit{
         return wallHeight;
     }
 
+    public boolean tryWalkOnWall() throws GameActionException{
+        Direction[] bestDirections = getBestWallDirections();
+        if(rc.canMove(bestDirections[0])){
+            rc.move(bestDirections[0]);
+            System.out.println("Landscaper walking clockwise");
+            needToMove = false;
+            return true;
+        }
+        else if (waitTime <= 0 && rc.canMove(bestDirections[1])) {
+            rc.move(bestDirections[1]);
+            System.out.println("Landscaper walking counter-clockwise");
+            waitTime = maxWaitTime;
+            needToMove = false;
+            return true;
+        }
+        else {
+            waitTime--;
+            return false;
+        }
+    }
 
     public Direction[] getBestWallDirections(){
         myLocation = rc.getLocation();
