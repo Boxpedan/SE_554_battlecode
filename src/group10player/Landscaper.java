@@ -12,6 +12,7 @@ public class Landscaper extends Unit{
     final int wallHeight = 14;  //height of wall to build around HQ
     boolean onWall;
     int waitTime;
+    int maxWaitTime;
 
 
 
@@ -25,7 +26,8 @@ public class Landscaper extends Unit{
         HQDirection = null;
         wallFinished = false;
         onWall = false;
-        waitTime = 3;
+        maxWaitTime = 3;
+        waitTime = maxWaitTime;
         tryFindHQLocation();
     }
 
@@ -60,7 +62,7 @@ public class Landscaper extends Unit{
         } else { //work on building wall
             if (findHQ()) {
                 System.out.println("HQ Found...");
-                boolean droppedDirt = this.dropDirtIfYouCan(HQDirection);
+                boolean droppedDirt = this.dropDirtIfYouCan();
                 if (!droppedDirt) {
                     if (!digIfYouCan()) {
                         walkRandom();
@@ -206,21 +208,76 @@ public class Landscaper extends Unit{
         }
     }
 
-    public boolean dropDirtIfYouCan(Direction toDrop) throws GameActionException {
+    public boolean dropDirtIfYouCan() throws GameActionException {
         /*if(myLocation.isAdjacentTo(HQLocation)){
             return false;
         }*/
-        if(rc.canDepositDirt(toDrop)){
-            rc.depositDirt(toDrop);
-            System.out.println("Landscaper dropping dirt");
+        Direction[] bestDropZones = getBestWallDirections();
+
+        if(rc.canDepositDirt(bestDropZones[0])){
+            rc.depositDirt(bestDropZones[0]);
+            System.out.println("Landscaper dropping dirt clockwise");
             return true;
         }
-        System.out.println("Landscaper unable to drop dirt");
-        return false;
+        else if (waitTime <= 0 && rc.canDepositDirt(bestDropZones[1])) {
+            rc.depositDirt(bestDropZones[1]);
+            System.out.println("Landscaper dropping dirt counter-clockwise");
+            waitTime = maxWaitTime;
+            return true;
+        }
+        else {
+            waitTime--;
+            return false;
+        }
     }
 
     public int getWallHeight(){
         return wallHeight;
+    }
+
+
+    public Direction[] getBestWallDirections(){
+        myLocation = rc.getLocation();
+        HQDirection = myLocation.directionTo(HQLocation);
+
+        Direction[] best = new Direction[2];
+        switch (HQDirection) {
+            case NORTH:
+                best[0] = Direction.WEST;
+                best[1] = Direction.EAST;
+                break;
+            case NORTHEAST:
+                best[0] = Direction.NORTH;
+                best[1] = Direction.EAST;
+                break;
+            case SOUTH:
+                best[0] = Direction.EAST;
+                best[1] = Direction.WEST;
+                break;
+            case SOUTHEAST:
+                best[0] = Direction.EAST;
+                best[1] = Direction.SOUTH;
+                break;
+            case WEST:
+                best[0] = Direction.SOUTH;
+                best[1] = Direction.NORTH;
+                break;
+            case EAST:
+                best[0] = Direction.NORTH;
+                best[1] = Direction.SOUTH;
+                break;
+            case SOUTHWEST:
+                best[0] = Direction.SOUTH;
+                best[1] = Direction.WEST;
+                break;
+            case NORTHWEST:
+                best[0] = Direction.WEST;
+                best[1] = Direction.NORTH;
+                break;
+        }
+
+    return best;
+
     }
 
 
