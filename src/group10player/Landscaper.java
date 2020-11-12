@@ -11,8 +11,6 @@ public class Landscaper extends Unit{
     boolean wallFinished;
     final int wallHeight = 14;  //height of wall to build around HQ
     boolean onWall;
-    int waitTime;
-    int maxWaitTime;
     boolean needToMove;
 
 
@@ -27,9 +25,8 @@ public class Landscaper extends Unit{
         HQDirection = null;
         wallFinished = false;
         onWall = false;
-        maxWaitTime = 3;
-        waitTime = maxWaitTime;
         needToMove = false;
+        maxCarry = 1;
         tryFindHQLocation();
     }
 
@@ -67,17 +64,20 @@ public class Landscaper extends Unit{
 
                 boolean droppedDirt = this.dropDirtIfYouCan();
                 if (!droppedDirt && !digIfYouCan() && !tryWalkOnWall()) {
+                        needToMove= false;
                         walkRandom();
                 }
             } else {
-                if (rc.getDirtCarrying() < 1) {
+                if (rc.getDirtCarrying() < maxCarry) {
                     if (!digIfYouCan()) {
                         if (!tryMoveTowardsFavorRight(HQLocation)) { //!moveTowardHQ()
+                            needToMove = false;
                             walkRandom();
                         }
                     }
                 } else {
                     if (!tryMoveTowardsFavorRight(HQLocation)) { //!moveTowardHQ()
+                        needToMove = false;
                         walkRandom();
                     }
                 }
@@ -117,7 +117,7 @@ public class Landscaper extends Unit{
             //if(rc.canMove(dir)){
             myLocation = rc.getLocation();
             if(myLocation.isAdjacentTo(HQLocation) && rc.canSenseLocation(myLocation)){
-                if(rc.senseElevation(myLocation) >= wallHeight){  //only raise wall to 10 high for now
+                if(rc.senseElevation(myLocation) >= wallHeight) {  //only raise wall to 10 high for now
                     continue;
                 }
                 if (rc.senseElevation(myLocation) < minElevation){
@@ -157,7 +157,7 @@ public class Landscaper extends Unit{
     }*/
 
 
-
+/*
     //Try to dig dirt and dig dirt if you can, from highest elevation
     public boolean digIfYouCan() throws GameActionException{
         Direction minElevationDir = null;
@@ -209,6 +209,71 @@ public class Landscaper extends Unit{
         }
     }
 
+ */
+    public boolean digIfYouCan() throws GameActionException{
+        boolean adjToHQ = false;
+        int minElevationAround = Integer.MAX_VALUE;
+        Direction minElevationDir = null;
+
+        myLocation = rc.getLocation();
+        HQDirection = myLocation.directionTo(HQLocation);
+        adjToHQ = myLocation.isAdjacentTo(HQLocation);
+
+        //Don't dig if not by HQ or if you need to be moving
+        if(!adjToHQ || needToMove){
+            return false;
+        }
+        //Don't dig if already carrying max, should be caught earlier, but just in case
+        if(rc.getDirtCarrying() > maxCarry){
+            return false;
+        }
+
+        MapLocation digCandidate = null;
+        //Attempt to dig in directions that are not adjacent to HQ or an allied building
+        for (Direction dir : directions){
+            digCandidate = rc.adjacentLocation(dir);
+
+            if(digCandidate == null || !rc.canSenseLocation(digCandidate)){
+                needToMove = true;
+                continue;
+            }
+
+            if(digCandidate.isAdjacentTo(HQLocation)){
+                needToMove = true;
+                continue;
+            }
+
+            if(rc.isLocationOccupied(digCandidate)){
+                RobotInfo adjRobot = rc.senseRobotAtLocation(digCandidate);
+                if(adjRobot.team == myTeam ){
+                    needToMove = true;
+                    continue;
+                }
+            }
+            int dirElevation = rc.senseElevation(digCandidate);
+            if (dirElevation <= minElevationAround && rc.canDigDirt(dir)) {
+                minElevationAround = dirElevation;
+                minElevationDir = dir;
+            }
+
+        }
+        if(minElevationDir != null){
+            if (rc.canDigDirt(minElevationDir)) {
+                rc.digDirt(minElevationDir);
+                System.out.println("Landscaper digging");
+                return true;
+            }else{
+                return false;
+            }
+        }
+        else{
+            System.out.println("Landscaper can't dig");
+            return false;
+        }
+
+    }
+
+
     public boolean dropDirtIfYouCan() throws GameActionException {
         /*if(myLocation.isAdjacentTo(HQLocation)){
             return false;
@@ -221,15 +286,13 @@ public class Landscaper extends Unit{
             needToMove = true;
             return true;
         }
-        else if (waitTime <= 0 && rc.canDepositDirt(bestDropZones[1])) {
+        if (rc.canDepositDirt(bestDropZones[1])) {
             rc.depositDirt(bestDropZones[1]);
             System.out.println("Landscaper dropping dirt counter-clockwise");
-            waitTime = maxWaitTime;
             needToMove = true;
             return true;
         }
         else {
-            waitTime--;
             return false;
         }
     }
@@ -246,15 +309,13 @@ public class Landscaper extends Unit{
             needToMove = false;
             return true;
         }
-        else if (waitTime <= 0 && rc.canMove(bestDirections[1])) {
+        if (rc.canMove(bestDirections[1])) {
             rc.move(bestDirections[1]);
             System.out.println("Landscaper walking counter-clockwise");
-            waitTime = maxWaitTime;
             needToMove = false;
             return true;
         }
         else {
-            waitTime--;
             return false;
         }
     }
