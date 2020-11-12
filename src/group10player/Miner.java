@@ -131,7 +131,7 @@ public class Miner extends Unit{
                 for(Direction dir:directions){
                     if(!myLocation.add(dir).isAdjacentTo(HQLocation) && !(myLocation.add(dir).distanceSquaredTo(HQLocation) < 8) && tryBuild(RobotType.VAPORATOR,dir)){
                         if(rc.getTeamSoup() >= 1){
-                            trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode,7,myLocation.add(dir).x,myLocation.add(dir).y,0,0,0),1);
+                            trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode,3,myLocation.add(dir).x,myLocation.add(dir).y,0,0,0),1);
                         }
                         break;
                     }
