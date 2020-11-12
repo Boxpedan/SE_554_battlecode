@@ -4,26 +4,27 @@ import battlecode.common.*;
 public class Landscaper extends Unit{
     //boolean seeFlood;
     //MapLocation floodedLocation;
-    int storedDirt;
+    //Direction directionFlooded;
+    int maxCarry;
     int myElevation;
     int mySensorRadius;
     boolean wallFinished;
-    //Direction directionFlooded;
     final int wallHeight = 14;  //height of wall to build around HQ
+    boolean needToMove;
+
+
 
     public Landscaper(RobotController rc) throws GameActionException {
         super(rc);
-        //seeFlood = rc.senseFlooding(myLocation);
-        //floodedLocation = null;
         setMyLocation();
         if (rc.canSenseLocation(myLocation)){
             myElevation = rc.senseElevation(myLocation);
         }
-        storedDirt = 0;
         mySensorRadius = rc.getCurrentSensorRadiusSquared();
         HQDirection = null;
         wallFinished = false;
-        //directionFlooded = null;
+        needToMove = false;
+        maxCarry = 1;
         tryFindHQLocation();
     }
 
@@ -58,35 +59,23 @@ public class Landscaper extends Unit{
         } else { //work on building wall
             if (findHQ()) {
                 System.out.println("HQ Found...");
-                /*if (rc.getDirtCarrying() < 2){
-                    if (!digIfYouCan()){
+
+                boolean droppedDirt = this.dropDirtIfYouCan();
+                if (!droppedDirt && !digIfYouCan() && !tryWalkOnWall()) {
+                        needToMove= false;
                         walkRandom();
-                    }
-                }*/
-                boolean droppedDirt = this.dropDirtIfYouCan(HQDirection);
-                if (!droppedDirt) {
-                    if (!digIfYouCan()) {
-                        walkRandom();
-                    }
                 }
-            }/* else if(seeFlood) {
-                System.out.println("Flooding Found...");
-                boolean droppedDirt = this.dropDirtIfYouCan(directionFlooded);
-                if(!droppedDirt){
-                    if(!digIfYouCan()){
-                        walkRandom();
-                    }
-                }
-            }*/ else {
-                //if(!findFlooding()){
-                if (rc.getDirtCarrying() < 2) {
+            } else {
+                if (rc.getDirtCarrying() < maxCarry) {
                     if (!digIfYouCan()) {
                         if (!tryMoveTowardsFavorRight(HQLocation)) { //!moveTowardHQ()
+                            needToMove = false;
                             walkRandom();
                         }
                     }
                 } else {
                     if (!tryMoveTowardsFavorRight(HQLocation)) { //!moveTowardHQ()
+                        needToMove = false;
                         walkRandom();
                     }
                 }
@@ -96,37 +85,11 @@ public class Landscaper extends Unit{
     }
 
 
-    //Look for flooding and if found update floodedLocation and move back one square
-    /*public boolean findFlooding() throws GameActionException{
-        for (Direction dir:directions){
-            if(rc.canMove(dir)){
-                MapLocation verifyLocation = rc.adjacentLocation(dir);
-                seeFlood = rc.senseFlooding(verifyLocation);
-                if(seeFlood) {
-                    floodedLocation = verifyLocation;
-                    MapLocation opposite = myLocation.subtract(dir);
-                    directionFlooded = myLocation.directionTo(floodedLocation);
-                    Direction oppositeDirection = myLocation.directionTo(opposite);
-                    if (rc.canMove(oppositeDirection)) {
-                        rc.move(oppositeDirection);
-                        System.out.println("Flooding Found!");
-                        return true;
-                    }else{
-                        return false;
-                    }
-                }
-            }
-        }
-        System.out.println("No Flooding Found!");
-        return false;
-    }*/
-
     public boolean checkWallFinished() throws GameActionException{
         if (HQLocation == null){
             tryFindHQLocation();
             return false;
         }
-        int sum = 0;
         for (Direction dir: directions){
             if (!rc.canSenseLocation(HQLocation.add(dir))){
                 return false;
@@ -150,14 +113,14 @@ public class Landscaper extends Unit{
         MapLocation verifyLocation;
         for (Direction dir: directions){
             //if(rc.canMove(dir)){
-            verifyLocation = rc.adjacentLocation(dir);
-            if(verifyLocation != null && verifyLocation.isAdjacentTo(HQLocation)){
-                if (rc.canSenseLocation(verifyLocation) && rc.senseElevation(verifyLocation) >= wallHeight){  //only raise wall to 10 high for now
+            myLocation = rc.getLocation();
+            if(myLocation.isAdjacentTo(HQLocation) && rc.canSenseLocation(myLocation)){
+                if(rc.senseElevation(myLocation) >= wallHeight) {  //only raise wall to 10 high for now
                     continue;
                 }
-                if (rc.canSenseLocation(verifyLocation) && rc.senseElevation(verifyLocation) < minElevation){
+                if (rc.senseElevation(myLocation) < minElevation){
                     HQDirection = dir;
-                    minElevation = rc.senseElevation(verifyLocation);
+                    minElevation = rc.senseElevation(myLocation);
                 }
             }
             //}    //end of:  if(rc.canMove(dir)){
@@ -191,7 +154,9 @@ public class Landscaper extends Unit{
        return false;
     }*/
 
-    //Try to dig dirt and dig dirt if you can, give from highest elevation
+
+/*
+    //Try to dig dirt and dig dirt if you can, from highest elevation
     public boolean digIfYouCan() throws GameActionException{
         Direction minElevationDir = null;
         int minElevationAround = Integer.MAX_VALUE;
@@ -206,18 +171,15 @@ public class Landscaper extends Unit{
                     System.out.println("My location is " + rc.getLocation().toString() + ", I'm failing to see " + rc.adjacentLocation(dir).toString());
                     continue;
                 }
-                if (!adjLocation.isAdjacentTo(HQLocation)/* && dir != directionFlooded*/) {
+                if (!adjLocation.isAdjacentTo(HQLocation)) {
                     for (Direction dir2 : directions) {
                         if (!rc.canSenseLocation(adjLocation.add(dir2))) {
                             System.out.println("My location is " + rc.getLocation().toString() + ", I'm failing to see " + adjLocation.add(dir2).toString());
                             continue;
                         }
-                        if (rc.senseFlooding(adjLocation.add(dir2))) {
-                            dontDig = true; //don't dig if tile is adjacent to water
-                            break;
-                        }
-                        if (adjLocation.distanceSquaredTo(HQLocation) <= 8) {
-                            dontDig = true; //don't dig from tiles within 2 tiles of HQ
+
+                        if (adjLocation.distanceSquaredTo(HQLocation) <= 4) {
+                            dontDig = true; //don't dig from tiles within 1 tiles of HQ
                             break;
                         }
                     }
@@ -245,35 +207,161 @@ public class Landscaper extends Unit{
         }
     }
 
+ */
+    public boolean digIfYouCan() throws GameActionException{
+        boolean adjToHQ = false;
+        int minElevationAround = Integer.MAX_VALUE;
+        Direction minElevationDir = null;
+
+        myLocation = rc.getLocation();
+        HQDirection = myLocation.directionTo(HQLocation);
+        adjToHQ = myLocation.isAdjacentTo(HQLocation);
+
+        //Don't dig if not by HQ or if you need to be moving
+        if(!adjToHQ || needToMove){
+            return false;
+        }
+        //Don't dig if already carrying max, should be caught earlier, but just in case
+        if(rc.getDirtCarrying() > maxCarry){
+            return false;
+        }
+
+        MapLocation digCandidate = null;
+        //Attempt to dig in directions that are not adjacent to HQ or an allied building
+        for (Direction dir : directions){
+            digCandidate = rc.adjacentLocation(dir);
+
+            if(digCandidate == null || !rc.canSenseLocation(digCandidate)){
+                needToMove = true;
+                continue;
+            }
+
+            if(digCandidate.isAdjacentTo(HQLocation)){
+                needToMove = true;
+                continue;
+            }
+
+            if(rc.isLocationOccupied(digCandidate)){
+                RobotInfo adjRobot = rc.senseRobotAtLocation(digCandidate);
+                if(adjRobot.team == myTeam ){
+                    needToMove = true;
+                    continue;
+                }
+            }
+            int dirElevation = rc.senseElevation(digCandidate);
+            if (dirElevation <= minElevationAround && rc.canDigDirt(dir)) {
+                minElevationAround = dirElevation;
+                minElevationDir = dir;
+            }
+
+        }
+        if(minElevationDir != null){
+            if (rc.canDigDirt(minElevationDir)) {
+                rc.digDirt(minElevationDir);
+                System.out.println("Landscaper digging");
+                return true;
+            }else{
+                return false;
+            }
+        }
+        else{
+            System.out.println("Landscaper can't dig");
+            return false;
+        }
+
+    }
 
 
-    public boolean dropDirtIfYouCan(Direction toDrop) throws GameActionException {
+    public boolean dropDirtIfYouCan() throws GameActionException {
         /*if(myLocation.isAdjacentTo(HQLocation)){
             return false;
         }*/
-        if(rc.canDepositDirt(toDrop)){
-            rc.depositDirt(toDrop);
-            System.out.println("Landscaper dropping dirt");
+        Direction[] bestDropZones = getBestWallDirections();
+
+        if(rc.canDepositDirt(bestDropZones[0])){
+            rc.depositDirt(bestDropZones[0]);
+            System.out.println("Landscaper dropping dirt clockwise");
+            needToMove = true;
             return true;
         }
-        System.out.println("Landscaper unable to drop dirt");
-        return false;
+        if (rc.canDepositDirt(bestDropZones[1])) {
+            rc.depositDirt(bestDropZones[1]);
+            System.out.println("Landscaper dropping dirt counter-clockwise");
+            needToMove = true;
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     public int getWallHeight(){
         return wallHeight;
     }
-    /*
-    * Comment for helper functions.
-    //helper function to allow setting myElevationToInt
-    public void setMyElevation(int num){
-        myElevation = num;
+
+    public boolean tryWalkOnWall() throws GameActionException{
+        Direction[] bestDirections = getBestWallDirections();
+        if(rc.canMove(bestDirections[0])){
+            rc.move(bestDirections[0]);
+            System.out.println("Landscaper walking clockwise");
+            needToMove = false;
+            return true;
+        }
+        if (rc.canMove(bestDirections[1])) {
+            rc.move(bestDirections[1]);
+            System.out.println("Landscaper walking counter-clockwise");
+            needToMove = false;
+            return true;
+        }
+        else {
+            return false;
+        }
     }
-    //helper function to allow setting mySensorRadius
-    public void setMySensorRadius(int num){
-        mySensorRadius = num;
+
+    public Direction[] getBestWallDirections(){
+        myLocation = rc.getLocation();
+        HQDirection = myLocation.directionTo(HQLocation);
+
+        Direction[] best = new Direction[2];
+        switch (HQDirection) {
+            case NORTH:
+                best[0] = Direction.WEST;
+                best[1] = Direction.EAST;
+                break;
+            case NORTHEAST:
+                best[0] = Direction.NORTH;
+                best[1] = Direction.EAST;
+                break;
+            case SOUTH:
+                best[0] = Direction.EAST;
+                best[1] = Direction.WEST;
+                break;
+            case SOUTHEAST:
+                best[0] = Direction.EAST;
+                best[1] = Direction.SOUTH;
+                break;
+            case WEST:
+                best[0] = Direction.SOUTH;
+                best[1] = Direction.NORTH;
+                break;
+            case EAST:
+                best[0] = Direction.NORTH;
+                best[1] = Direction.SOUTH;
+                break;
+            case SOUTHWEST:
+                best[0] = Direction.SOUTH;
+                best[1] = Direction.WEST;
+                break;
+            case NORTHWEST:
+                best[0] = Direction.WEST;
+                best[1] = Direction.NORTH;
+                break;
+        }
+
+    return best;
+
     }
-     */
+
 
 }
 
