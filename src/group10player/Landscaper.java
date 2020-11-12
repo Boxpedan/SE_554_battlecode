@@ -222,7 +222,7 @@ public class Landscaper extends Unit{
             return false;
         }
         //Don't dig if already carrying max, should be caught earlier, but just in case
-        if(rc.getDirtCarrying() > maxCarry){
+        if(rc.getDirtCarrying() >= maxCarry){
             return false;
         }
 
@@ -255,27 +255,19 @@ public class Landscaper extends Unit{
             }
 
         }
-        if(minElevationDir != null){
-            if (rc.canDigDirt(minElevationDir)) {
-                rc.digDirt(minElevationDir);
-                System.out.println("Landscaper digging");
-                return true;
-            }else{
-                return false;
-            }
+        if(minElevationDir != null && rc.canDigDirt(minElevationDir)){
+            rc.digDirt(minElevationDir);
+            System.out.println("Landscaper digging");
+            return true;
         }
-        else{
-            System.out.println("Landscaper can't dig");
-            return false;
-        }
+        System.out.println("Landscaper can't dig");
+        return false;
+
 
     }
 
 
     public boolean dropDirtIfYouCan() throws GameActionException {
-        /*if(myLocation.isAdjacentTo(HQLocation)){
-            return false;
-        }*/
         Direction[] bestDropZones = getBestWallDirections();
 
         if(rc.canDepositDirt(bestDropZones[0])){
