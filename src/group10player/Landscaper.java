@@ -278,12 +278,12 @@ public class Landscaper extends Unit{
         }*/
         myLocation = rc.getLocation();
         Direction[] bestDropZones = getBestWallDirections(myLocation);
-        MapLocation [] adjacentWallTiles;
+        //MapLocation [] adjacentWallTiles;
 
-        boolean evenElevation = true;
+        //boolean evenElevation = true;
 
         if(rc.canDepositDirt(bestDropZones[0])){
-            adjacentWallTiles = getBestWallLocations(myLocation.add(bestDropZones[0]));
+            /*adjacentWallTiles = getBestWallLocations(myLocation.add(bestDropZones[0]));
             if (rc.canSenseLocation(myLocation.add(bestDropZones[0])) && rc.canSenseLocation(adjacentWallTiles[0]) && rc.canSenseLocation(adjacentWallTiles[1])){
                 if (rc.senseElevation(myLocation.add(bestDropZones[0])) - rc.senseElevation(adjacentWallTiles[0]) >= 3){
                     evenElevation = false;
@@ -291,17 +291,17 @@ public class Landscaper extends Unit{
                 if (rc.senseElevation(myLocation.add(bestDropZones[0])) - rc.senseElevation(adjacentWallTiles[1]) >= 3){
                     evenElevation = false;
                 }
-            }
-            if (evenElevation) {
+            }*/
+            if (checkElevationDif(bestDropZones[0])) {
                 rc.depositDirt(bestDropZones[0]);
                 System.out.println("Landscaper dropping dirt clockwise");
                 needToMove = true;
                 return true;
             }
         }
-        evenElevation = true;
+        //evenElevation = true;
         if (rc.canDepositDirt(bestDropZones[1])) {
-            adjacentWallTiles = getBestWallLocations(myLocation.add(bestDropZones[1]));
+            /*adjacentWallTiles = getBestWallLocations(myLocation.add(bestDropZones[1]));
             if (rc.canSenseLocation(myLocation.add(bestDropZones[1])) && rc.canSenseLocation(adjacentWallTiles[0]) && rc.canSenseLocation(adjacentWallTiles[1])){
                 if (rc.senseElevation(myLocation.add(bestDropZones[1])) - rc.senseElevation(adjacentWallTiles[0]) >= 3){
                     evenElevation = false;
@@ -309,8 +309,8 @@ public class Landscaper extends Unit{
                 if (rc.senseElevation(myLocation.add(bestDropZones[1])) - rc.senseElevation(adjacentWallTiles[1]) >= 3){
                     evenElevation = false;
                 }
-            }
-            if (evenElevation) {
+            }*/
+            if (checkElevationDif(bestDropZones[1])) {
                 rc.depositDirt(bestDropZones[1]);
                 System.out.println("Landscaper dropping dirt counter-clockwise");
                 needToMove = true;
@@ -318,6 +318,26 @@ public class Landscaper extends Unit{
             }
         }
         return false;
+    }
+
+    public boolean checkElevationDif(Direction bestDropZoneTemp) throws GameActionException{
+        if (bestDropZoneTemp == null) {
+            System.out.println("checkElevationDif - value is null!");
+            return false;
+        }
+
+        myLocation = rc.getLocation();
+        MapLocation bestDropZone = myLocation.add(bestDropZoneTemp);
+        MapLocation [] adjacentWallTiles = getBestWallLocations(bestDropZone);
+        if (rc.canSenseLocation(bestDropZone) && rc.canSenseLocation(adjacentWallTiles[0]) && rc.canSenseLocation(adjacentWallTiles[1])){
+            if (rc.senseElevation(bestDropZone) - rc.senseElevation(adjacentWallTiles[0]) >= 3){
+                return false;
+            }
+            if (rc.senseElevation(bestDropZone) - rc.senseElevation(adjacentWallTiles[1]) >= 3){
+                return false;
+            }
+        }
+        return true;
     }
 
     public int getWallHeight(){
