@@ -9,7 +9,7 @@ public class Landscaper extends Unit{
     int myElevation;
     int mySensorRadius;
     boolean wallFinished;
-    final int wallHeight = 14;  //height of wall to build around HQ
+    final int wallHeight = 1004;  //height of wall to build around HQ
     boolean needToMove;
 
 
@@ -276,23 +276,48 @@ public class Landscaper extends Unit{
         /*if(myLocation.isAdjacentTo(HQLocation)){
             return false;
         }*/
-        Direction[] bestDropZones = getBestWallDirections();
+        myLocation = rc.getLocation();
+        Direction[] bestDropZones = getBestWallDirections(myLocation);
+        MapLocation [] adjacentWallTiles;
+
+        boolean evenElevation = true;
 
         if(rc.canDepositDirt(bestDropZones[0])){
-            rc.depositDirt(bestDropZones[0]);
-            System.out.println("Landscaper dropping dirt clockwise");
-            needToMove = true;
-            return true;
+            adjacentWallTiles = getBestWallLocations(myLocation.add(bestDropZones[0]));
+            if (rc.canSenseLocation(myLocation.add(bestDropZones[0])) && rc.canSenseLocation(adjacentWallTiles[0]) && rc.canSenseLocation(adjacentWallTiles[1])){
+                if (rc.senseElevation(myLocation.add(bestDropZones[0])) - rc.senseElevation(adjacentWallTiles[0]) >= 3){
+                    evenElevation = false;
+                }
+                if (rc.senseElevation(myLocation.add(bestDropZones[0])) - rc.senseElevation(adjacentWallTiles[1]) >= 3){
+                    evenElevation = false;
+                }
+            }
+            if (evenElevation) {
+                rc.depositDirt(bestDropZones[0]);
+                System.out.println("Landscaper dropping dirt clockwise");
+                needToMove = true;
+                return true;
+            }
         }
+        evenElevation = true;
         if (rc.canDepositDirt(bestDropZones[1])) {
-            rc.depositDirt(bestDropZones[1]);
-            System.out.println("Landscaper dropping dirt counter-clockwise");
-            needToMove = true;
-            return true;
+            adjacentWallTiles = getBestWallLocations(myLocation.add(bestDropZones[1]));
+            if (rc.canSenseLocation(myLocation.add(bestDropZones[1])) && rc.canSenseLocation(adjacentWallTiles[0]) && rc.canSenseLocation(adjacentWallTiles[1])){
+                if (rc.senseElevation(myLocation.add(bestDropZones[1])) - rc.senseElevation(adjacentWallTiles[0]) >= 3){
+                    evenElevation = false;
+                }
+                if (rc.senseElevation(myLocation.add(bestDropZones[1])) - rc.senseElevation(adjacentWallTiles[1]) >= 3){
+                    evenElevation = false;
+                }
+            }
+            if (evenElevation) {
+                rc.depositDirt(bestDropZones[1]);
+                System.out.println("Landscaper dropping dirt counter-clockwise");
+                needToMove = true;
+                return true;
+            }
         }
-        else {
-            return false;
-        }
+        return false;
     }
 
     public int getWallHeight(){
@@ -300,7 +325,8 @@ public class Landscaper extends Unit{
     }
 
     public boolean tryWalkOnWall() throws GameActionException{
-        Direction[] bestDirections = getBestWallDirections();
+        myLocation = rc.getLocation();
+        Direction[] bestDirections = getBestWallDirections(myLocation);
         if(rc.canMove(bestDirections[0])){
             rc.move(bestDirections[0]);
             System.out.println("Landscaper walking clockwise");
@@ -318,9 +344,9 @@ public class Landscaper extends Unit{
         }
     }
 
-    public Direction[] getBestWallDirections(){
-        myLocation = rc.getLocation();
-        HQDirection = myLocation.directionTo(HQLocation);
+    public Direction[] getBestWallDirections(MapLocation source){
+        //myLocation = rc.getLocation();
+        HQDirection = source.directionTo(HQLocation);
 
         Direction[] best = new Direction[2];
         switch (HQDirection) {
@@ -359,6 +385,50 @@ public class Landscaper extends Unit{
         }
 
     return best;
+
+    }
+
+    public MapLocation[] getBestWallLocations(MapLocation source){
+        //myLocation = rc.getLocation();
+        HQDirection = source.directionTo(HQLocation);
+
+        MapLocation[] best = new MapLocation[2];
+        switch (HQDirection) {
+            case NORTH:
+                best[0] = source.add(Direction.WEST);
+                best[1] = source.add(Direction.EAST);
+                break;
+            case NORTHEAST:
+                best[0] = source.add(Direction.NORTH);
+                best[1] = source.add(Direction.EAST);
+                break;
+            case SOUTH:
+                best[0] = source.add(Direction.EAST);
+                best[1] = source.add(Direction.WEST);
+                break;
+            case SOUTHEAST:
+                best[0] = source.add(Direction.EAST);
+                best[1] = source.add(Direction.SOUTH);
+                break;
+            case WEST:
+                best[0] = source.add(Direction.SOUTH);
+                best[1] = source.add(Direction.NORTH);
+                break;
+            case EAST:
+                best[0] = source.add(Direction.NORTH);
+                best[1] = source.add(Direction.SOUTH);
+                break;
+            case SOUTHWEST:
+                best[0] = source.add(Direction.SOUTH);
+                best[1] = source.add(Direction.WEST);
+                break;
+            case NORTHWEST:
+                best[0] = source.add(Direction.WEST);
+                best[1] = source.add(Direction.NORTH);
+                break;
+        }
+
+        return best;
 
     }
 
