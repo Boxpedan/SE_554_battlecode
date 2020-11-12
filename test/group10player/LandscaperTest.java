@@ -178,38 +178,35 @@ public class LandscaperTest {
     @Test
     public void digIfYouCanCanDig() throws GameActionException {
         MapLocation lsLocation = new MapLocation(5,5);
-        MapLocation hqLocation = new MapLocation(17,17);
-        MapLocation adjacent = new MapLocation(7,7);
+        MapLocation hqLocation = new MapLocation(6,6);
+        MapLocation adjacent = new MapLocation(4,4);
         int elevation = 5;
         int sensorRadius = 24;
 
         //setHQLocation
-        //LStest.setHqLocation(hqLocation);
         LStest.HQLocation = hqLocation;
 
         //set Landscaper sensor radius
-        //LStest.setMySensorRadius(sensorRadius);
         LStest.mySensorRadius = sensorRadius;
 
         //set Landscaper location
         when(RCtest.getLocation()).thenReturn(lsLocation);
         LStest.setMyLocation();
 
-        //set Landscaper can move true if northwest
-        when(RCtest.canMove(Direction.NORTHEAST)).thenReturn(true);
+
         //set Landscaper isAdjacentDirection
-        when(RCtest.adjacentLocation(Direction.NORTHEAST)).thenReturn(adjacent);
+        when(RCtest.adjacentLocation(Direction.WEST)).thenReturn(adjacent);
+        when(RCtest.isLocationOccupied(adjacent)).thenReturn(false);
+
 
         //set Landscaper elevation sensed equal to 5 to allow for HQ Locating
         when(RCtest.senseElevation(adjacent)).thenReturn(elevation);
         when(RCtest.canSenseLocation(adjacent)).thenReturn(true);
-        when(RCtest.canSenseLocation(adjacent.add(Direction.SOUTH))).thenReturn(true);
-        //LStest.setMyElevation(elevation);
-        LStest.myElevation = 2;
+        LStest.myElevation = elevation;
 
         //Landscaper can dig to south
-        when(RCtest.canDigDirt(Direction.SOUTH)).thenReturn(true);
-        when(RCtest.canDigDirt(Direction.NORTHEAST)).thenReturn(true);
+        when(RCtest.canDigDirt(Direction.WEST)).thenReturn(true);
+        when(RCtest.canDigDirt(Direction.NORTHWEST)).thenReturn(true);
 
         //test digIfYouCan, expect True is returned
         boolean found = LStest.digIfYouCan();
@@ -217,18 +214,30 @@ public class LandscaperTest {
 
     }
 
+
     @Test
     public void dropDirtIfYouCan() throws GameActionException {
-        Direction toDrop = Direction.NORTHEAST;
+        MapLocation lsLocation = new MapLocation(5,5);
+        MapLocation hqLocation = new MapLocation(4, 4);
+
+        LStest.myLocation = lsLocation;
+        LStest.HQLocation = hqLocation;
+
+        when(RCtest.getLocation()).thenReturn(lsLocation);
 
         //return true if testing if can drop
-        when(RCtest.canDepositDirt(toDrop)).thenReturn(true);
+
+        when(RCtest.canDepositDirt(Direction.SOUTH)).thenReturn(true);
+        when(RCtest.canDepositDirt(Direction.EAST)).thenReturn(true);
+
 
         //test dropIfYouCan, expect True is returned
-        boolean found = LStest.dropDirtIfYouCan(toDrop);
+        boolean found = LStest.dropDirtIfYouCan();
         assertTrue(found);
 
     }
+
+
 
     @Test
     public void checkWallFinished() throws GameActionException {
