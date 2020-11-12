@@ -179,7 +179,7 @@ public class LandscaperTest {
     public void digIfYouCanCanDig() throws GameActionException {
         MapLocation lsLocation = new MapLocation(5,5);
         MapLocation hqLocation = new MapLocation(6,6);
-        MapLocation adjacent = new MapLocation(4,4);
+        MapLocation adjacent = new MapLocation(4,5);
         int elevation = 5;
         int sensorRadius = 24;
 
@@ -214,9 +214,70 @@ public class LandscaperTest {
 
     }
 
+    @Test
+    public void digIfYouCanTeamMate() throws GameActionException {
+        MapLocation lsLocation = new MapLocation(5,5);
+        MapLocation hqLocation = new MapLocation(6,6);
+        MapLocation adjacent = new MapLocation(4,5);
+        RobotInfo teammate = new RobotInfo(1, Team.B,RobotType.MINER,-1,false,-1, -1, -1, hqLocation);
+        int sensorRadius = 24;
+
+        //setHQLocation
+        LStest.HQLocation = hqLocation;
+
+        //set Landscaper sensor radius
+        LStest.mySensorRadius = sensorRadius;
+
+        //set Landscaper location
+        when(RCtest.getLocation()).thenReturn(lsLocation);
+        LStest.setMyLocation();
+
+
+        //set Landscaper isAdjacentDirection
+        when(RCtest.adjacentLocation(Direction.WEST)).thenReturn(adjacent);
+        when(RCtest.isLocationOccupied(adjacent)).thenReturn(true);
+        when(RCtest.senseRobotAtLocation(adjacent)).thenReturn(teammate);
+
+
+        //test digIfYouCan, expect True is returned
+        boolean found = LStest.digIfYouCan();
+        assertFalse(found);
+
+
+    }
 
     @Test
-    public void dropDirtIfYouCan() throws GameActionException {
+    public void digIfYouCanTooMuchDirt() throws GameActionException {
+        MapLocation lsLocation = new MapLocation(5,5);
+        MapLocation hqLocation = new MapLocation(6,6);
+
+        int elevation = 5;
+        int sensorRadius = 24;
+
+        //setHQLocation
+        LStest.HQLocation = hqLocation;
+
+        //set Landscaper sensor radius
+        LStest.mySensorRadius = sensorRadius;
+
+        //set Landscaper location
+        when(RCtest.getLocation()).thenReturn(lsLocation);
+        LStest.setMyLocation();
+
+        when(RCtest.getDirtCarrying()).thenReturn(LStest.maxCarry);
+
+
+        //test digIfYouCan, expect True is returned
+        boolean found = LStest.digIfYouCan();
+        assertFalse(found);
+
+    }
+
+
+
+
+    @Test
+    public void dropDirtIfYouCanBestLocation() throws GameActionException {
         MapLocation lsLocation = new MapLocation(5,5);
         MapLocation hqLocation = new MapLocation(4, 4);
 
@@ -228,12 +289,55 @@ public class LandscaperTest {
         //return true if testing if can drop
 
         when(RCtest.canDepositDirt(Direction.SOUTH)).thenReturn(true);
+        when(RCtest.canDepositDirt(Direction.WEST)).thenReturn(true);
+
+
+        //test dropIfYouCan, expect True is returned
+        boolean found = LStest.dropDirtIfYouCan();
+        assertTrue(found);
+
+    }
+
+    @Test
+    public void dropDirtIfYouCanSecondBestLocation() throws GameActionException {
+        MapLocation lsLocation = new MapLocation(5,5);
+        MapLocation hqLocation = new MapLocation(6, 6);
+
+        LStest.myLocation = lsLocation;
+        LStest.HQLocation = hqLocation;
+
+        when(RCtest.getLocation()).thenReturn(lsLocation);
+
+        //return true if testing if can drop
+        when(RCtest.canDepositDirt(Direction.NORTH)).thenReturn(false);
         when(RCtest.canDepositDirt(Direction.EAST)).thenReturn(true);
 
 
         //test dropIfYouCan, expect True is returned
         boolean found = LStest.dropDirtIfYouCan();
         assertTrue(found);
+
+    }
+
+    @Test
+    public void cantDropDirt() throws GameActionException {
+        MapLocation lsLocation = new MapLocation(5,5);
+        MapLocation hqLocation = new MapLocation(4, 5);
+
+        LStest.myLocation = lsLocation;
+        LStest.HQLocation = hqLocation;
+
+        when(RCtest.getLocation()).thenReturn(lsLocation);
+
+        //return true if testing if can drop
+
+        when(RCtest.canDepositDirt(Direction.NORTH)).thenReturn(false);
+        when(RCtest.canDepositDirt(Direction.SOUTH)).thenReturn(false);
+
+
+        //test dropIfYouCan, expect True is returned
+        boolean found = LStest.dropDirtIfYouCan();
+        assertFalse(found);
 
     }
 
@@ -300,6 +404,72 @@ public class LandscaperTest {
         //test wallFinished, expect False is returned
         boolean found = LStest.checkWallFinished();
         assertFalse(found);
+    }
+
+    @Test
+    public void cantWalkOnWall() throws GameActionException {
+        MapLocation lsLocation = new MapLocation(5,5);
+        MapLocation hqLocation = new MapLocation(5, 6);
+
+        LStest.myLocation = lsLocation;
+        LStest.HQLocation = hqLocation;
+
+        when(RCtest.getLocation()).thenReturn(lsLocation);
+
+        //return true if testing if can move
+
+        when(RCtest.canMove(Direction.EAST)).thenReturn(false);
+        when(RCtest.canMove(Direction.WEST)).thenReturn(false);
+
+
+        //test dropIfYouCan, expect True is returned
+        boolean found = LStest.tryWalkOnWall();
+        assertFalse(found);
+
+    }
+
+    @Test
+    public void canWalkOnWallFirstChoice() throws GameActionException {
+        MapLocation lsLocation = new MapLocation(5,5);
+        MapLocation hqLocation = new MapLocation(4, 6);
+
+        LStest.myLocation = lsLocation;
+        LStest.HQLocation = hqLocation;
+
+        when(RCtest.getLocation()).thenReturn(lsLocation);
+
+        //return true if testing if can drop
+
+        when(RCtest.canMove(Direction.WEST)).thenReturn(true);
+        when(RCtest.canMove(Direction.NORTH)).thenReturn(true);
+
+
+        //test dropIfYouCan, expect True is returned
+        boolean found = LStest.tryWalkOnWall();
+        assertTrue(found);
+
+    }
+
+    @Test
+    public void canWalkOnWallSecondChoice() throws GameActionException {
+        MapLocation lsLocation = new MapLocation(5,5);
+        MapLocation hqLocation = new MapLocation(5, 4);
+
+        LStest.myLocation = lsLocation;
+        LStest.HQLocation = hqLocation;
+
+        when(RCtest.getLocation()).thenReturn(lsLocation);
+
+        //return true if testing if can drop
+
+        when(RCtest.canMove(Direction.WEST)).thenReturn(false);
+        when(RCtest.canMove(Direction.EAST)).thenReturn(true);
+
+
+        //test dropIfYouCan, expect True is returned
+        boolean found = LStest.tryWalkOnWall();
+        assertTrue(found);
+
     }
 
 
