@@ -10,7 +10,6 @@ public class Landscaper extends Unit{
     int mySensorRadius;
     boolean wallFinished;
     final int wallHeight = 14;  //height of wall to build around HQ
-    boolean onWall;
     boolean needToMove;
 
 
@@ -24,7 +23,6 @@ public class Landscaper extends Unit{
         mySensorRadius = rc.getCurrentSensorRadiusSquared();
         HQDirection = null;
         wallFinished = false;
-        onWall = false;
         needToMove = false;
         maxCarry = 1;
         tryFindHQLocation();
