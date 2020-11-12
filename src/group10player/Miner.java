@@ -207,4 +207,33 @@ public class Miner extends Unit{
             }
         }
     }
+
+    @Override
+    public boolean tryMoveDirection(Direction dirTowards) throws GameActionException{
+        if (HQLocation == null){
+            tryFindHQLocation();
+            return false;
+        }
+        if (dirTowards == null){
+            return false;
+        }
+        myLocation = rc.getLocation();
+        for (int x = 0; x <= 8; x++) {
+            if (rc.canMove(dirTowards) && !rc.senseFlooding(rc.adjacentLocation(dirTowards))) {
+                if ((numRefineries < 1 && !seenRefinery) || (!myLocation.add(dirTowards).isAdjacentTo(HQLocation) || myLocation.isAdjacentTo(HQLocation))) {
+                    rc.move(dirTowards);
+                    return true;
+                }
+            } else {
+                for (int y = 0; y < x; y++) { //rotate direction back and forth
+                    if (x % 2 == 1) {
+                        dirTowards = dirTowards.rotateRight();
+                    } else {
+                        dirTowards = dirTowards.rotateLeft();
+                    }
+                }
+            }
+        }
+        return false;
+    }
 }
