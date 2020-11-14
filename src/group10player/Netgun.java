@@ -6,9 +6,12 @@ public class Netgun extends Building{
         super(rc);
     }
 
+    @Override
     public void takeTurn() throws GameActionException{
+        super.takeTurn();
         shootDrone();
     }
+
 
     public void shootDrone() throws GameActionException{
         RobotInfo[] enemies = rc.senseNearbyRobots(GameConstants.NET_GUN_SHOOT_RADIUS_SQUARED, rc.getTeam().opponent());

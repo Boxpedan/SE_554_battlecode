@@ -30,4 +30,28 @@ public class DesignSchoolTest {
         assertEquals(DStest.numLandscapers,16);
     }
 
+    @Test
+    public void taketurntest2() throws GameActionException {
+        when(RCtest.getTeamSoup()).thenReturn(150);
+        DStest.takeTurn();
+        assertEquals(DStest.numLandscapers,0);
+    }
+
+    @Test
+    public void taketurntest3() throws GameActionException {
+        when(RCtest.getTeamSoup()).thenReturn(160);
+        when(RCtest.canBuildRobot(RobotType.LANDSCAPER, Direction.NORTH)).thenReturn(true);
+        DStest.takeTurn();
+        DStest.numLandscapers++;
+        assertEquals(DStest.numLandscapers,1);
+
+    }
+
+    @Test
+    public void taketurntest4() throws GameActionException {
+        when(RCtest.getTeamSoup()).thenReturn(160);
+        when(RCtest.canBuildRobot(RobotType.LANDSCAPER, Direction.NORTH)).thenReturn(false);
+        DStest.takeTurn();
+        assertEquals(DStest.numLandscapers,0);
+    }
 }
