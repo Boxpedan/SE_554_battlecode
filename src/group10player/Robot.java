@@ -155,6 +155,9 @@ public class Robot {
             System.out.println("Must bid at least 1 soup!");
             return false;
         }
+        System.out.println(message);
+        System.out.println(cost);
+        System.out.println(rc.canSubmitTransaction(message, cost));
         if (rc.canSubmitTransaction(message, cost)){
             rc.submitTransaction(message, cost);
             return true;
