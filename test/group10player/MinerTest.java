@@ -5,6 +5,7 @@ import battlecode.common.*;
 import org.junit.*;
 import org.mockito.*;
 
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -120,5 +121,197 @@ public class MinerTest {
         Mtest.HQLocation = null;
         when(RCtest.getLocation()).thenReturn(new MapLocation(1,1));
         Mtest.goMining();
+    }
+
+    @Test
+    public void goMiningTest2() throws GameActionException{
+        Mtest.HQLocation = new MapLocation(1,1);
+        when(RCtest.getLocation()).thenReturn(new MapLocation(2,2));
+        when(RCtest.getSoupCarrying()).thenReturn(10);
+        Mtest.goMining();
+    }
+
+    @Test
+    public void goMiningTest3() throws GameActionException{
+        Mtest.HQLocation = new MapLocation(1,1);
+        when(RCtest.getLocation()).thenReturn(new MapLocation(2,2));
+        when(RCtest.getSoupCarrying()).thenReturn(100);
+        Mtest.goMining();
+    }
+
+    @Test
+    public void goMiningTest4() throws GameActionException{
+        Mtest.HQLocation = new MapLocation(1,1);
+        Mtest.depositLocations.add(Mtest.HQLocation);
+        when(RCtest.getLocation()).thenReturn(new MapLocation(2,2));
+        when(RCtest.getSoupCarrying()).thenReturn(100);
+        Mtest.goMining();
+    }
+
+    @Test
+    public void goMiningTest5() throws GameActionException{
+        Mtest.HQLocation = new MapLocation(1,1);
+        Mtest.depositLocations.add(Mtest.HQLocation);
+        when(RCtest.getLocation()).thenReturn(new MapLocation(10000000,100000000));
+        when(RCtest.getSoupCarrying()).thenReturn(100);
+        Mtest.goMining();
+    }
+
+    @Test
+    public void goMiningTest6() throws GameActionException{
+        Mtest.HQLocation = new MapLocation(1,1);
+        Mtest.depositLocations.add(Mtest.HQLocation);
+        when(RCtest.getLocation()).thenReturn(new MapLocation(3,3));
+        when(RCtest.getSoupCarrying()).thenReturn(100);
+        Mtest.goMining();
+    }
+
+    @Test
+    public void goMiningTest7() throws GameActionException{
+        Mtest.HQLocation = new MapLocation(1,1);
+        Mtest.depositLocations.add(Mtest.HQLocation);
+        when(RCtest.getLocation()).thenReturn(new MapLocation(2,2));
+        when(RCtest.getSoupCarrying()).thenReturn(100);
+        when(RCtest.canDepositSoup(Direction.SOUTHWEST)).thenReturn(true);
+        Mtest.goMining();
+    }
+
+    @Test
+    public void goMiningTest8() throws GameActionException{
+        Mtest.HQLocation = new MapLocation(1,1);
+        Mtest.depositLocations.add(Mtest.HQLocation);
+        when(RCtest.getLocation()).thenReturn(new MapLocation(3,3));
+        when(RCtest.getSoupCarrying()).thenReturn(100);
+        when(RCtest.canDepositSoup(Direction.SOUTHWEST)).thenReturn(false);
+        Mtest.goMining();
+    }
+
+    @Test
+    public void goMiningTest9() throws GameActionException{
+        Mtest.HQLocation = new MapLocation(1,1);
+        Mtest.depositLocations.add(Mtest.HQLocation);
+        when(RCtest.getLocation()).thenReturn(new MapLocation(10,10));
+        when(RCtest.getSoupCarrying()).thenReturn(100);
+        when(RCtest.canDepositSoup(Direction.SOUTHWEST)).thenReturn(false);
+        Mtest.goMining();
+    }
+
+    @Test
+    public void goMiningTest10() throws GameActionException{
+        Mtest.HQLocation = new MapLocation(1,1);
+        Mtest.depositLocations.add(Mtest.HQLocation);
+        when(RCtest.getLocation()).thenReturn(new MapLocation(2,2));
+        when(RCtest.getSoupCarrying()).thenReturn(90);
+        MapLocation [] temp = new MapLocation[1];
+        temp[0] = new MapLocation(4,4);
+        when(RCtest.senseNearbySoup()).thenReturn(temp);
+        Mtest.goMining();
+    }
+
+    @Test
+    public void goMiningTest11() throws GameActionException{
+        Mtest.HQLocation = new MapLocation(1,1);
+        Mtest.depositLocations.add(Mtest.HQLocation);
+        when(RCtest.getLocation()).thenReturn(new MapLocation(2,2));
+        when(RCtest.getSoupCarrying()).thenReturn(90);
+        MapLocation [] temp = new MapLocation[1];
+        temp[0] = new MapLocation(10000000,10000000);
+        when(RCtest.senseNearbySoup()).thenReturn(temp);
+        Mtest.goMining();
+    }
+
+    @Test
+    public void goMiningTest12() throws GameActionException{
+        Mtest.HQLocation = new MapLocation(1,1);
+        Mtest.depositLocations.add(Mtest.HQLocation);
+        when(RCtest.getLocation()).thenReturn(new MapLocation(2,2));
+        when(RCtest.getSoupCarrying()).thenReturn(90);
+        MapLocation [] temp = new MapLocation[1];
+        temp[0] = new MapLocation(3,3);
+        when(RCtest.senseNearbySoup()).thenReturn(temp);
+        when(RCtest.canMineSoup(Direction.NORTHEAST)).thenReturn(true);
+        Mtest.goMining();
+    }
+
+    @Test
+    public void goMiningTest13() throws GameActionException{
+        Mtest.HQLocation = new MapLocation(1,1);
+        Mtest.depositLocations.add(Mtest.HQLocation);
+        when(RCtest.getLocation()).thenReturn(new MapLocation(2,2));
+        when(RCtest.getSoupCarrying()).thenReturn(90);
+        MapLocation [] temp = new MapLocation[1];
+        temp[0] = new MapLocation(3,3);
+        when(RCtest.senseNearbySoup()).thenReturn(temp);
+        when(RCtest.canMineSoup(Direction.NORTH)).thenReturn(true);
+        Mtest.goMining();
+    }
+
+    @Test
+    public void goMiningTest14() throws GameActionException{
+        Mtest.HQLocation = new MapLocation(1,1);
+        Mtest.depositLocations.add(Mtest.HQLocation);
+        when(RCtest.getLocation()).thenReturn(new MapLocation(2,2));
+        when(RCtest.getSoupCarrying()).thenReturn(90);
+        MapLocation [] temp = new MapLocation[1];
+        temp[0] = new MapLocation(5,5);
+        when(RCtest.senseNearbySoup()).thenReturn(temp);
+        when(RCtest.canMineSoup(Direction.NORTH)).thenReturn(true);
+        Mtest.goMining();
+    }
+
+    @Test
+    public void tryMoveDirectionTest() throws GameActionException{
+        Mtest.HQLocation = null;
+        assertEquals(Mtest.tryMoveDirection(Direction.NORTH),false);
+    }
+
+    @Test
+    public void tryMoveDirectionTest2() throws GameActionException{
+        Mtest.HQLocation = new MapLocation(1,1);
+        assertEquals(Mtest.tryMoveDirection(null),false);
+    }
+
+    @Test
+    public void tryMoveDirectionTest3() throws GameActionException{
+        Mtest.HQLocation = new MapLocation(1,1);
+        when(RCtest.getLocation()).thenReturn(new MapLocation(2,2));
+        when(RCtest.canMove(Direction.NORTH)).thenReturn(true);
+        when(RCtest.senseFlooding(new MapLocation(1,1))).thenReturn(false);
+        Mtest.numRefineries = 0;
+        Mtest.seenRefinery = false;
+        assertEquals(Mtest.tryMoveDirection(Direction.NORTH),true);
+    }
+
+    @Test
+    public void tryMoveDirectionTest4() throws GameActionException{
+        Mtest.HQLocation = new MapLocation(1,1);
+        when(RCtest.getLocation()).thenReturn(new MapLocation(2,2));
+        when(RCtest.canMove(Direction.NORTH)).thenReturn(false);
+        when(RCtest.senseFlooding(new MapLocation(1,1))).thenReturn(false);
+        Mtest.numRefineries = 0;
+        Mtest.seenRefinery = false;
+        assertEquals(Mtest.tryMoveDirection(Direction.NORTH),false);
+    }
+
+    @Test
+    public void tryMoveDirectionTest5() throws GameActionException{
+        Mtest.HQLocation = new MapLocation(1,1);
+        when(RCtest.getLocation()).thenReturn(new MapLocation(2,2));
+        when(RCtest.canMove(Direction.NORTH)).thenReturn(false);
+        when(RCtest.senseFlooding(new MapLocation(1,1))).thenReturn(true);
+        Mtest.numRefineries = 0;
+        Mtest.seenRefinery = false;
+        assertEquals(Mtest.tryMoveDirection(Direction.NORTH),false);
+    }
+
+    @Test
+    public void tryMoveDirectionTest6() throws GameActionException{
+        Mtest.HQLocation = new MapLocation(1,1);
+        when(RCtest.getLocation()).thenReturn(new MapLocation(2,2));
+        when(RCtest.canMove(Direction.NORTH)).thenReturn(true);
+        when(RCtest.senseFlooding(new MapLocation(1,1))).thenReturn(false);
+        Mtest.numRefineries = 0;
+        Mtest.seenRefinery = false;
+        assertEquals(Mtest.tryMoveDirection(Direction.NORTH),true);
     }
 }
