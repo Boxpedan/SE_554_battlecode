@@ -145,6 +145,210 @@ public class RobotTest {
         when(RCtest.getBlock(round)).thenReturn(a);
         Robottest.readBlockchainMessages(round);
     }
+
+    @Test
+    public void readBlockchainMessagesTest3() throws GameActionException{
+        int round = 10;
+        Transaction[] a = new Transaction[1];
+        int [] array = new int[7];
+        array[0] = 265;
+        array[1] = 0;
+        array[2] = 0;
+        array[3] = 0;
+        array[4] = 100;
+        array[5] = 0;
+        array[6] = 0;
+        a[0] = new Transaction(1,array,1);
+        when(RCtest.getBlock(round)).thenReturn(a);
+        Robottest.readBlockchainMessages(round);
+    }
+
+    @Test
+    public void readBlockchainMessagesTest4() throws GameActionException{
+        int round = 10;
+        Transaction[] a = new Transaction[1];
+        int [] array = new int[7];
+        array[0] = 265;
+        array[1] = 1;
+        array[2] = 0;
+        array[3] = 0;
+        array[4] = 100;
+        array[5] = 0;
+        array[6] = 0;
+        a[0] = new Transaction(1,array,1);
+        when(RCtest.getBlock(round)).thenReturn(a);
+        Robottest.readBlockchainMessages(round);
+    }
+
+    @Test
+    public void readBlockchainMessagesTest5() throws GameActionException{
+        int round = 10;
+        Transaction[] a = new Transaction[1];
+        int [] array = new int[7];
+        array[0] = 265;
+        array[1] = 2;
+        array[2] = 0;
+        array[3] = 0;
+        array[4] = 100;
+        array[5] = 0;
+        array[6] = 0;
+        a[0] = new Transaction(1,array,1);
+        when(RCtest.getBlock(round)).thenReturn(a);
+        Robottest.readBlockchainMessages(round);
+    }
+
+    @Test
+    public void readBlockchainMessagesTest6() throws GameActionException{
+        int round = 10;
+        Transaction[] a = new Transaction[1];
+        int [] array = new int[7];
+        array[0] = 265;
+        array[1] = 3;
+        array[2] = 0;
+        array[3] = 0;
+        array[4] = 100;
+        array[5] = 0;
+        array[6] = 0;
+        a[0] = new Transaction(1,array,1);
+        when(RCtest.getBlock(round)).thenReturn(a);
+        Robottest.readBlockchainMessages(round);
+    }
+
+    @Test
+    public void readBlockchainMessagesTest7() throws GameActionException{
+        int round = 10;
+        Transaction[] a = new Transaction[1];
+        int [] array = new int[7];
+        array[0] = 265;
+        array[1] = 4;
+        array[2] = 0;
+        array[3] = 0;
+        array[4] = 100;
+        array[5] = 0;
+        array[6] = 0;
+        a[0] = new Transaction(1,array,1);
+        when(RCtest.getBlock(round)).thenReturn(a);
+        Robottest.readBlockchainMessages(round);
+    }
+
+    @Test
+    public void readBlockchainMessagesTest8() throws GameActionException{
+        int round = 10;
+        Transaction[] a = new Transaction[1];
+        int [] array = new int[7];
+        array[0] = 265;
+        array[1] = 5;
+        array[2] = 0;
+        array[3] = 0;
+        array[4] = 100;
+        array[5] = 0;
+        array[6] = 0;
+        a[0] = new Transaction(1,array,1);
+        when(RCtest.getBlock(round)).thenReturn(a);
+        Robottest.readBlockchainMessages(round);
+    }
+
+    @Test
+    public void readBlockchainMessagesTest9() throws GameActionException{
+        int round = 10;
+        Transaction[] a = new Transaction[1];
+        int [] array = new int[7];
+        array[0] = 265;
+        array[1] = 6;
+        array[2] = 0;
+        array[3] = 0;
+        array[4] = 100;
+        array[5] = 0;
+        array[6] = 0;
+        a[0] = new Transaction(1,array,1);
+        when(RCtest.getBlock(round)).thenReturn(a);
+        Robottest.readBlockchainMessages(round);
+    }
+
+    @Test
+    public void readBlockchainMessagesTest10() throws GameActionException{
+        int round = 10;
+        Transaction[] a = new Transaction[1];
+        int [] array = new int[7];
+        array[0] = 265;
+        array[1] = 7;
+        array[2] = 0;
+        array[3] = 0;
+        array[4] = 100;
+        array[5] = 0;
+        array[6] = 0;
+        a[0] = new Transaction(1,array,1);
+        when(RCtest.getBlock(round)).thenReturn(a);
+        Robottest.readBlockchainMessages(round);
+    }
+
+    @Test
+    public void readBlockchainMessagesTest11() throws GameActionException{
+        int round = 10;
+        Transaction[] a = new Transaction[1];
+        int [] array = new int[7];
+        array[0] = 265;
+        array[1] = 10;
+        array[2] = 0;
+        array[3] = 0;
+        array[4] = 100;
+        array[5] = 0;
+        array[6] = 0;
+        a[0] = new Transaction(1,array,1);
+        when(RCtest.getBlock(round)).thenReturn(a);
+        Robottest.readBlockchainMessages(round);
+    }
+
+    @Test
+    public void readBlockchainMessagesTest12() throws GameActionException{
+        int round = 10;
+        Transaction[] a = new Transaction[1];
+        int [] array = new int[7];
+        array[0] = 265;
+        array[1] = 100;
+        array[2] = 0;
+        array[3] = 0;
+        array[4] = 100;
+        array[5] = 0;
+        array[6] = 0;
+        a[0] = new Transaction(1,array,1);
+        when(RCtest.getBlock(round)).thenReturn(a);
+        Robottest.readBlockchainMessages(round);
+    }
+
+    @Test
+    public void readBlockchainMessagesTest13() throws GameActionException{
+        int round = 10;
+        Transaction[] a = new Transaction[1];
+        int [] array = new int[7];
+        array[0] = 265;
+        array[1] = 199;
+        array[2] = 0;
+        array[3] = 0;
+        array[4] = 100;
+        array[5] = 0;
+        array[6] = 0;
+        a[0] = new Transaction(1,array,1);
+        when(RCtest.getBlock(round)).thenReturn(a);
+        Robottest.readBlockchainMessages(round);
+    }
+
+    @Test
+    public void readBlockchainMessagesTest14() throws GameActionException{
+        int round = 10;
+        Transaction[] a = new Transaction[1];
+        int [] array = new int[7];
+        array[0] = 265;
+        array[1] = 230;
+        array[2] = 0;
+        array[3] = 0;
+        array[4] = 100;
+        array[5] = 0;
+        array[6] = 0;
+        a[0] = new Transaction(1,array,1);
+        when(RCtest.getBlock(round)).thenReturn(a);
+        Robottest.readBlockchainMessages(round);
+    }
 }
 
 
