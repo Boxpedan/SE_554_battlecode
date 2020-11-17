@@ -28,6 +28,8 @@ public class Miner extends Unit{
         seenDesignSchool = false;
         seenRefinery = false;
         seenFulfillmentCenter = false;
+        seenNetgun = false;
+        seenVaporators = false;
         teamSoup = 0;
         depositLocations = new HashSet<MapLocation>();
         if (tryFindHQLocation()){
@@ -49,7 +51,6 @@ public class Miner extends Unit{
 
         //Check array of nearby robots, and see if any allied robots are design schools or refineries
         RobotInfo[] nearbyRobots = rc.senseNearbyRobots(maxVisionSquared, myTeam);
-        //System.out.println("am i here" + nearbyRobots.length);
         if (nearbyRobots != null && nearbyRobots.length > 0) {
             for (RobotInfo nearbyRobot : nearbyRobots) {
                 if (nearbyRobot.type == RobotType.DESIGN_SCHOOL) {

@@ -2,9 +2,6 @@ package group10player;
 //package group10player;
 
 import battlecode.common.*;
-import group10player.DeliveryDrone;
-import group10player.Miner;
-import group10player.RobotPlayer;
 import org.junit.*;
 import org.mockito.*;
 import org.scalactic.Or;
