@@ -110,6 +110,10 @@ public class DeliveryDrone extends Unit {
 
     public void dropInWater() throws GameActionException {
 //        System.out.println("start dropInWater");
+        myLocation = rc.getLocation();
+        if (myLocation.distanceSquaredTo(water_loc) > 18) { //outside of 7x7 square around us
+            searchForWater(); //first, check to see if we can see any water near us to start with.
+        }
         MapLocation drone_loc = rc.getLocation();
         Direction water_dir = drone_loc.directionTo(water_loc);
         int distance = drone_loc.distanceSquaredTo(water_loc);

@@ -196,21 +196,25 @@ public class Robot {
                         case 6:
                             numNetgun++;
                             break;
-                        case 7:
-                            numVaporators++;
-                            break;
                         case 10:
                             HQUpdateRequested = true;
                         default:
                             if (tempMessage[1] >= 199){ //this is an update message from HQ for a new unit
                                 if (tempMessage[1] == 199){ //don't know where enemy HQ is
+                                    numNetgun = tempMessage[2];
                                     numRefineries = tempMessage[3];
                                     numVaporators = tempMessage[4];
                                     numDesignSchools = tempMessage[5];
                                     numFulfillmentCenters = tempMessage[6];
                                 }else{
-                                    enemyHQLocation = new MapLocation(tempMessage[1]-200, tempMessage[2]);
+                                    /*enemyHQLocation = new MapLocation(tempMessage[1]-200, tempMessage[2]);
                                     numRefineries = tempMessage[3];
+                                    numVaporators = tempMessage[4];
+                                    numDesignSchools = tempMessage[5];
+                                    numFulfillmentCenters = tempMessage[6];*/
+                                    enemyHQLocation = new MapLocation(tempMessage[1]-200, tempMessage[2]);
+                                    numRefineries = 1; //we can assume we have at least 1 refinery if we know enemy HQ location
+                                    numNetgun = tempMessage[3];
                                     numVaporators = tempMessage[4];
                                     numDesignSchools = tempMessage[5];
                                     numFulfillmentCenters = tempMessage[6];

@@ -17,6 +17,8 @@ Message codes (second int):
 3 - Vaporator built
 4 - Design school
 5 - Fulfillment center
+6 - Netgun
+7 -
 
 10 - New unit update request
 2xx - HQ response to new unit update request (position 0 is team, 1 is xpos of enemy HQ + 200, 2 is ypos of enemy HQ)
@@ -98,11 +100,11 @@ public class HQ extends Building{
         if (HQUpdateRequested){
             if (enemyHQLocation != null){
                 if (rc.getTeamSoup() >= 1){
-                    trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode, enemyHQLocation.x+200, enemyHQLocation.y, numRefineries, numVaporators, numDesignSchools, numFulfillmentCenters), 1);
+                    trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode, enemyHQLocation.x+200, enemyHQLocation.y, numNetgun, numVaporators, numDesignSchools, numFulfillmentCenters), 1);
                 }
             }else {
                 if (rc.getTeamSoup() >= 1) {
-                    trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode, 199, 0, numRefineries, numVaporators, numDesignSchools, numFulfillmentCenters), 1);
+                    trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode, 199, numNetgun, numRefineries, numVaporators, numDesignSchools, numFulfillmentCenters), 1);
                 }
             }
             HQUpdateRequested = false;
