@@ -32,12 +32,8 @@ public class DeliveryDrone extends Unit {
 //        System.out.println("holding_target: " + holding_target);
 
         if (gameStage == 0 && rc.getTeamSoup() >= 1){
-            System.out.println("Pre-request game stage: "+gameStage);
-            System.out.println("requesting update from blockchain");
             trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode, 8, 0, 0, 0, 0, 0), 1);
-            System.out.println("Post-request game stage: "+gameStage);
         } else if (gameStage == 1){
-            System.out.println("Reached gameStage == 1!");
             if (target == -1) {
                 moveRandom();
                 searchForLandscaper();
