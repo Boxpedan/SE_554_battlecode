@@ -243,7 +243,7 @@ public class Landscaper extends Unit{
 
             if(rc.isLocationOccupied(digCandidate)){
                 RobotInfo adjRobot = rc.senseRobotAtLocation(digCandidate);
-                if(adjRobot.team == myTeam ){
+                if(adjRobot.team == myTeam && adjRobot.type != RobotType.DELIVERY_DRONE){
                     needToMove = true;
                     continue;
                 }
