@@ -71,6 +71,7 @@ public class Robot {
         numFulfillmentCenters = 0;
         numNetgun = 0;
         enemyHQLocation = null;
+        gameStage = 0;
 
         if (rc.getRoundNum() < 7){
             newUnitUpdated = true;
@@ -207,9 +208,18 @@ public class Robot {
                             gameStageUpdateRequested = true;
                             break;
                         case 9:
-                            if (rc.getType() != RobotType.HQ){ //HQ decides gameStage, so don't risk overwriting an update
-                                gameStage = tempMessage[1];
+                            //if (rc.getType() != RobotType.HQ){ //HQ decides gameStage, so don't risk overwriting an update
+                            if (rc.getType() == RobotType.DELIVERY_DRONE) {
+                                System.out.println();
+                                System.out.println("gameStage = " + gameStage);
                             }
+                            gameStage = tempMessage[2];
+                            if (rc.getType() == RobotType.DELIVERY_DRONE) {
+                                System.out.println("tempMessage[2] = " + tempMessage[2]);
+                                System.out.println("gameStage = " + gameStage);
+                                System.out.println();
+                            }
+                            //}
                             break;
                         case 10:
                             HQUpdateRequested = true;

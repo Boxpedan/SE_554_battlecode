@@ -11,17 +11,13 @@ public class DeliveryDrone extends Unit {
     boolean holding_target = false;
     MapLocation water_loc = null;
     boolean know_water = false;
-    int gameStage = 0;  //0: we don't know, request info
+    //int gameStage;    //0: we don't know, request info
                         //1: early game, put landscapers onto wall
                         //2: landscapers have filled wall, surround in a ring
                         //3: ring is complete, group up and get ready to swarm enemy HQ
 
     public DeliveryDrone(RobotController rc) throws GameActionException {
         super(rc);
-        gameStage = 0; //we don't know - request update from HQ
-//        System.out.println("initialize delivery drone");
-//        System.out.println("constructor myLocation: " + myLocation);
-//        System.out.println("constructor myLocation: " + rc.getLocation());
     }
 
 
@@ -36,8 +32,12 @@ public class DeliveryDrone extends Unit {
 //        System.out.println("holding_target: " + holding_target);
 
         if (gameStage == 0 && rc.getTeamSoup() >= 1){
-            trySendBlockchainMessage(buildBlockchainMessage(8, 0, 0, 0, 0, 0, 0), 1);
+            System.out.println("Pre-request game stage: "+gameStage);
+            System.out.println("requesting update from blockchain");
+            trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode, 8, 0, 0, 0, 0, 0), 1);
+            System.out.println("Post-request game stage: "+gameStage);
         } else if (gameStage == 1){
+            System.out.println("Reached gameStage == 1!");
             if (target == -1) {
                 moveRandom();
                 searchForLandscaper();

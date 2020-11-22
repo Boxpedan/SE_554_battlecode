@@ -118,7 +118,8 @@ public class HQ extends Building{
         }
 
         if (gameStageUpdateRequested && rc.getTeamSoup() >= 1){
-            if (trySendBlockchainMessage(buildBlockchainMessage(9, gameStage, 0, 0, 0, 0, 0), 1)) {
+            System.out.println("Trying to update blockchain");
+            if (trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode, 9, gameStage, 0, 0, 0, 0), 1)) {
                 gameStageUpdateRequested = false;
             }
         }
