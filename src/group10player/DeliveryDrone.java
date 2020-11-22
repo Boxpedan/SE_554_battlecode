@@ -11,9 +11,14 @@ public class DeliveryDrone extends Unit {
     boolean holding_target = false;
     MapLocation water_loc = null;
     boolean know_water = false;
+    int gameStage = 0;  //0: we don't know, request info
+                        //1: early game, put landscapers onto wall
+                        //2: landscapers have filled wall, surround in a ring
+                        //3: ring is complete, group up and get ready to swarm enemy HQ
 
     public DeliveryDrone(RobotController rc) throws GameActionException {
         super(rc);
+        gameStage = 0; //we don't know - request update from HQ
 //        System.out.println("initialize delivery drone");
 //        System.out.println("constructor myLocation: " + myLocation);
 //        System.out.println("constructor myLocation: " + rc.getLocation());
@@ -30,40 +35,67 @@ public class DeliveryDrone extends Unit {
 //        System.out.println("target: " + target);
 //        System.out.println("holding_target: " + holding_target);
 
-        //if no target move random and look for enemy
-        if(target == -1) {
-            moveRandom();
-            searchForEnemy();
-
-            if(!know_water) {
-                searchForWater();
+        if (gameStage == 0 && rc.getTeamSoup() >= 1){
+            trySendBlockchainMessage(buildBlockchainMessage(8, 0, 0, 0, 0, 0, 0), 1);
+        } else if (gameStage == 1){
+            if (target == -1) {
+                moveRandom();
+                searchForLandscaper();
+            } else if (!holding_target){
+                grabLandscaper();
+            } else { //drop on wall
+                if (HQLocation == null){
+                    tryFindHQLocation();
+                }else{
+                    dropOnWall();
+                }
             }
-        }
-        else if(!holding_target) //if have target move towards and try to pick up
-        {
-//            System.out.println("not holding");
-            grabEnemy();
-        }
-        else
-        {
-//            System.out.println("else statement");
-            if(know_water)
+        } else if (gameStage == 2){
+            //drop any held things - enemies in water, allies on ground
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //if no target move random and look for enemy
+            if(target == -1) {
+                moveRandom();
+                searchForEnemy();
+
+                if(!know_water) {
+                    searchForWater();
+                }
+            }
+            else if(!holding_target) //if have target move towards and try to pick up
             {
-//                System.out.println("in else know_water");
-                dropInWater();
+//            System.out.println("not holding");
+                grabEnemy();
             }
             else
             {
+//            System.out.println("else statement");
+                if(know_water)
+                {
+//                System.out.println("in else know_water");
+                    dropInWater();
+                }
+                else
+                {
 //                System.out.println("else else");
-                moveRandom();
+                    moveRandom();
 //                System.out.println("after moveRandom");
-                searchForWater();
+                    searchForWater();
 //                System.out.println("end of else else");
+                }
+
             }
+
+//        System.out.println("holding_target: " + holding_target);
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        } else if (gameStage == 3){
 
         }
 
-//        System.out.println("holding_target: " + holding_target);
+
 
     }
 
@@ -144,6 +176,55 @@ public class DeliveryDrone extends Unit {
 //        System.out.println("end dropInWater");
     }
 
+    public void dropOnWall() throws GameActionException {
+        myLocation = rc.getLocation();
+        if (HQLocation == null){
+            tryFindHQLocation();
+            return;
+        }
+        if (myLocation.distanceSquaredTo(HQLocation) > 8) { //get close enough to see entire wall
+            tryMoveDirection(myLocation.directionTo(HQLocation));
+        }
+
+        MapLocation dropTarget = null;
+        int minDistance = 100000;
+        for (Direction dir:directions){
+            if (rc.canSenseLocation(HQLocation.add(dir))) {
+                RobotInfo temp = rc.senseRobotAtLocation(HQLocation.add(dir));
+                if (temp == null) { //no robot there, try to drop
+                    if (dropTarget == null || myLocation.distanceSquaredTo(HQLocation.add(dir)) > minDistance){
+                        dropTarget = HQLocation.add(dir);
+                        minDistance = myLocation.distanceSquaredTo(dropTarget);
+                    }
+                }
+            }
+        }
+        if (dropTarget == null){
+            //wall complete, wait for HQ to send gameStage update
+            return;
+        }
+
+        int distance = myLocation.distanceSquaredTo(dropTarget);
+
+        if(distance <= 0)
+        {
+            tryMoveDirection(randomDirection());
+        }
+        if(distance > 2)
+        {
+
+            tryMoveTowardsFavorRight(dropTarget);
+        }
+        if(distance <= 2 && distance > 0) //not sure if they can drop on their own square
+        {
+            if(rc.canDropUnit(myLocation.directionTo(dropTarget)))
+            {
+                rc.dropUnit(myLocation.directionTo(dropTarget));
+                holding_target = false;
+                target = -1;
+            }
+        }
+    }
 
     public void searchForEnemy()
     {
@@ -176,6 +257,23 @@ public class DeliveryDrone extends Unit {
 
     }
 
+    public void searchForLandscaper() throws GameActionException {
+        RobotInfo[] allied_robots = rc.senseNearbyRobots(24, rc.getTeam());
+
+        if (HQLocation == null){
+            tryFindHQLocation();
+            return;
+        }
+
+        if(allied_robots != null) {
+            for (RobotInfo ally_robot : allied_robots) {
+                if (ally_robot.getType() == RobotType.LANDSCAPER && !ally_robot.getLocation().isAdjacentTo(HQLocation)) {
+                    target = ally_robot.getID();
+                }
+            }
+        }
+    }
+
     public void grabEnemy() throws GameActionException
     {
 //        System.out.println("start grabEnemy");
@@ -188,17 +286,7 @@ public class DeliveryDrone extends Unit {
             target = -1;
             return;
         }
-
-//        System.out.println("after sensing target");
-
-//        System.out.println("myLocation: " + rc.getLocation());
-
         int distance = rc.getLocation().distanceSquaredTo(target_info.getLocation());
-
-//        System.out.println("after distance calc");
-
-//        System.out.println("team: " + myTeam + " distance: " + distance);
-
         if(distance > 2)
         {
             Direction enemy_dir = rc.getLocation().directionTo(target_info.location);
@@ -206,9 +294,39 @@ public class DeliveryDrone extends Unit {
             tryMoveDirection(enemy_dir);
         }
 
-//        System.out.println("after distance check");
+        if(rc.canPickUpUnit(target))
+        {
+            rc.pickUpUnit(target);
+            holding_target = true;
+        }
 
-//        System.out.println("canPickUpUnit: " + rc.canPickUpUnit(target));
+    }
+
+    public void grabLandscaper() throws GameActionException
+    {
+        RobotInfo target_info = null;
+        try{
+            target_info = rc.senseRobot(target);
+        }catch(GameActionException e)
+        {
+            target = -1;
+            return;
+        }
+        if (HQLocation == null){
+            tryFindHQLocation();
+            return;
+        }
+        if (target_info.getLocation().isAdjacentTo(HQLocation)){
+            target = -1;
+            return;
+        }
+        int distance = rc.getLocation().distanceSquaredTo(target_info.getLocation());
+        if(distance > 2)
+        {
+            Direction landscaper_dir = rc.getLocation().directionTo(target_info.location);
+
+            tryMoveDirection(landscaper_dir);
+        }
 
         if(rc.canPickUpUnit(target))
         {
@@ -216,10 +334,7 @@ public class DeliveryDrone extends Unit {
             holding_target = true;
         }
 
-//        System.out.println("after pickup");
-
     }
-
 
     @Override
     public boolean tryMoveDirection(Direction dirTowards) throws GameActionException{
