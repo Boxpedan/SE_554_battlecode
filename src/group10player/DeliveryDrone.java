@@ -11,6 +11,7 @@ public class DeliveryDrone extends Unit {
     boolean holding_target = false;
     MapLocation water_loc = null;
     boolean know_water = false;
+    boolean enemy_priority_override = false;
     //int gameStage;    //0: we don't know, request info
                         //1: early game, put landscapers onto wall
                         //2: landscapers have filled wall, surround in a ring
@@ -37,13 +38,29 @@ public class DeliveryDrone extends Unit {
             if (target == -1) {
                 moveRandom();
                 searchForLandscaper();
+                if(!know_water) {
+                    searchForWater();
+                }
             } else if (!holding_target){
-                grabLandscaper();
+                if (enemy_priority_override){ //pick up enemy
+                    grabEnemy();
+                } else {
+                    grabLandscaper();
+                }
             } else { //drop on wall
-                if (HQLocation == null){
-                    tryFindHQLocation();
-                }else{
-                    dropOnWall();
+                if (enemy_priority_override){ //drop in water
+                    if(know_water) {
+                        dropInWater();
+                    } else {
+                        moveRandom();
+                        searchForWater();
+                    }
+                } else {
+                    if (HQLocation == null) {
+                        tryFindHQLocation();
+                    } else {
+                        dropOnWall();
+                    }
                 }
             }
         } else if (gameStage == 2){
@@ -169,6 +186,7 @@ public class DeliveryDrone extends Unit {
                 rc.dropUnit(water_dir);
                 holding_target = false;
                 target = -1;
+                enemy_priority_override = false;
             }
         }
 //        System.out.println("end dropInWater");
@@ -257,10 +275,21 @@ public class DeliveryDrone extends Unit {
 
     public void searchForLandscaper() throws GameActionException {
         RobotInfo[] allied_robots = rc.senseNearbyRobots(24, rc.getTeam());
+        RobotInfo[] enemy_robots = rc.senseNearbyRobots(24, rc.getTeam().opponent());
 
         if (HQLocation == null){
             tryFindHQLocation();
             return;
+        }
+
+        if(enemy_robots != null) {
+            for (RobotInfo enemy_robot : enemy_robots) {
+                if (enemy_robot.getType() == RobotType.LANDSCAPER || enemy_robot.getType() == RobotType.MINER) {
+                    target = enemy_robot.getID();
+                    enemy_priority_override = true;
+                    return;
+                }
+            }
         }
 
         if(allied_robots != null) {
@@ -282,6 +311,7 @@ public class DeliveryDrone extends Unit {
         }catch(GameActionException e)
         {
             target = -1;
+            enemy_priority_override = false;
             return;
         }
         int distance = rc.getLocation().distanceSquaredTo(target_info.getLocation());
