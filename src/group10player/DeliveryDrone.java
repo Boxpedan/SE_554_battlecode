@@ -49,6 +49,10 @@ public class DeliveryDrone extends Unit {
         } else if (gameStage == 2){
             //drop any held things - enemies in water, allies on ground
 
+        } else if (gameStage == 3){
+
+        } else { //temporary holder for the "hunt enemies" code
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //if no target move random and look for enemy
             if(target == -1) {
@@ -86,8 +90,6 @@ public class DeliveryDrone extends Unit {
 //        System.out.println("holding_target: " + holding_target);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        } else if (gameStage == 3){
 
         }
 
