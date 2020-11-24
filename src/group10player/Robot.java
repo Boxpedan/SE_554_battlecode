@@ -25,8 +25,15 @@ public class Robot {
     int numNetgun;
     MapLocation enemyHQLocation;
 
+    int gameStage;      //Info for drone units
+                        //0: we don't know, request info
+                        //1: early game, put landscapers onto wall
+                        //2: landscapers have filled wall, surround in a ring
+                        //3: ring is complete, group up and get ready to swarm enemy HQ
+
     boolean newUnitUpdated;
     boolean HQUpdateRequested;
+    boolean gameStageUpdateRequested;
 
     static Direction[] directions = {
             Direction.NORTH,
@@ -64,6 +71,7 @@ public class Robot {
         numFulfillmentCenters = 0;
         numNetgun = 0;
         enemyHQLocation = null;
+        gameStage = 0;
 
         if (rc.getRoundNum() < 7){
             newUnitUpdated = true;
@@ -195,6 +203,12 @@ public class Robot {
                             break;
                         case 6:
                             numNetgun++;
+                            break;
+                        case 8:
+                            gameStageUpdateRequested = true;
+                            break;
+                        case 9:
+                            gameStage = tempMessage[2];
                             break;
                         case 10:
                             HQUpdateRequested = true;

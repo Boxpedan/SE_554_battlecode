@@ -1,6 +1,8 @@
 package group10player;
 import battlecode.common.*;
 
+import java.util.Map;
+
 /* Blockchain Message Guide:
 
 7 ints
@@ -19,6 +21,8 @@ Message codes (second int):
 5 - Fulfillment center
 6 - Netgun
 7 -
+8 - Request gameStage update from HQ
+9 - gameStage update response
 
 10 - New unit update request
 2xx - HQ response to new unit update request (position 0 is team, 1 is xpos of enemy HQ + 200, 2 is ypos of enemy HQ)
@@ -36,6 +40,7 @@ public class HQ extends Building{
     public HQ(RobotController rc) throws GameActionException {
         super(rc);
         hasSentLocation = false;
+        gameStage = 1; //early game
     }
     
     @Override
@@ -46,6 +51,8 @@ public class HQ extends Building{
         SendHQlocBlockchain();
 
         Shooter();
+
+        UpdateGameStage();
 
         UpdateBlockchain();
 
@@ -110,6 +117,13 @@ public class HQ extends Building{
             HQUpdateRequested = false;
         }
 
+        if (gameStageUpdateRequested && rc.getTeamSoup() >= 1){
+            System.out.println("Trying to update blockchain");
+            if (trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode, 9, gameStage, 0, 0, 0, 0), 1)) {
+                gameStageUpdateRequested = false;
+            }
+        }
+
         if (enemyHQLocation == null){
             return;
         }
@@ -119,6 +133,73 @@ public class HQ extends Building{
             }else{
                 trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode, 1, enemyHQLocation.x, enemyHQLocation.y, 0, 0, 0), rc.getTeamSoup());
             }
+        }
+    }
+
+    public void UpdateGameStage() throws GameActionException{
+        myLocation = rc.getLocation();
+        if (gameStage == 1){ //currently early game, check if surrounded by landscapers
+            for (Direction dir:directions){
+                RobotInfo temp = rc.senseRobotAtLocation(myLocation.add(dir));
+                if (temp == null){
+                    return;
+                }
+                if (temp.getTeam() != rc.getTeam() || temp.getType() != RobotType.LANDSCAPER){
+                    return;
+                }
+            }
+            gameStage = 2;
+            gameStageUpdateRequested = true;
+        } else if (gameStage == 2){ //currently late game, check if ring of drones is complete
+            MapLocation toCheck;
+            MapLocation toCheck2;
+            for (int increment = 0; increment < 5; increment++){
+                toCheck = new MapLocation(myLocation.x-2+increment, myLocation.y+2);
+                if (rc.canSenseLocation(toCheck)){
+                    RobotInfo temp = rc.senseRobotAtLocation(toCheck);
+                    if (temp == null){
+                        return;
+                    }
+                    if (temp.getTeam() != rc.getTeam() || temp.getType() != RobotType.DELIVERY_DRONE){
+                        return;
+                    }
+                }
+                toCheck2 = new MapLocation(myLocation.x-2+increment, myLocation.y-2);
+                if (rc.canSenseLocation(toCheck2)){
+                    RobotInfo temp = rc.senseRobotAtLocation(toCheck2);
+                    if (temp == null){
+                        return;
+                    }
+                    if (temp.getTeam() != rc.getTeam() || temp.getType() != RobotType.DELIVERY_DRONE){
+                        return;
+                    }
+                }
+            }
+            for (int increment = 0; increment < 3; increment++){
+                toCheck = new MapLocation(myLocation.x-2, myLocation.y-1+increment);
+                if (rc.canSenseLocation(toCheck)){
+                    RobotInfo temp = rc.senseRobotAtLocation(toCheck);
+                    if (temp == null){
+                        return;
+                    }
+                    if (temp.getTeam() != rc.getTeam() || temp.getType() != RobotType.DELIVERY_DRONE){
+                        return;
+                    }
+                }
+                toCheck2 = new MapLocation(myLocation.x+2, myLocation.y-1+increment);
+                if (rc.canSenseLocation(toCheck2)){
+                    RobotInfo temp = rc.senseRobotAtLocation(toCheck2);
+                    if (temp == null){
+                        return;
+                    }
+                    if (temp.getTeam() != rc.getTeam() || temp.getType() != RobotType.DELIVERY_DRONE){
+                        return;
+                    }
+                }
+            }
+            //if we haven't returned by now, then we haven't found any breaks in the ring, so:
+            gameStage = 3;
+            gameStageUpdateRequested = true;
         }
     }
 }
