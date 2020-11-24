@@ -36,7 +36,16 @@ public class DeliveryDrone extends Unit {
             trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode, 8, 0, 0, 0, 0, 0), 1);
         } else if (gameStage == 1){
             if (target == -1) {
-                moveRandom();
+                if (HQLocation == null){
+                    tryFindHQLocation();
+                    System.out.println("Drone searching for HQ!");
+                } else {
+                    if (rc.getLocation().distanceSquaredTo(HQLocation) > 18){
+                        tryMoveDirection(rc.getLocation().directionTo(HQLocation));
+                    } else {
+                        moveRandom();
+                    }
+                }
                 searchForLandscaper();
                 if(!know_water) {
                     searchForWater();
