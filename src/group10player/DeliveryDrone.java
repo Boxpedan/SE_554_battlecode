@@ -4,6 +4,7 @@ import battlecode.common.*;
 import scala.collection.Map;
 
 import java.awt.Robot;
+import java.util.ArrayList;
 
 public class DeliveryDrone extends Unit {
 
@@ -11,6 +12,13 @@ public class DeliveryDrone extends Unit {
     boolean holding_target = false;
     MapLocation water_loc = null;
     boolean know_water = false;
+    int ring_offset_x = -2;
+    int ring_offset_y = 2;
+    //    MapLocation current_ring_destination;
+    ArrayList<MapLocation> ring_positions = new ArrayList<>();
+    int current_ring_pos = 0;
+    boolean init_ring_pos = false;
+
     boolean enemy_priority_override = false;
     //int gameStage;    //0: we don't know, request info
                         //1: early game, put landscapers onto wall
@@ -31,6 +39,39 @@ public class DeliveryDrone extends Unit {
 
 //        System.out.println("target: " + target);
 //        System.out.println("holding_target: " + holding_target);
+
+        if(HQLocation == null)
+        {
+            tryFindHQLocation();
+        }
+//        System.out.println("init_ring_pos: " + init_ring_pos);
+//        System.out.println("HQLocation: " + HQLocation);
+//        System.out.println("ring_positions size: " + ring_positions.size());
+        if(!init_ring_pos && HQLocation != null)
+        {
+//            System.out.println("test 1");
+//            ring_positions.add(new MapLocation(HQLocation.x, ring_offset_y));
+//            System.out.println("test 2");
+            ring_positions.add(new MapLocation(HQLocation.x + ring_offset_x, HQLocation.y + ring_offset_y));
+            ring_positions.add(new MapLocation(HQLocation.x + ring_offset_x + 1, HQLocation.y + ring_offset_y));
+            ring_positions.add(new MapLocation(HQLocation.x + ring_offset_x + 2, HQLocation.y + ring_offset_y));
+            ring_positions.add(new MapLocation(HQLocation.x + ring_offset_x + 3, HQLocation.y + ring_offset_y));
+            ring_positions.add(new MapLocation(HQLocation.x + ring_offset_x + 4, HQLocation.y + ring_offset_y));
+            ring_positions.add(new MapLocation(HQLocation.x + ring_offset_x + 4, HQLocation.y + ring_offset_y - 1));
+            ring_positions.add(new MapLocation(HQLocation.x + ring_offset_x + 4, HQLocation.y + ring_offset_y - 2));
+            ring_positions.add(new MapLocation(HQLocation.x + ring_offset_x + 4, HQLocation.y + ring_offset_y - 3));
+            ring_positions.add(new MapLocation(HQLocation.x + ring_offset_x + 4, HQLocation.y + ring_offset_y - 4));
+            ring_positions.add(new MapLocation(HQLocation.x + ring_offset_x + 3, HQLocation.y + ring_offset_y - 4));
+            ring_positions.add(new MapLocation(HQLocation.x + ring_offset_x + 2, HQLocation.y + ring_offset_y - 4));
+            ring_positions.add(new MapLocation(HQLocation.x + ring_offset_x + 1, HQLocation.y + ring_offset_y - 4));
+            ring_positions.add(new MapLocation(HQLocation.x + ring_offset_x, HQLocation.y + ring_offset_y - 4));
+            ring_positions.add(new MapLocation(HQLocation.x + ring_offset_x, HQLocation.y + ring_offset_y - 3));
+            ring_positions.add(new MapLocation(HQLocation.x + ring_offset_x, HQLocation.y + ring_offset_y - 2));
+            ring_positions.add(new MapLocation(HQLocation.x + ring_offset_x, HQLocation.y + ring_offset_y - 1));
+            init_ring_pos = true;
+
+        }
+
 
         if (gameStage == 0 && rc.getTeamSoup() >= 1){
             trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode, 8, 0, 0, 0, 0, 0), 1);
@@ -74,7 +115,7 @@ public class DeliveryDrone extends Unit {
             }
         } else if (gameStage == 2){
             //drop any held things - enemies in water, allies on ground
-
+            surroundHQ();
         } else if (gameStage == 3){
 
         } else { //temporary holder for the "hunt enemies" code
@@ -410,6 +451,68 @@ public class DeliveryDrone extends Unit {
             }
         }
         return false;
+    }
+
+    public void surroundHQ() throws GameActionException
+    {
+        if(current_ring_pos >= 16)
+        {
+            return;
+        }
+
+        MapLocation current_ring_destination = ring_positions.get(current_ring_pos);
+
+        System.out.println("current_ring_destination: " + current_ring_destination);
+
+        //if not at the ring position, do this, else do nothing if there already
+        if(rc.getLocation().distanceSquaredTo(current_ring_destination) > 0)
+        {
+
+            //if you are not close enough to the current ring destination to sense
+            if(!rc.canSenseLocation(current_ring_destination))
+            {
+                try{
+                    tryMoveDirection(rc.getLocation().directionTo(current_ring_destination));
+                } catch(GameActionException e)
+                {
+                    System.out.println("exception in surroundHQ 1");
+                }
+            }
+            else //if you are close enough to sense
+            {
+                RobotInfo occupying_robot = rc.senseRobotAtLocation(current_ring_destination);
+
+                if (occupying_robot != null) //if there's a robot in that position
+                {
+                    //if the robot is a delivery drone and on our team, update the position to be the next ring spot
+                    if (occupying_robot.type == RobotType.DELIVERY_DRONE && occupying_robot.team == myTeam) {
+                        current_ring_pos += 1;
+                    }
+
+                    moveRandom();
+
+                } else //if the spot is empty
+                {
+                    //if this drone gets stuck trying to move towards the next spot, try to get around
+                    Direction dir = rc.getLocation().directionTo(current_ring_destination);
+                    MapLocation next_dest = myLocation.add(dir);
+                    RobotInfo robot_obstacle = rc.senseRobotAtLocation(next_dest);
+                    if(robot_obstacle != null)
+                    {
+                        if(dir == Direction.EAST)
+                        {
+                            dir = Direction.SOUTH;
+                        }
+                        else if(dir == Direction.SOUTH)
+                        {
+                            dir = Direction.EAST;
+                        }
+                    }
+                    tryMoveDirection(dir);
+                }
+            }
+        }
+
     }
 
 //    /**
