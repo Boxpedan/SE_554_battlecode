@@ -181,8 +181,14 @@ public class Miner extends Unit{
         } else { //not carrying soup; find soup, move towards it, and mine it (in that order)
             MapLocation[] soupNearby = rc.senseNearbySoup();
             if (soupNearby == null || soupNearby.length < 1){//no nearby soup found, wander away from HQ
-                tryMoveDirection(myLocation.directionTo(HQLocation).opposite());
-                return;
+                if(myLocation.distanceSquaredTo(HQLocation) >= 300)
+                {
+                    tryMoveDirection(randomDirection());
+                }
+                else {
+                    tryMoveDirection(myLocation.directionTo(HQLocation).opposite());
+                    return;
+                }
             }
             int closestDistance = 1000000;
             MapLocation nearestSoup = null;

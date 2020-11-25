@@ -40,6 +40,8 @@ public class DeliveryDrone extends Unit {
 //        System.out.println("target: " + target);
 //        System.out.println("holding_target: " + holding_target);
 
+        System.out.println("is_holding: " + rc.isCurrentlyHoldingUnit());
+
         if(HQLocation == null)
         {
             tryFindHQLocation();
@@ -109,6 +111,7 @@ public class DeliveryDrone extends Unit {
                     if (HQLocation == null) {
                         tryFindHQLocation();
                     } else {
+                        System.out.println("dropping on wall");
                         dropOnWall();
                     }
                 }
@@ -256,8 +259,12 @@ public class DeliveryDrone extends Unit {
         MapLocation dropTarget = null;
         int minDistance = 100000;
         for (Direction dir:directions){
+//            System.out.println("dir: " + dir);
+//            System.out.println("distance to hqlocation + dir: " + myLocation.distanceSquaredTo(HQLocation.add(dir)));
+//            System.out.println("hqlocation + dir: " + HQLocation.add(dir));
             if (rc.canSenseLocation(HQLocation.add(dir))) {
                 if (!rc.isLocationOccupied(HQLocation.add(dir))) { //no robot there, try to drop
+//                    System.out.println("distance to hqlocation + dir: " + myLocation.distanceSquaredTo(HQLocation.add(dir)));
                     if (dropTarget == null || myLocation.distanceSquaredTo(HQLocation.add(dir)) < minDistance){
                         dropTarget = HQLocation.add(dir);
                         minDistance = myLocation.distanceSquaredTo(dropTarget);
@@ -267,7 +274,7 @@ public class DeliveryDrone extends Unit {
         }
         if (dropTarget == null){
 
-            //System.out.println("dropTarget is null!");
+//            System.out.println("dropTarget is null!");
             //wall complete, wait for HQ to send gameStage update
             return;
         }
@@ -275,7 +282,7 @@ public class DeliveryDrone extends Unit {
         int distance = myLocation.distanceSquaredTo(dropTarget);
 
         if(distance <= 0) {
-            //System.out.println("Drone too close!");
+//            System.out.println("Drone too close!");
             tryMoveDirection(randomDirection());
         } else if(distance > 2) {
 
@@ -455,14 +462,13 @@ public class DeliveryDrone extends Unit {
 
     public void surroundHQ() throws GameActionException
     {
-        if(current_ring_pos >= 16)
+        if(current_ring_pos >= ring_positions.size())
         {
             return;
         }
 
         MapLocation current_ring_destination = ring_positions.get(current_ring_pos);
-
-        System.out.println("current_ring_destination: " + current_ring_destination);
+//        System.out.println("current_ring_destination: (" + current_ring_destination.x + ", " + current_ring_destination.y + ")");
 
         //if not at the ring position, do this, else do nothing if there already
         if(rc.getLocation().distanceSquaredTo(current_ring_destination) > 0)
@@ -472,7 +478,25 @@ public class DeliveryDrone extends Unit {
             if(!rc.canSenseLocation(current_ring_destination))
             {
                 try{
-                    tryMoveDirection(rc.getLocation().directionTo(current_ring_destination));
+                    Direction dir = rc.getLocation().directionTo(current_ring_destination);
+                    MapLocation next_dest = rc.getLocation().add(dir);
+                    if(rc.canSenseLocation(next_dest)) {
+                        RobotInfo robot_obstacle = rc.senseRobotAtLocation(next_dest);
+                        if(robot_obstacle != null)
+                        {
+                            System.out.println("change dir to avoid");
+                            Direction hq_dir = rc.getLocation().directionTo(HQLocation);
+                            if(hq_dir == Direction.SOUTH)
+                            {
+                                dir = Direction.WEST;
+                            }
+                            else if(hq_dir == Direction.EAST)
+                            {
+                                dir = Direction.SOUTH;
+                            }
+                        }
+                    }
+                    tryMoveDirection(dir);
                 } catch(GameActionException e)
                 {
                     System.out.println("exception in surroundHQ 1");
@@ -484,30 +508,40 @@ public class DeliveryDrone extends Unit {
 
                 if (occupying_robot != null) //if there's a robot in that position
                 {
+                    System.out.println("occupied");
                     //if the robot is a delivery drone and on our team, update the position to be the next ring spot
                     if (occupying_robot.type == RobotType.DELIVERY_DRONE && occupying_robot.team == myTeam) {
                         current_ring_pos += 1;
+//                        System.out.println("current_ring_pos: " + current_ring_pos);
                     }
 
                     moveRandom();
 
                 } else //if the spot is empty
                 {
+//                    System.out.println("start else");
                     //if this drone gets stuck trying to move towards the next spot, try to get around
                     Direction dir = rc.getLocation().directionTo(current_ring_destination);
-                    MapLocation next_dest = myLocation.add(dir);
-                    RobotInfo robot_obstacle = rc.senseRobotAtLocation(next_dest);
-                    if(robot_obstacle != null)
-                    {
-                        if(dir == Direction.EAST)
-                        {
-                            dir = Direction.SOUTH;
-                        }
-                        else if(dir == Direction.SOUTH)
-                        {
-                            dir = Direction.EAST;
-                        }
-                    }
+//                    System.out.println("dir: " + dir);
+//                    MapLocation next_dest = rc.getLocation().add(dir);
+//                    System.out.println("after next_dest");
+//                    System.out.println("next_dest: (" + next_dest.x + ", " + next_dest.y + ")");
+//                    if(rc.canSenseLocation(next_dest)) {
+//                        System.out.println("can sense next_dest: " + rc.canSenseLocation(next_dest));
+//                    RobotInfo robot_obstacle = rc.senseRobotAtLocation(next_dest);
+//                    }
+//                    System.out.println("after robot_obstacle");
+//                    if(robot_obstacle != null)
+//                    {
+//                        if(dir == Direction.EAST)
+//                        {
+//                            dir = Direction.SOUTH;
+//                        }
+//                        else if(dir == Direction.SOUTH)
+//                        {
+//                            dir = Direction.EAST;
+//                        }
+//                    }
                     tryMoveDirection(dir);
                 }
             }
