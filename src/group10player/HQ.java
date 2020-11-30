@@ -42,7 +42,7 @@ public class HQ extends Building{
     public void takeTurn() throws GameActionException{
         super.takeTurn();
         System.out.println("Round: "+ rc.getRoundNum());
-
+        
         SendHQlocBlockchain();
 
         Shooter();
