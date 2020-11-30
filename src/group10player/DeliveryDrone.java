@@ -4,6 +4,7 @@ import battlecode.common.*;
 import scala.collection.Map;
 
 import java.awt.Robot;
+import java.util.ArrayList;
 
 public class DeliveryDrone extends Unit {
 
@@ -11,12 +12,21 @@ public class DeliveryDrone extends Unit {
     boolean holding_target = false;
     MapLocation water_loc = null;
     boolean know_water = false;
+    int ring_offset_x = -2;
+    int ring_offset_y = 2;
+    //    MapLocation current_ring_destination;
+    ArrayList<MapLocation> ring_positions = new ArrayList<>();
+    int current_ring_pos = 0;
+    boolean init_ring_pos = false;
+
+    boolean enemy_priority_override = false;
+    //int gameStage;    //0: we don't know, request info
+                        //1: early game, put landscapers onto wall
+                        //2: landscapers have filled wall, surround in a ring
+                        //3: ring is complete, group up and get ready to swarm enemy HQ
 
     public DeliveryDrone(RobotController rc) throws GameActionException {
         super(rc);
-//        System.out.println("initialize delivery drone");
-//        System.out.println("constructor myLocation: " + myLocation);
-//        System.out.println("constructor myLocation: " + rc.getLocation());
     }
 
 
@@ -30,40 +40,130 @@ public class DeliveryDrone extends Unit {
 //        System.out.println("target: " + target);
 //        System.out.println("holding_target: " + holding_target);
 
-        //if no target move random and look for enemy
-        if(target == -1) {
-            moveRandom();
-            searchForEnemy();
+        System.out.println("is_holding: " + rc.isCurrentlyHoldingUnit());
 
-            if(!know_water) {
-                searchForWater();
+        if(HQLocation == null)
+        {
+            tryFindHQLocation();
+        }
+//        System.out.println("init_ring_pos: " + init_ring_pos);
+//        System.out.println("HQLocation: " + HQLocation);
+//        System.out.println("ring_positions size: " + ring_positions.size());
+        if(!init_ring_pos && HQLocation != null)
+        {
+//            System.out.println("test 1");
+//            ring_positions.add(new MapLocation(HQLocation.x, ring_offset_y));
+//            System.out.println("test 2");
+            ring_positions.add(new MapLocation(HQLocation.x + ring_offset_x, HQLocation.y + ring_offset_y));
+            ring_positions.add(new MapLocation(HQLocation.x + ring_offset_x + 1, HQLocation.y + ring_offset_y));
+            ring_positions.add(new MapLocation(HQLocation.x + ring_offset_x + 2, HQLocation.y + ring_offset_y));
+            ring_positions.add(new MapLocation(HQLocation.x + ring_offset_x + 3, HQLocation.y + ring_offset_y));
+            ring_positions.add(new MapLocation(HQLocation.x + ring_offset_x + 4, HQLocation.y + ring_offset_y));
+            ring_positions.add(new MapLocation(HQLocation.x + ring_offset_x + 4, HQLocation.y + ring_offset_y - 1));
+            ring_positions.add(new MapLocation(HQLocation.x + ring_offset_x + 4, HQLocation.y + ring_offset_y - 2));
+            ring_positions.add(new MapLocation(HQLocation.x + ring_offset_x + 4, HQLocation.y + ring_offset_y - 3));
+            ring_positions.add(new MapLocation(HQLocation.x + ring_offset_x + 4, HQLocation.y + ring_offset_y - 4));
+            ring_positions.add(new MapLocation(HQLocation.x + ring_offset_x + 3, HQLocation.y + ring_offset_y - 4));
+            ring_positions.add(new MapLocation(HQLocation.x + ring_offset_x + 2, HQLocation.y + ring_offset_y - 4));
+            ring_positions.add(new MapLocation(HQLocation.x + ring_offset_x + 1, HQLocation.y + ring_offset_y - 4));
+            ring_positions.add(new MapLocation(HQLocation.x + ring_offset_x, HQLocation.y + ring_offset_y - 4));
+            ring_positions.add(new MapLocation(HQLocation.x + ring_offset_x, HQLocation.y + ring_offset_y - 3));
+            ring_positions.add(new MapLocation(HQLocation.x + ring_offset_x, HQLocation.y + ring_offset_y - 2));
+            ring_positions.add(new MapLocation(HQLocation.x + ring_offset_x, HQLocation.y + ring_offset_y - 1));
+            init_ring_pos = true;
+
+        }
+
+
+        if (gameStage == 0 && rc.getTeamSoup() >= 1){
+            trySendBlockchainMessage(buildBlockchainMessage(teamMessageCode, 8, 0, 0, 0, 0, 0), 1);
+        } else if (gameStage == 1){
+            if (target == -1) {
+                if (HQLocation == null){
+                    tryFindHQLocation();
+                    System.out.println("Drone searching for HQ!");
+                } else {
+                    if (rc.getLocation().distanceSquaredTo(HQLocation) > 18){
+                        tryMoveDirection(rc.getLocation().directionTo(HQLocation));
+                    } else {
+                        moveRandom();
+                    }
+                }
+                searchForLandscaper();
+                if(!know_water) {
+                    searchForWater();
+                }
+            } else if (!holding_target){
+                if (enemy_priority_override){ //pick up enemy
+                    grabEnemy();
+                } else {
+                    grabLandscaper();
+                }
+            } else { //drop on wall
+                if (enemy_priority_override){ //drop in water
+                    if(know_water) {
+                        dropInWater();
+                    } else {
+                        moveRandom();
+                        searchForWater();
+                    }
+                } else {
+                    if (HQLocation == null) {
+                        tryFindHQLocation();
+                    } else {
+                        System.out.println("dropping on wall");
+                        dropOnWall();
+                    }
+                }
             }
-        }
-        else if(!holding_target) //if have target move towards and try to pick up
-        {
-//            System.out.println("not holding");
-            grabEnemy();
-        }
-        else
-        {
-//            System.out.println("else statement");
-            if(know_water)
+        } else if (gameStage == 2){
+            //drop any held things - enemies in water, allies on ground
+            surroundHQ();
+        } else if (gameStage == 3){
+
+        } else { //temporary holder for the "hunt enemies" code
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //if no target move random and look for enemy
+            if(target == -1) {
+                moveRandom();
+                searchForEnemy();
+
+                if(!know_water) {
+                    searchForWater();
+                }
+            }
+            else if(!holding_target) //if have target move towards and try to pick up
             {
-//                System.out.println("in else know_water");
-                dropInWater();
+//            System.out.println("not holding");
+                grabEnemy();
             }
             else
             {
+//            System.out.println("else statement");
+                if(know_water)
+                {
+//                System.out.println("in else know_water");
+                    dropInWater();
+                }
+                else
+                {
 //                System.out.println("else else");
-                moveRandom();
+                    moveRandom();
 //                System.out.println("after moveRandom");
-                searchForWater();
+                    searchForWater();
 //                System.out.println("end of else else");
+                }
+
             }
+
+//        System.out.println("holding_target: " + holding_target);
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 
         }
 
-//        System.out.println("holding_target: " + holding_target);
+
 
     }
 
@@ -94,7 +194,7 @@ public class DeliveryDrone extends Unit {
                     sense_return = rc.senseFlooding(loc);
                 } catch (GameActionException e)
                 {
-                    System.out.println("Trying to sense outside map");
+                    //System.out.println("Trying to sense outside map");
                 }
 
                 if(sense_return) //if the tile is flooded
@@ -139,11 +239,65 @@ public class DeliveryDrone extends Unit {
                 rc.dropUnit(water_dir);
                 holding_target = false;
                 target = -1;
+                enemy_priority_override = false;
             }
         }
 //        System.out.println("end dropInWater");
     }
 
+    public void dropOnWall() throws GameActionException {
+        myLocation = rc.getLocation();
+        if (HQLocation == null){
+            tryFindHQLocation();
+            return;
+        }
+        if (myLocation.distanceSquaredTo(HQLocation) > 8) { //get close enough to see entire wall
+            tryMoveDirection(myLocation.directionTo(HQLocation));
+        }
+        myLocation = rc.getLocation();
+
+        MapLocation dropTarget = null;
+        int minDistance = 100000;
+        for (Direction dir:directions){
+//            System.out.println("dir: " + dir);
+//            System.out.println("distance to hqlocation + dir: " + myLocation.distanceSquaredTo(HQLocation.add(dir)));
+//            System.out.println("hqlocation + dir: " + HQLocation.add(dir));
+            if (rc.canSenseLocation(HQLocation.add(dir))) {
+                if (!rc.isLocationOccupied(HQLocation.add(dir))) { //no robot there, try to drop
+//                    System.out.println("distance to hqlocation + dir: " + myLocation.distanceSquaredTo(HQLocation.add(dir)));
+                    if (dropTarget == null || myLocation.distanceSquaredTo(HQLocation.add(dir)) < minDistance){
+                        dropTarget = HQLocation.add(dir);
+                        minDistance = myLocation.distanceSquaredTo(dropTarget);
+                    }
+                }
+            }
+        }
+        if (dropTarget == null){
+
+//            System.out.println("dropTarget is null!");
+            //wall complete, wait for HQ to send gameStage update
+            return;
+        }
+
+        int distance = myLocation.distanceSquaredTo(dropTarget);
+
+        if(distance <= 0) {
+//            System.out.println("Drone too close!");
+            tryMoveDirection(randomDirection());
+        } else if(distance > 2) {
+
+            //System.out.println("Drone farther than 2! Distance = "+distance+", holding_target = "+holding_target);
+            //System.out.println("Target tile = ("+dropTarget.x+", "+dropTarget.y+")");
+            tryMoveTowardsFavorLeft(dropTarget);
+        } else { //if(distance <= 2 && distance > 0) { //not sure if they can drop on their own square
+            if(rc.canDropUnit(myLocation.directionTo(dropTarget))) {
+                //System.out.println("Drone dropping landscaper on wall!");
+                rc.dropUnit(myLocation.directionTo(dropTarget));
+                holding_target = false;
+                target = -1;
+            }
+        }
+    }
 
     public void searchForEnemy()
     {
@@ -166,7 +320,7 @@ public class DeliveryDrone extends Unit {
         if(cows != null) {
 
             for (RobotInfo cow : cows) {
-                System.out.println("enemy_robot: " + cow.getType());
+                //System.out.println("enemy_robot: " + cow.getType());
                 if (cow.getType() == RobotType.COW) {
                     target = cow.getID();
 
@@ -174,6 +328,48 @@ public class DeliveryDrone extends Unit {
             }
         }
 
+    }
+
+    public void searchForLandscaper() throws GameActionException {
+        RobotInfo[] allied_robots = rc.senseNearbyRobots(24, rc.getTeam());
+        RobotInfo[] enemy_robots = rc.senseNearbyRobots(24, rc.getTeam().opponent());
+
+        if (HQLocation == null){
+            tryFindHQLocation();
+            return;
+        }
+
+        if(enemy_robots != null) {
+            for (RobotInfo enemy_robot : enemy_robots) {
+                if (enemy_robot.getType() == RobotType.LANDSCAPER || enemy_robot.getType() == RobotType.MINER) {
+                    target = enemy_robot.getID();
+                    enemy_priority_override = true;
+                    return;
+                }
+            }
+        }
+
+        if(allied_robots != null) {
+            for (RobotInfo ally_robot : allied_robots) {
+                if (ally_robot.getType() == RobotType.LANDSCAPER && !ally_robot.getLocation().isAdjacentTo(HQLocation)) {
+                    if (target != -1){
+                        RobotInfo target_info = null;
+                        try{
+                            target_info = rc.senseRobot(target);
+                        }catch(GameActionException e)
+                        {
+                            target = -1;
+                        }
+                        if (rc.getLocation().distanceSquaredTo(ally_robot.getLocation()) < rc.getLocation().distanceSquaredTo(target_info.getLocation())){
+                            target = ally_robot.getID();
+                        }
+                    } else {
+                        target = ally_robot.getID();
+                    }
+                    //System.out.println("Drone found target! At ("+ally_robot.getLocation().x+", "+ally_robot.getLocation().y+")");
+                }
+            }
+        }
     }
 
     public void grabEnemy() throws GameActionException
@@ -186,19 +382,10 @@ public class DeliveryDrone extends Unit {
         }catch(GameActionException e)
         {
             target = -1;
+            enemy_priority_override = false;
             return;
         }
-
-//        System.out.println("after sensing target");
-
-//        System.out.println("myLocation: " + rc.getLocation());
-
         int distance = rc.getLocation().distanceSquaredTo(target_info.getLocation());
-
-//        System.out.println("after distance calc");
-
-//        System.out.println("team: " + myTeam + " distance: " + distance);
-
         if(distance > 2)
         {
             Direction enemy_dir = rc.getLocation().directionTo(target_info.location);
@@ -206,20 +393,50 @@ public class DeliveryDrone extends Unit {
             tryMoveDirection(enemy_dir);
         }
 
-//        System.out.println("after distance check");
-
-//        System.out.println("canPickUpUnit: " + rc.canPickUpUnit(target));
-
         if(rc.canPickUpUnit(target))
         {
+            //System.out.println("Drone picking up enemy!");
             rc.pickUpUnit(target);
             holding_target = true;
         }
 
-//        System.out.println("after pickup");
-
     }
 
+    public void grabLandscaper() throws GameActionException
+    {
+        searchForLandscaper();
+        RobotInfo target_info = null;
+        try{
+            target_info = rc.senseRobot(target);
+        }catch(GameActionException e)
+        {
+            target = -1;
+            return;
+        }
+        if (HQLocation == null){
+            tryFindHQLocation();
+            return;
+        }
+        if (target_info.getLocation().distanceSquaredTo(HQLocation) <= 2){ //don't grab from wall
+            target = -1;
+            return;
+        }
+        int distance = rc.getLocation().distanceSquaredTo(target_info.getLocation());
+        if(distance > 2)
+        {
+            Direction landscaper_dir = rc.getLocation().directionTo(target_info.location);
+
+            tryMoveDirection(landscaper_dir);
+        }
+
+        if(rc.canPickUpUnit(target))
+        {
+            System.out.println("Drone picking up landscaper!");
+            rc.pickUpUnit(target);
+            holding_target = true;
+        }
+
+    }
 
     @Override
     public boolean tryMoveDirection(Direction dirTowards) throws GameActionException{
@@ -241,6 +458,95 @@ public class DeliveryDrone extends Unit {
             }
         }
         return false;
+    }
+
+    public void surroundHQ() throws GameActionException
+    {
+        if(current_ring_pos >= ring_positions.size())
+        {
+            return;
+        }
+
+        MapLocation current_ring_destination = ring_positions.get(current_ring_pos);
+//        System.out.println("current_ring_destination: (" + current_ring_destination.x + ", " + current_ring_destination.y + ")");
+
+        //if not at the ring position, do this, else do nothing if there already
+        if(rc.getLocation().distanceSquaredTo(current_ring_destination) > 0)
+        {
+
+            //if you are not close enough to the current ring destination to sense
+            if(!rc.canSenseLocation(current_ring_destination))
+            {
+                try{
+                    Direction dir = rc.getLocation().directionTo(current_ring_destination);
+                    MapLocation next_dest = rc.getLocation().add(dir);
+                    if(rc.canSenseLocation(next_dest)) {
+                        RobotInfo robot_obstacle = rc.senseRobotAtLocation(next_dest);
+                        if(robot_obstacle != null)
+                        {
+                            System.out.println("change dir to avoid");
+                            Direction hq_dir = rc.getLocation().directionTo(HQLocation);
+                            if(hq_dir == Direction.SOUTH)
+                            {
+                                dir = Direction.WEST;
+                            }
+                            else if(hq_dir == Direction.EAST)
+                            {
+                                dir = Direction.SOUTH;
+                            }
+                        }
+                    }
+                    tryMoveDirection(dir);
+                } catch(GameActionException e)
+                {
+                    System.out.println("exception in surroundHQ 1");
+                }
+            }
+            else //if you are close enough to sense
+            {
+                RobotInfo occupying_robot = rc.senseRobotAtLocation(current_ring_destination);
+
+                if (occupying_robot != null) //if there's a robot in that position
+                {
+                    System.out.println("occupied");
+                    //if the robot is a delivery drone and on our team, update the position to be the next ring spot
+                    if (occupying_robot.type == RobotType.DELIVERY_DRONE && occupying_robot.team == myTeam) {
+                        current_ring_pos += 1;
+//                        System.out.println("current_ring_pos: " + current_ring_pos);
+                    }
+
+                    moveRandom();
+
+                } else //if the spot is empty
+                {
+//                    System.out.println("start else");
+                    //if this drone gets stuck trying to move towards the next spot, try to get around
+                    Direction dir = rc.getLocation().directionTo(current_ring_destination);
+//                    System.out.println("dir: " + dir);
+//                    MapLocation next_dest = rc.getLocation().add(dir);
+//                    System.out.println("after next_dest");
+//                    System.out.println("next_dest: (" + next_dest.x + ", " + next_dest.y + ")");
+//                    if(rc.canSenseLocation(next_dest)) {
+//                        System.out.println("can sense next_dest: " + rc.canSenseLocation(next_dest));
+//                    RobotInfo robot_obstacle = rc.senseRobotAtLocation(next_dest);
+//                    }
+//                    System.out.println("after robot_obstacle");
+//                    if(robot_obstacle != null)
+//                    {
+//                        if(dir == Direction.EAST)
+//                        {
+//                            dir = Direction.SOUTH;
+//                        }
+//                        else if(dir == Direction.SOUTH)
+//                        {
+//                            dir = Direction.EAST;
+//                        }
+//                    }
+                    tryMoveDirection(dir);
+                }
+            }
+        }
+
     }
 
 //    /**

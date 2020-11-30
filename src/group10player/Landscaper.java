@@ -54,11 +54,11 @@ public class Landscaper extends Unit{
         }
         if (wallFinished || checkWallFinished()) {
             //here, we'll have instructions for if the wall around the HQ is finished.
-            System.out.println("Wall is finished!");
+            //System.out.println("Wall is finished!");
             walkRandom();
         } else { //work on building wall
             if (findHQ()) {
-                System.out.println("HQ Found...");
+                //System.out.println("HQ Found...");
 
                 boolean droppedDirt = this.dropDirtIfYouCan();
                 if (!droppedDirt && !digIfYouCan() && !tryWalkOnWall()) {
@@ -126,10 +126,10 @@ public class Landscaper extends Unit{
             //}    //end of:  if(rc.canMove(dir)){
         }
         if (minElevation < 1000){
-            System.out.println("HQ found!");
+            //System.out.println("HQ found!");
             return true;
         }
-        System.out.println("HQ not found...");
+        //System.out.println("HQ not found...");
         return false;
     }
 
@@ -243,7 +243,7 @@ public class Landscaper extends Unit{
 
             if(rc.isLocationOccupied(digCandidate)){
                 RobotInfo adjRobot = rc.senseRobotAtLocation(digCandidate);
-                if(adjRobot.team == myTeam ){
+                if(adjRobot.team == myTeam && adjRobot.type != RobotType.DELIVERY_DRONE){
                     needToMove = true;
                     continue;
                 }
@@ -257,10 +257,10 @@ public class Landscaper extends Unit{
         }
         if(minElevationDir != null && rc.canDigDirt(minElevationDir)){
             rc.digDirt(minElevationDir);
-            System.out.println("Landscaper digging");
+            //System.out.println("Landscaper digging");
             return true;
         }
-        System.out.println("Landscaper can't dig");
+        //System.out.println("Landscaper can't dig");
         return false;
 
 
@@ -289,7 +289,7 @@ public class Landscaper extends Unit{
             }*/
             if (checkElevationDif(bestDropZones[0])) {
                 rc.depositDirt(bestDropZones[0]);
-                System.out.println("Landscaper dropping dirt clockwise");
+                //System.out.println("Landscaper dropping dirt clockwise");
                 needToMove = true;
                 return true;
             }
@@ -307,7 +307,7 @@ public class Landscaper extends Unit{
             }*/
             if (checkElevationDif(bestDropZones[1])) {
                 rc.depositDirt(bestDropZones[1]);
-                System.out.println("Landscaper dropping dirt counter-clockwise");
+                //System.out.println("Landscaper dropping dirt counter-clockwise");
                 needToMove = true;
                 return true;
             }
@@ -344,13 +344,13 @@ public class Landscaper extends Unit{
         Direction[] bestDirections = getBestWallDirections(myLocation);
         if(rc.canMove(bestDirections[0])){
             rc.move(bestDirections[0]);
-            System.out.println("Landscaper walking clockwise");
+            //System.out.println("Landscaper walking clockwise");
             needToMove = false;
             return true;
         }
         if (rc.canMove(bestDirections[1])) {
             rc.move(bestDirections[1]);
-            System.out.println("Landscaper walking counter-clockwise");
+            //System.out.println("Landscaper walking counter-clockwise");
             needToMove = false;
             return true;
         }

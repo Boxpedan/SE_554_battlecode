@@ -72,6 +72,22 @@ public class Unit extends Robot{
         return false;
     }
 
+    public boolean tryMoveTowardsFavorLeft(MapLocation destination) throws GameActionException{
+        if (destination == null){
+            return false;
+        }
+        Direction dirTowards = myLocation.directionTo(destination);
+        for (int x = 0; x <= 8; x++) {
+            if (rc.canMove(dirTowards) && !rc.senseFlooding(rc.adjacentLocation(dirTowards))) {
+                rc.move(dirTowards);
+                return true;
+            } else {//rotate direction right until you can move towards
+                dirTowards = dirTowards.rotateLeft();
+            }
+        }
+        return false;
+    }
+
     public boolean tryMoveDirection(Direction dirTowards) throws GameActionException{
         if (dirTowards == null){
             return false;
