@@ -229,4 +229,17 @@ public class DeliveryDroneTest {
 //        System.out.println("dropInWaterTest");
     }
 
+    @Test
+    public void dropOnWallTest1() throws GameActionException{
+        when(RCtest.getLocation()).thenReturn(new MapLocation(1,1));
+        DDtest.dropOnWall();
+    }
+
+    @Test
+    public void dropOnWallTest2() throws GameActionException{
+        when(RCtest.getLocation()).thenReturn(new MapLocation(1,1));
+        DDtest.HQLocation = new MapLocation(2,2);
+        DDtest.dropOnWall();
+    }
+
 }
