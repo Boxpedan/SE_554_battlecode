@@ -7,6 +7,7 @@ import org.mockito.*;
 import org.scalactic.Or;
 import scala.collection.immutable.Map;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 import static org.junit.Assert.assertEquals;
@@ -240,6 +241,151 @@ public class DeliveryDroneTest {
         when(RCtest.getLocation()).thenReturn(new MapLocation(1,1));
         DDtest.HQLocation = new MapLocation(2,2);
         DDtest.dropOnWall();
+    }
+
+    @Test
+    public void dropOnWallTest3() throws GameActionException{
+        when(RCtest.getLocation()).thenReturn(new MapLocation(100,100));
+        DDtest.HQLocation = new MapLocation(2,2);
+        DDtest.dropOnWall();
+    }
+
+    @Test
+    public void dropOnWallTest4() throws GameActionException{
+        MapLocation temp = new MapLocation(1,1);
+        when(RCtest.getLocation()).thenReturn(temp);
+        DDtest.HQLocation = new MapLocation(2,2);
+        when(RCtest.canSenseLocation(temp.add(Direction.NORTH))).thenReturn(true);
+        when(RCtest.isLocationOccupied(temp.add(Direction.NORTH))).thenReturn(false);
+        DDtest.dropOnWall();
+    }
+
+    @Test
+    public void dropOnWallTest5() throws GameActionException{
+        MapLocation temp = new MapLocation(1,1);
+        when(RCtest.getLocation()).thenReturn(temp);
+        DDtest.HQLocation = new MapLocation(1,1);
+        when(RCtest.canSenseLocation(temp.add(Direction.NORTH))).thenReturn(true);
+        when(RCtest.isLocationOccupied(temp.add(Direction.NORTH))).thenReturn(false);
+        when(RCtest.canDropUnit(temp.directionTo(temp.add(Direction.NORTH)))).thenReturn(true);
+        DDtest.dropOnWall();
+    }
+
+    @Test
+    public void dropOnWallTest6() throws GameActionException{
+        MapLocation temp = new MapLocation(4,4);
+        when(RCtest.getLocation()).thenReturn(temp);
+        DDtest.HQLocation = new MapLocation(1,1);
+        when(RCtest.canSenseLocation(temp.add(Direction.NORTH))).thenReturn(true);
+        when(RCtest.isLocationOccupied(temp.add(Direction.NORTH))).thenReturn(false);
+        DDtest.dropOnWall();
+    }
+
+    @Test
+    public void searchForLandscaperTest1() throws GameActionException{
+        DDtest.searchForLandscaper();
+    }
+
+    @Test
+    public void searchForLandscaperTest2() throws GameActionException{
+        DDtest.HQLocation = new MapLocation(1,1);
+        DDtest.searchForLandscaper();
+    }
+
+    @Test
+    public void searchForLandscaperTest3() throws GameActionException{
+        when(RCtest.senseNearbyRobots(24,Team.A)).thenReturn(new RobotInfo[]{new RobotInfo(12, Team.A, RobotType.DELIVERY_DRONE, 0, true, 0, 0, 0, new MapLocation(4, 4))});
+        when(RCtest.senseNearbyRobots(24,Team.B)).thenReturn(new RobotInfo[]{new RobotInfo(12, Team.B, RobotType.DELIVERY_DRONE, 0, true, 0, 0, 0, new MapLocation(5, 5))});
+        DDtest.HQLocation = new MapLocation(1,1);
+        DDtest.searchForLandscaper();
+    }
+
+    @Test
+    public void searchForLandscaperTest4() throws GameActionException{
+        when(RCtest.senseNearbyRobots(24,Team.A)).thenReturn(new RobotInfo[]{new RobotInfo(12, Team.A, RobotType.DELIVERY_DRONE, 0, true, 0, 0, 0, new MapLocation(4, 4))});
+        when(RCtest.senseNearbyRobots(24,Team.B)).thenReturn(new RobotInfo[]{new RobotInfo(12, Team.B, RobotType.LANDSCAPER, 0, true, 0, 0, 0, new MapLocation(5, 5))});
+        DDtest.HQLocation = new MapLocation(1,1);
+        DDtest.searchForLandscaper();
+    }
+
+    @Test
+    public void searchForLandscaperTest5() throws GameActionException{
+        when(RCtest.senseNearbyRobots(24,Team.A)).thenReturn(new RobotInfo[]{new RobotInfo(12, Team.A, RobotType.DELIVERY_DRONE, 0, true, 0, 0, 0, new MapLocation(4, 4))});
+        when(RCtest.senseNearbyRobots(24,Team.B)).thenReturn(new RobotInfo[]{new RobotInfo(12, Team.B, RobotType.MINER, 0, true, 0, 0, 0, new MapLocation(5, 5))});
+        DDtest.HQLocation = new MapLocation(1,1);
+        DDtest.searchForLandscaper();
+    }
+
+    @Test
+    public void searchForLandscaperTest6() throws GameActionException{
+        when(RCtest.senseNearbyRobots(24,Team.A)).thenReturn(new RobotInfo[]{new RobotInfo(12, Team.A, RobotType.LANDSCAPER, 0, true, 0, 0, 0, new MapLocation(4, 4))});
+        when(RCtest.senseNearbyRobots(24,Team.B)).thenReturn(new RobotInfo[]{new RobotInfo(12, Team.B, RobotType.DELIVERY_DRONE, 0, true, 0, 0, 0, new MapLocation(5, 5))});
+        DDtest.HQLocation = new MapLocation(1,1);
+        DDtest.searchForLandscaper();
+    }
+
+    @Test
+    public void searchForLandscaperTest7() throws GameActionException{
+        DDtest.HQLocation = new MapLocation(1,1);
+        DDtest.target = 1;
+        when(RCtest.senseNearbyRobots(24,Team.A)).thenReturn(new RobotInfo[]{new RobotInfo(12, Team.A, RobotType.LANDSCAPER, 0, true, 0, 0, 0, new MapLocation(4, 4))});
+        when(RCtest.senseNearbyRobots(24,Team.B)).thenReturn(new RobotInfo[]{new RobotInfo(12, Team.B, RobotType.DELIVERY_DRONE, 0, true, 0, 0, 0, new MapLocation(5, 5))});
+        when(RCtest.senseRobot(1)).thenReturn(new RobotInfo(12, Team.A, RobotType.LANDSCAPER, 0, true, 0, 0, 0, new MapLocation(4, 4)));
+        when(RCtest.getLocation()).thenReturn(new MapLocation(2,2));
+        DDtest.HQLocation = new MapLocation(1,1);
+        DDtest.searchForLandscaper();
+    }
+
+    @Test
+    public void grabLandscaperTest1() throws GameActionException{
+        DDtest.grabLandscaper();
+    }
+
+    @Test
+    public void grabLandscaperTest2() throws GameActionException{
+        DDtest.target = 1;
+        when(RCtest.senseRobot(1)).thenReturn(new RobotInfo(12, Team.A, RobotType.LANDSCAPER, 0, true, 0, 0, 0, new MapLocation(3, 3)));
+        DDtest.HQLocation = new MapLocation(2,2);
+        DDtest.grabLandscaper();
+    }
+
+    @Test
+    public void grabLandscaperTest3() throws GameActionException{
+        DDtest.target = 1;
+        when(RCtest.senseRobot(1)).thenReturn(new RobotInfo(12, Team.A, RobotType.LANDSCAPER, 0, true, 0, 0, 0, new MapLocation(5, 5)));
+        DDtest.HQLocation = new MapLocation(2,2);
+        when(RCtest.getLocation()).thenReturn(new MapLocation(1,1));
+        DDtest.grabLandscaper();
+    }
+
+    @Test
+    public void grabLandscaperTest4() throws GameActionException{
+        DDtest.target = 1;
+        when(RCtest.senseRobot(1)).thenReturn(new RobotInfo(12, Team.A, RobotType.LANDSCAPER, 0, true, 0, 0, 0, new MapLocation(5, 5)));
+        DDtest.HQLocation = new MapLocation(2,2);
+        when(RCtest.getLocation()).thenReturn(new MapLocation(4,4));
+        when(RCtest.canPickUpUnit(1)).thenReturn(true);
+        DDtest.grabLandscaper();
+    }
+
+    @Test
+    public void surroundHQtest1() throws GameActionException{
+        DDtest.surroundHQ();
+    }
+
+    @Test
+    public void surroundHQtest2() throws GameActionException{
+        DDtest.current_ring_pos = 10;
+        DDtest.ring_positions = new ArrayList<MapLocation>(5);
+        DDtest.surroundHQ();
+    }
+
+    @Test
+    public void surroundHQtest3() throws GameActionException{
+        DDtest.current_ring_pos = 3;
+        DDtest.ring_positions = new ArrayList<MapLocation>(5);
+        when(RCtest.getLocation()).thenReturn(new MapLocation(2,2));
+        DDtest.surroundHQ();
     }
 
 }
