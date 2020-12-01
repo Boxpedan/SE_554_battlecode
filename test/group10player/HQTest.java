@@ -129,4 +129,289 @@ public class HQTest {
         when(RCtest.getTeamSoup()).thenReturn(0);
         HQtest.UpdateBlockchain();
     }
+
+    @Test
+    public void UpdateGameStageTest1() throws GameActionException{
+        MapLocation temp = new MapLocation(1,1);
+        when(RCtest.getLocation()).thenReturn(temp);
+        when(RCtest.senseRobotAtLocation(temp.add(Direction.NORTH))).thenReturn(null);
+        when(RCtest.senseRobotAtLocation(temp.add(Direction.NORTHEAST))).thenReturn(null);
+        when(RCtest.senseRobotAtLocation(temp.add(Direction.NORTHWEST))).thenReturn(null);
+        when(RCtest.senseRobotAtLocation(temp.add(Direction.WEST))).thenReturn(null);
+        when(RCtest.senseRobotAtLocation(temp.add(Direction.EAST))).thenReturn(null);
+        when(RCtest.senseRobotAtLocation(temp.add(Direction.SOUTHWEST))).thenReturn(null);
+        when(RCtest.senseRobotAtLocation(temp.add(Direction.SOUTHEAST))).thenReturn(null);
+        when(RCtest.senseRobotAtLocation(temp.add(Direction.SOUTH))).thenReturn(null);
+        HQtest.UpdateGameStage();
+    }
+
+    @Test
+    public void UpdateGameStageTest2() throws GameActionException{
+        MapLocation temp = new MapLocation(1,1);
+        when(RCtest.getLocation()).thenReturn(temp);
+        when(RCtest.getTeam()).thenReturn(Team.A);
+        when(RCtest.senseRobotAtLocation(temp.add(Direction.NORTH))).thenReturn(new RobotInfo(1, Team.A, RobotType.DELIVERY_DRONE, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+        when(RCtest.senseRobotAtLocation(temp.add(Direction.NORTHEAST))).thenReturn(new RobotInfo(1, Team.A, RobotType.DELIVERY_DRONE, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+        when(RCtest.senseRobotAtLocation(temp.add(Direction.NORTHWEST))).thenReturn(new RobotInfo(1, Team.A, RobotType.DELIVERY_DRONE, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+        when(RCtest.senseRobotAtLocation(temp.add(Direction.WEST))).thenReturn(new RobotInfo(1, Team.A, RobotType.DELIVERY_DRONE, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+        when(RCtest.senseRobotAtLocation(temp.add(Direction.EAST))).thenReturn(new RobotInfo(1, Team.A, RobotType.DELIVERY_DRONE, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+        when(RCtest.senseRobotAtLocation(temp.add(Direction.SOUTHWEST))).thenReturn(new RobotInfo(1, Team.A, RobotType.DELIVERY_DRONE, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+        when(RCtest.senseRobotAtLocation(temp.add(Direction.SOUTHEAST))).thenReturn(new RobotInfo(1, Team.A, RobotType.DELIVERY_DRONE, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+        when(RCtest.senseRobotAtLocation(temp.add(Direction.SOUTH))).thenReturn(new RobotInfo(1, Team.A, RobotType.DELIVERY_DRONE, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+        HQtest.UpdateGameStage();
+    }
+
+    @Test
+    public void UpdateGameStageTest3() throws GameActionException{
+        MapLocation temp = new MapLocation(1,1);
+        when(RCtest.getLocation()).thenReturn(temp);
+        when(RCtest.getTeam()).thenReturn(Team.A);
+        when(RCtest.senseRobotAtLocation(temp.add(Direction.NORTH))).thenReturn(new RobotInfo(1, Team.A, RobotType.LANDSCAPER, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+        when(RCtest.senseRobotAtLocation(temp.add(Direction.NORTHEAST))).thenReturn(new RobotInfo(1, Team.A, RobotType.LANDSCAPER, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+        when(RCtest.senseRobotAtLocation(temp.add(Direction.NORTHWEST))).thenReturn(new RobotInfo(1, Team.A, RobotType.LANDSCAPER, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+        when(RCtest.senseRobotAtLocation(temp.add(Direction.WEST))).thenReturn(new RobotInfo(1, Team.A, RobotType.LANDSCAPER, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+        when(RCtest.senseRobotAtLocation(temp.add(Direction.EAST))).thenReturn(new RobotInfo(1, Team.A, RobotType.LANDSCAPER, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+        when(RCtest.senseRobotAtLocation(temp.add(Direction.SOUTHWEST))).thenReturn(new RobotInfo(1, Team.A, RobotType.LANDSCAPER, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+        when(RCtest.senseRobotAtLocation(temp.add(Direction.SOUTHEAST))).thenReturn(new RobotInfo(1, Team.A, RobotType.LANDSCAPER, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+        when(RCtest.senseRobotAtLocation(temp.add(Direction.SOUTH))).thenReturn(new RobotInfo(1, Team.A, RobotType.LANDSCAPER, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+        HQtest.UpdateGameStage();
+    }
+
+    @Test
+    public void UpdateGameStageTest4() throws GameActionException{
+        HQtest.gameStage = 2;
+        MapLocation temp = new MapLocation(5,5);
+        when(RCtest.getLocation()).thenReturn(temp);
+        when(RCtest.getTeam()).thenReturn(Team.A);
+        for(int in = 0; in < 5; in++) {
+            MapLocation temp2 = new MapLocation(temp.x-2+in, temp.y+2);
+            when(RCtest.canSenseLocation(temp2)).thenReturn(true);
+            when(RCtest.senseRobotAtLocation(temp2)).thenReturn(null);
+        }
+        HQtest.UpdateGameStage();
+    }
+
+    @Test
+    public void UpdateGameStageTest5() throws GameActionException{
+        HQtest.gameStage = 2;
+        MapLocation temp = new MapLocation(5,5);
+        when(RCtest.getLocation()).thenReturn(temp);
+        when(RCtest.getTeam()).thenReturn(Team.A);
+        for(int in = 0; in < 5; in++) {
+            MapLocation temp2 = new MapLocation(temp.x-2+in, temp.y+2);
+            when(RCtest.canSenseLocation(temp2)).thenReturn(true);
+            when(RCtest.senseRobotAtLocation(temp2)).thenReturn(new RobotInfo(1, Team.A, RobotType.LANDSCAPER, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+        }
+        HQtest.UpdateGameStage();
+    }
+
+    @Test
+    public void UpdateGameStageTest6() throws GameActionException{
+        HQtest.gameStage = 2;
+        MapLocation temp = new MapLocation(5,5);
+        when(RCtest.getLocation()).thenReturn(temp);
+        when(RCtest.getTeam()).thenReturn(Team.A);
+        for(int in = 0; in < 5; in++) {
+            MapLocation temp2 = new MapLocation(temp.x-2+in, temp.y+2);
+            when(RCtest.canSenseLocation(temp2)).thenReturn(true);
+            when(RCtest.senseRobotAtLocation(temp2)).thenReturn(new RobotInfo(1, Team.A, RobotType.DELIVERY_DRONE, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+        }
+        HQtest.UpdateGameStage();
+    }
+
+    @Test
+    public void UpdateGameStageTest7() throws GameActionException{
+        HQtest.gameStage = 2;
+        MapLocation temp = new MapLocation(5,5);
+        when(RCtest.getLocation()).thenReturn(temp);
+        when(RCtest.getTeam()).thenReturn(Team.A);
+        for(int in = 0; in < 5; in++) {
+            MapLocation temp2 = new MapLocation(temp.x-2+in, temp.y+2);
+            MapLocation temp3 = new MapLocation(temp.x-2+in, temp.y-2);
+            when(RCtest.canSenseLocation(temp2)).thenReturn(true);
+            when(RCtest.canSenseLocation(temp3)).thenReturn(true);
+            when(RCtest.senseRobotAtLocation(temp2)).thenReturn(new RobotInfo(1, Team.A, RobotType.DELIVERY_DRONE, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+            when(RCtest.senseRobotAtLocation(temp3)).thenReturn(null);
+        }
+        HQtest.UpdateGameStage();
+    }
+
+    @Test
+    public void UpdateGameStageTest8() throws GameActionException{
+        HQtest.gameStage = 2;
+        MapLocation temp = new MapLocation(5,5);
+        when(RCtest.getLocation()).thenReturn(temp);
+        when(RCtest.getTeam()).thenReturn(Team.A);
+        for(int in = 0; in < 5; in++) {
+            MapLocation temp2 = new MapLocation(temp.x-2+in, temp.y+2);
+            MapLocation temp3 = new MapLocation(temp.x-2+in, temp.y-2);
+            when(RCtest.canSenseLocation(temp2)).thenReturn(true);
+            when(RCtest.canSenseLocation(temp3)).thenReturn(true);
+            when(RCtest.senseRobotAtLocation(temp2)).thenReturn(new RobotInfo(1, Team.A, RobotType.DELIVERY_DRONE, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+            when(RCtest.senseRobotAtLocation(temp3)).thenReturn(new RobotInfo(1, Team.A, RobotType.LANDSCAPER, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+        }
+        HQtest.UpdateGameStage();
+    }
+
+    @Test
+    public void UpdateGameStageTest9() throws GameActionException{
+        HQtest.gameStage = 2;
+        MapLocation temp = new MapLocation(5,5);
+        when(RCtest.getLocation()).thenReturn(temp);
+        when(RCtest.getTeam()).thenReturn(Team.A);
+        for(int in = 0; in < 5; in++) {
+            MapLocation temp2 = new MapLocation(temp.x-2+in, temp.y+2);
+            MapLocation temp3 = new MapLocation(temp.x-2+in, temp.y-2);
+            when(RCtest.canSenseLocation(temp2)).thenReturn(true);
+            when(RCtest.canSenseLocation(temp3)).thenReturn(true);
+            when(RCtest.senseRobotAtLocation(temp2)).thenReturn(new RobotInfo(1, Team.A, RobotType.DELIVERY_DRONE, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+            when(RCtest.senseRobotAtLocation(temp3)).thenReturn(new RobotInfo(1, Team.A, RobotType.DELIVERY_DRONE, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+        }
+        HQtest.UpdateGameStage();
+    }
+
+    @Test
+    public void UpdateGameStageTest10() throws GameActionException{
+        HQtest.gameStage = 2;
+        MapLocation temp = new MapLocation(5,5);
+        when(RCtest.getLocation()).thenReturn(temp);
+        when(RCtest.getTeam()).thenReturn(Team.A);
+        for(int in = 0; in < 5; in++) {
+            MapLocation temp2 = new MapLocation(temp.x-2+in, temp.y+2);
+            MapLocation temp3 = new MapLocation(temp.x-2+in, temp.y-2);
+            when(RCtest.canSenseLocation(temp2)).thenReturn(true);
+            when(RCtest.canSenseLocation(temp3)).thenReturn(true);
+            when(RCtest.senseRobotAtLocation(temp2)).thenReturn(new RobotInfo(1, Team.A, RobotType.DELIVERY_DRONE, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+            when(RCtest.senseRobotAtLocation(temp3)).thenReturn(new RobotInfo(1, Team.A, RobotType.DELIVERY_DRONE, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+        }
+        for(int in = 0; in < 3; in++){
+            MapLocation temp2 = new MapLocation(temp.x-2, temp.y-1+in);
+            when(RCtest.canSenseLocation(temp2)).thenReturn(true);
+            when(RCtest.senseRobotAtLocation(temp2)).thenReturn(null);
+        }
+        HQtest.UpdateGameStage();
+    }
+
+    @Test
+    public void UpdateGameStageTest11() throws GameActionException{
+        HQtest.gameStage = 2;
+        MapLocation temp = new MapLocation(5,5);
+        when(RCtest.getLocation()).thenReturn(temp);
+        when(RCtest.getTeam()).thenReturn(Team.A);
+        for(int in = 0; in < 5; in++) {
+            MapLocation temp2 = new MapLocation(temp.x-2+in, temp.y+2);
+            MapLocation temp3 = new MapLocation(temp.x-2+in, temp.y-2);
+            when(RCtest.canSenseLocation(temp2)).thenReturn(true);
+            when(RCtest.canSenseLocation(temp3)).thenReturn(true);
+            when(RCtest.senseRobotAtLocation(temp2)).thenReturn(new RobotInfo(1, Team.A, RobotType.DELIVERY_DRONE, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+            when(RCtest.senseRobotAtLocation(temp3)).thenReturn(new RobotInfo(1, Team.A, RobotType.DELIVERY_DRONE, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+        }
+        for(int in = 0; in < 3; in++){
+            MapLocation temp2 = new MapLocation(temp.x-2, temp.y-1+in);
+            when(RCtest.canSenseLocation(temp2)).thenReturn(true);
+            when(RCtest.senseRobotAtLocation(temp2)).thenReturn(new RobotInfo(1, Team.A, RobotType.LANDSCAPER, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+
+        }
+        HQtest.UpdateGameStage();
+    }
+
+    @Test
+    public void UpdateGameStageTest12() throws GameActionException{
+        HQtest.gameStage = 2;
+        MapLocation temp = new MapLocation(5,5);
+        when(RCtest.getLocation()).thenReturn(temp);
+        when(RCtest.getTeam()).thenReturn(Team.A);
+        for(int in = 0; in < 5; in++) {
+            MapLocation temp2 = new MapLocation(temp.x-2+in, temp.y+2);
+            MapLocation temp3 = new MapLocation(temp.x-2+in, temp.y-2);
+            when(RCtest.canSenseLocation(temp2)).thenReturn(true);
+            when(RCtest.canSenseLocation(temp3)).thenReturn(true);
+            when(RCtest.senseRobotAtLocation(temp2)).thenReturn(new RobotInfo(1, Team.A, RobotType.DELIVERY_DRONE, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+            when(RCtest.senseRobotAtLocation(temp3)).thenReturn(new RobotInfo(1, Team.A, RobotType.DELIVERY_DRONE, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+        }
+        for(int in = 0; in < 3; in++){
+            MapLocation temp2 = new MapLocation(temp.x-2, temp.y-1+in);
+            when(RCtest.canSenseLocation(temp2)).thenReturn(true);
+            when(RCtest.senseRobotAtLocation(temp2)).thenReturn(new RobotInfo(1, Team.A, RobotType.DELIVERY_DRONE, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+
+        }
+        HQtest.UpdateGameStage();
+    }
+
+    @Test
+    public void UpdateGameStageTest13() throws GameActionException{
+        HQtest.gameStage = 2;
+        MapLocation temp = new MapLocation(5,5);
+        when(RCtest.getLocation()).thenReturn(temp);
+        when(RCtest.getTeam()).thenReturn(Team.A);
+        for(int in = 0; in < 5; in++) {
+            MapLocation temp2 = new MapLocation(temp.x-2+in, temp.y+2);
+            MapLocation temp3 = new MapLocation(temp.x-2+in, temp.y-2);
+            when(RCtest.canSenseLocation(temp2)).thenReturn(true);
+            when(RCtest.canSenseLocation(temp3)).thenReturn(true);
+            when(RCtest.senseRobotAtLocation(temp2)).thenReturn(new RobotInfo(1, Team.A, RobotType.DELIVERY_DRONE, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+            when(RCtest.senseRobotAtLocation(temp3)).thenReturn(new RobotInfo(1, Team.A, RobotType.DELIVERY_DRONE, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+        }
+        for(int in = 0; in < 3; in++){
+            MapLocation temp2 = new MapLocation(temp.x-2, temp.y-1+in);
+            MapLocation temp3 = new MapLocation(temp.x+2, temp.y-1+in);
+            when(RCtest.canSenseLocation(temp2)).thenReturn(true);
+            when(RCtest.senseRobotAtLocation(temp2)).thenReturn(new RobotInfo(1, Team.A, RobotType.DELIVERY_DRONE, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+            when(RCtest.canSenseLocation(temp3)).thenReturn(true);
+            when(RCtest.senseRobotAtLocation(temp3)).thenReturn(null);
+        }
+        HQtest.UpdateGameStage();
+    }
+
+    @Test
+    public void UpdateGameStageTest14() throws GameActionException{
+        HQtest.gameStage = 2;
+        MapLocation temp = new MapLocation(5,5);
+        when(RCtest.getLocation()).thenReturn(temp);
+        when(RCtest.getTeam()).thenReturn(Team.A);
+        for(int in = 0; in < 5; in++) {
+            MapLocation temp2 = new MapLocation(temp.x-2+in, temp.y+2);
+            MapLocation temp3 = new MapLocation(temp.x-2+in, temp.y-2);
+            when(RCtest.canSenseLocation(temp2)).thenReturn(true);
+            when(RCtest.canSenseLocation(temp3)).thenReturn(true);
+            when(RCtest.senseRobotAtLocation(temp2)).thenReturn(new RobotInfo(1, Team.A, RobotType.DELIVERY_DRONE, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+            when(RCtest.senseRobotAtLocation(temp3)).thenReturn(new RobotInfo(1, Team.A, RobotType.DELIVERY_DRONE, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+        }
+        for(int in = 0; in < 3; in++){
+            MapLocation temp2 = new MapLocation(temp.x-2, temp.y-1+in);
+            MapLocation temp3 = new MapLocation(temp.x+2, temp.y-1+in);
+            when(RCtest.canSenseLocation(temp2)).thenReturn(true);
+            when(RCtest.senseRobotAtLocation(temp2)).thenReturn(new RobotInfo(1, Team.A, RobotType.DELIVERY_DRONE, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+            when(RCtest.canSenseLocation(temp3)).thenReturn(true);
+            when(RCtest.senseRobotAtLocation(temp3)).thenReturn(new RobotInfo(1, Team.A, RobotType.LANDSCAPER, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+
+        }
+        HQtest.UpdateGameStage();
+    }
+
+    @Test
+    public void UpdateGameStageTest15() throws GameActionException{
+        HQtest.gameStage = 2;
+        MapLocation temp = new MapLocation(5,5);
+        when(RCtest.getLocation()).thenReturn(temp);
+        when(RCtest.getTeam()).thenReturn(Team.A);
+        for(int in = 0; in < 5; in++) {
+            MapLocation temp2 = new MapLocation(temp.x-2+in, temp.y+2);
+            MapLocation temp3 = new MapLocation(temp.x-2+in, temp.y-2);
+            when(RCtest.canSenseLocation(temp2)).thenReturn(true);
+            when(RCtest.canSenseLocation(temp3)).thenReturn(true);
+            when(RCtest.senseRobotAtLocation(temp2)).thenReturn(new RobotInfo(1, Team.A, RobotType.DELIVERY_DRONE, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+            when(RCtest.senseRobotAtLocation(temp3)).thenReturn(new RobotInfo(1, Team.A, RobotType.DELIVERY_DRONE, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+        }
+        for(int in = 0; in < 3; in++){
+            MapLocation temp2 = new MapLocation(temp.x-2, temp.y-1+in);
+            MapLocation temp3 = new MapLocation(temp.x+2, temp.y-1+in);
+            when(RCtest.canSenseLocation(temp2)).thenReturn(true);
+            when(RCtest.senseRobotAtLocation(temp2)).thenReturn(new RobotInfo(1, Team.A, RobotType.DELIVERY_DRONE, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+            when(RCtest.canSenseLocation(temp3)).thenReturn(true);
+            when(RCtest.senseRobotAtLocation(temp3)).thenReturn(new RobotInfo(1, Team.A, RobotType.DELIVERY_DRONE, 0, false, 0, 0, 0, new MapLocation(5, 5)));
+
+        }
+        HQtest.UpdateGameStage();
+    }
 }

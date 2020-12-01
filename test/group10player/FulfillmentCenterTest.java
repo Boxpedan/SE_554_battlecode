@@ -26,4 +26,15 @@ public class FulfillmentCenterTest {
         }
         assertEquals(Fultest.numDrones,2);
     }
+
+    @Test
+    public void taketurntest2() throws GameActionException {
+        when(RCtest.getTeamSoup()).thenReturn(50000);
+        when(RCtest.canBuildRobot(RobotType.DELIVERY_DRONE,Direction.NORTHEAST)).thenReturn(true);
+        for( int i = 0; i <= 1; i++) {
+            Fultest.takeTurn();
+            Fultest.numDrones++;
+        }
+        assertEquals(Fultest.numDrones,2);
+    }
 }

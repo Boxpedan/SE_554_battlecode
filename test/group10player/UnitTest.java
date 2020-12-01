@@ -155,4 +155,24 @@ public class UnitTest {
         Utest.walkRandom();
     }
 
+    @Test
+    public void tryMoveTowardsFavorLeft1() throws GameActionException{
+        Utest.tryMoveTowardsFavorLeft(null);
+    }
+
+    @Test
+    public void tryMoveTowardsFavorLeft2() throws GameActionException{
+        Utest.myLocation = new MapLocation(2,2);
+        when(RCtest.getLocation()).thenReturn(new MapLocation(2,2));
+        Utest.tryMoveTowardsFavorLeft(new MapLocation(1,1));
+    }
+
+    @Test
+    public void tryMoveTowardsFavorLeft3() throws GameActionException{
+        Utest.myLocation = new MapLocation(2,2);
+        when(RCtest.getLocation()).thenReturn(new MapLocation(2,2));
+        when(RCtest.canMove(Direction.NORTH)).thenReturn(true);
+        when(RCtest.senseFlooding(new MapLocation(1,1))).thenReturn(true);
+        Utest.tryMoveTowardsFavorLeft(new MapLocation(1,1));
+    }
 }
