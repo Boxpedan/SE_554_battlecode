@@ -280,7 +280,6 @@ public class DeliveryDrone extends Unit {
         }
 
         int distance = myLocation.distanceSquaredTo(dropTarget);
-
         if(distance <= 0) {
 //            System.out.println("Drone too close!");
             tryMoveDirection(randomDirection());
@@ -333,7 +332,6 @@ public class DeliveryDrone extends Unit {
     public void searchForLandscaper() throws GameActionException {
         RobotInfo[] allied_robots = rc.senseNearbyRobots(24, rc.getTeam());
         RobotInfo[] enemy_robots = rc.senseNearbyRobots(24, rc.getTeam().opponent());
-
         if (HQLocation == null){
             tryFindHQLocation();
             return;
